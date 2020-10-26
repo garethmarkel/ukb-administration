@@ -5,26 +5,33 @@ The UK Biobank is a very large population-based prospective study that includes 
 
 The UK Biobank is funded by the Medical Research Council, Wellcome Trust, British Heart Foundation, Diabetes UK, Department of Health, Cancer Research UK, Welsh Government, Scottish Government, and Northwest Regional Development Agency. UK Biobank is supported by the National Health Service (NHS).
 
-![image](/Users/juditperala/Documents/Work/MSSM/gitlab/ukb-administration/docs/pics/ukb_centres.png)
+<center>
+<img src="ukb_centres.png" alt="ukb_centres" width="300" /> 
+<figcaption>Figure 1. The UK Biobank cohort recruitment centres </figcaption>
+</center>
 
 ## The aims of the UK Biobank cohort
 
 - To allow detailed investigations of genetic and non-genetic determinants of disease of middle and old age. UK Biobank provides extensive and precise assessments of exposures with comprehensive follow up and characterization of many different health-related outcomes.
 
+
+- To promote innovative science by maximizing access to the resource. UK Biobank is open to bona fide researchers an    ywhere in the world, including those funded by academia and industry.
+
 !!! note 
 	The age range was based on compromise to get people without a disease, and to get significant health outcomes during early years of follow up. This prospective approach enables the measurement of risk factors before the disease develops, and therefore 1) avoids reverse causality and recall bias, 2) improves measurement detail, 3) reduces measurement error. 
 
-- To promote innovative science by maximizing access to the resource. UK Biobank is open to bona fide researchers anywhere in the world, including those funded by academia and industry.
+## Participants demographics
+
+- 	46% male
+-	57% aged 40-59 years; 43% aged 60-69 years
+-	*Less socioeconomically deprived than UK average*, but all strata represented
+-	85% urban
+-	94.5% white; 5.5% other
+-	58% paid employment/ self employed
+-	89% recruited in England; 7% in Scotland; 4% in Wales
 
 
 ## Current and planned data for UK Biobank
-| Data type | Number of participants | Details | Date of data acquisition | Data first available for research|
-|:-:|:-:|:-:|:-:|:-:|
-|rs3094315|1|752566|A|G|0.9912|0.0229|0.7009|
-|rs3131972|1|752721|A|G|1.007|0.0228|0.769|
-|rs3131971|1|752894|T|C|1.003|0.0232|0.8962|
-
-
 ## script snappy
 ``` R
 rnorm(10)
