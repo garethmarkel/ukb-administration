@@ -1,0 +1,34 @@
+site_name: UK Biobank administration
+repo_url: https://gitlab.com/choishingwan/ukb-administration
+authors: 
+    - Shing Wan CHOI
+    - Judit García González
+nav:
+    - index.md
+    - Applications:
+        - admin/new_application.md
+        - admin/new_researcher.md
+theme: 
+    name: readthedocs
+    highlightjs: false
+    
+markdown_extensions:
+    - admonition
+    - pymdownx.details
+    - pymdownx.tabbed
+    - pymdownx.superfences
+    - pymdownx.highlight:
+        use_pygments: true
+        noclasses: true
+    - pymdownx.arithmatex:
+        generic: True
+    - pymdownx.betterem:
+        smart_enable: all
+    - pymdownx.caret
+
+extra_css:
+  - css/extra.css
+
+extra_javascript:
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+  - javascripts/details.js
