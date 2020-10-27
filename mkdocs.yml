@@ -8,9 +8,10 @@ nav:
     - Applications:
         - admin/new_application.md
         - admin/new_researcher.md
-    - Using UK Biobank: 
-	- admin/basic_qc.md
-	- admin/data_manipulation.md
+    - Using UK Biobank:
+        - admin/basic_qc.md
+        - admin/data_manipulation.md
+
 theme: 
     name: readthedocs
     highlightjs: false
@@ -24,7 +25,7 @@ markdown_extensions:
         use_pygments: true
         noclasses: true
     - pymdownx.arithmatex:
-        generic: True
+        generic: true
     - pymdownx.betterem:
         smart_enable: all
     - pymdownx.caret
