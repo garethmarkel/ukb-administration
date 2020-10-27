@@ -8,10 +8,18 @@ nav:
     - Applications:
         - admin/new_application.md
         - admin/new_researcher.md
+<<<<<<< HEAD
     - Using UK Biobank:
         - admin/basic_qc.md
         - admin/data_manipulation.md
 
+=======
+    - Getting Started:
+        -  admin/init_structure.md
+    - Using UK Biobank: 
+        - admin/basic_qc.md
+        - admin/data_manipulation.md
+>>>>>>> f455cf1d789ec05b33f6a9680edf7b73adad302b
 theme: 
     name: readthedocs
     highlightjs: false
