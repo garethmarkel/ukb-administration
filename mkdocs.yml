@@ -8,6 +8,9 @@ nav:
     - Applications:
         - admin/new_application.md
         - admin/new_researcher.md
+    - Using UK Biobank: 
+	- admin/basic_qc.md
+	- admin/data_manipulation.md
 theme: 
     name: readthedocs
     highlightjs: false
