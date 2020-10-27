@@ -7,6 +7,11 @@ timestamp='2020-10-27'
 if(params.version) {
     System.out.println("")
     System.out.println("Initialize UK Biobank directory - Version: $version ($timestamp)")
+    exit 1
+}
+if(params.help) {
+    System.out.println("")
+    System.out.println("Initialize UK Biobank directory - Version: $version ($timestamp)")
     System.out.println("Usage: ")
     System.out.println("    nextflow run choishingwan/ukb-administration/scripts/init_structure.nf [options]")
     System.out.println("Mandatory arguments:")
