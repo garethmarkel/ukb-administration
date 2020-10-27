@@ -1,4 +1,4 @@
-# Getting started to UK Biobank
+# Introduction to UK Biobank
 ## Introduction
 
 The UK Biobank is a very large population-based prospective study that includes detailed health-related and genetic data on about 500,000 individuals and is available to the research community. Men and women aged 40-69 years were recruited during 2006-2010 across 22 recruitment centers in the United Kingdom (Figure 1). Participants provided general consent for all types of health research by both academic and commercial researchers and follow-up through health-related records.
