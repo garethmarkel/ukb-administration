@@ -26,7 +26,7 @@ workflow{
     download_software()
 }
 
-worflow download_software{
+workflow download_software{
     ukb = Channel.from(
         ["ukbmd5", "https://biobank.ctsu.ox.ac.uk/crystal/util/ukbmd5"],
         ["ukbconv","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbconv"],
@@ -34,21 +34,46 @@ worflow download_software{
         ["ukbfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbfetch"],
         ["ukblink","https://biobank.ctsu.ox.ac.uk/crystal/util/ukblink"],
         ["gfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch"]
-    )
+    ) 
+
+    ukb \
+        | download_executables
+    download_greedy_related()
+    
+}
+
+process download_greedy_related{
+    publishDir "software", mode: 'move', overwrite: true
+    module 'git'
+    module 'cmake'
+    executor 'local'
+    output:
+        path "GreedyRelated", emit: greedy
+    script:
+    """
+    git clone https://gitlab.com/choishingwan/GreedyRelated.git; \
+    mv GreedyRelated src; \
+    cd src; \
+    mkdir build; \
+    cd build ; \
+    cmake ../; \
+    make; \
+    cd ../../; \
+    mv src/bin/GreedyRelated .
+    """
 }
 
 process download_executables{
-    publishDir "software/bin", saveAs: { filename -> !filename.endsWith(".log") ? filename }, mode: 'move'
+    publishDir "software/bin", mode: 'move', overwrite: true
+    executor 'local'
     input:
         tuple   val(name),
                 val(url)
     output:
         path(name)
-    scripts:
+    script:
     """
     curl -o ${name} ${url}
     chmod 755 ${name}
-    time=`date`
-    echo "${name} download on ${time}" > ${name}.log
     """
 }
