@@ -24,9 +24,12 @@ if(params.help) {
 workflow{
     // First, we need to download all required software into desired directory
     download_software()
+    // We then download the required reference files
+    download_references()
 }
 
 workflow download_software{
+    // Link to all UK Biobank executables
     ukb = Channel.from(
         ["ukbmd5", "https://biobank.ctsu.ox.ac.uk/crystal/util/ukbmd5"],
         ["ukbconv","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbconv"],
@@ -35,15 +38,25 @@ workflow download_software{
         ["ukblink","https://biobank.ctsu.ox.ac.uk/crystal/util/ukblink"],
         ["gfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch"]
     ) 
-
     ukb \
         | download_executables
+    // also download greedy related, which is required for the QC script
     download_greedy_related()
-    
+    emit:
+        download_executables
 }
 
+workflow download_references{
+    ukb = Channel.from(
+        ["encoding.ukb", "https://biobank.ctsu.ox.ac.uk/crystal/util/encoding.ukb"],
+        ["Data_Dictionary_Showcase.csv","https://biobank.ctsu.ox.ac.uk/~bbdatan/Data_Dictionary_Showcase.csv"],
+        ["Codings.csv","https://biobank.ctsu.ox.ac.uk/~bbdatan/Codings.csv"]
+    )
+    ukb \
+        | download_files
+}
 process download_greedy_related{
-    publishDir "software", mode: 'move', overwrite: true
+    publishDir "software/bin", mode: 'move', overwrite: true
     module 'git'
     module 'cmake'
     executor 'local'
@@ -64,7 +77,8 @@ process download_greedy_related{
 }
 
 process download_executables{
-    publishDir "software/bin", mode: 'move', overwrite: true
+    // need to copy here, as we will need ukbfetch for later use
+    publishDir "software/bin", mode: 'copy', overwrite: true
     executor 'local'
     input:
         tuple   val(name),
@@ -75,5 +89,19 @@ process download_executables{
     """
     curl -o ${name} ${url}
     chmod 755 ${name}
+    """
+}
+
+process download_files{
+    publishDir "references", mode: 'move', overwrite: true
+    executor 'local'
+    input:
+        tuple   val(name),
+                val(url)
+    output:
+        path(name)
+    script:
+    """
+    curl -o ${name} ${url}
     """
 }
