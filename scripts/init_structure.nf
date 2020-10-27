@@ -42,14 +42,15 @@ workflow download_software{
         ["ukbunpack","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbunpack"],
         ["ukbfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbfetch"],
         ["ukblink","https://biobank.ctsu.ox.ac.uk/crystal/util/ukblink"],
-        ["gfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch"]
+        ["gfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch"],
+        ["ukbgene","https://biobank.ndph.ox.ac.uk/showcase/util/ukbgene"]
     ) 
     ukb \
         | download_executables
     // also download greedy related, which is required for the QC script
     download_greedy_related()
     emit:
-        download_executables
+        download_executables.out
 
 }
 
@@ -66,32 +67,150 @@ workflow download_references{
 workflow download_genotypes{
     take: software
     main:
-        chr = Channel.of(1..22)
-        ukbgene=software.filter{{it == "ukbgene"}
-        ukbgene.view()
+        chr = Channel.of(1..22,"X","Y","XY","MT")
+        ukbgene=software.filter{it.baseName == "ukbgene"}
+        // download the genotype bed file
+        obtain_genotype_data(chr, ukbgene, key)
+        // download the bim file
+        obtain_bim_files()
+        // download the SNP QC files
+        obtain_snp_qc()
 }
+
 workflow download_imputed{
     take: software
     main:
-        chr = Channel.of(1..22)
-    
+        chr = Channel.of(1..22,"X","Y","XY","MT")
+        type = Channel.of("hap", "imp")
+        ukbgene=software.filter{it.baseName == "ukbgene"}
+        // download the bgen files (both imputation and haplotypes)
+        obtain_imputed_data(chr, type, ukbgene, key)
+        // download the index and the file containing the maf and info score
+        // maf and info score only available for imputation data
+        type \
+            | combine(Channel.of("bgi","mfi")) \
+            | filter{!(it[0] == "hap" && it[1] == "mfi")} \
+            | obtain_imp_extra
+            
 }
 workflow download_exome{
     take: software
     main:
-        chr = Channel.of(1..22)
-    
+        chr = Channel.of(1..22, "X", "Y")
+        gfetch=software.filter{it.baseName == "gfetch"}
+        // there are 4 types of exome sequencing data, 
+        // population level: PLINK + pVCF
+        // individual level: VCF + CRAM
+        // for now, we only download PLINK format data (as pVCF isn't available as of yet)
+        obtain_exome_plink(chr, gfetch, key)
+        obtain_exome_bim()
 }
 /*
  * This section contains the actual code for each processes
  *
  */
 
+process obtain_exome_plink{
+    publishDir ".exome/PLINK", mode: 'symlink'
+    input:
+        each chr
+        path(gfetch)
+        path(key)
+    output:
+        path("UKBexomeOQFE_chr${chr}.bed")
+    script:
+    """
+    ./${gfetch} 23155 -c${chr} -a${key}
+    mv ukb23155_c${chr}_b0_v1.bed UKBexomeOQFE_chr${chr}.bed
+    """
+}
+
+
+process obtain_exome_bim{
+    publishDir ".exome/PLINK", mode: 'symlink'
+    output:
+        path("*")
+    script:
+    """
+    curl -o curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
+    unzip UKBexomeOQFEbim.zip
+    # rename the files to ensure consistency
+    rm UKBexomeOQFEbim.zip
+    """
+}
+
+process obtain_bim_files{
+    publishDir ".genotype/genotyped", mode: 'symlink'
+    output:
+        path("*")
+    script:
+    """
+    curl -o ukb_snp_bim.tar https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/ukb_snp_bim.tar
+    tar -xvf ukb_snp_bim.tar
+    # rename the files to ensure consistency
+    ls *bim  | awk '{a=\$1; gsub("snp","cal",\$1); print "mv "a,\$1}' | bash
+    rm ukb_snp_bim.tar
+    """
+}
+
+process obtain_snp_qc{
+    publishDir ".genotype/genotyped", mode: 'symlink'
+    output:
+        path("ukb_snp_qc.txt")
+    script:
+    """
+    curl -o ukb_snp_qc.txt https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/ukb_snp_qc.txt
+    """
+}
+
+process obtain_genotype_data{
+    publishDir ".genotype/genotyped", mode: 'symlink'
+    input:
+        each chr
+        path(ukbgene)
+        path(key)
+    output:
+        path "ukb_cal_chr${chr}_v2.bed"
+    script:
+    """
+    ./${ukbgene} cal -c${chr} -a${key}
+    """
+}
+
+process obtain_imp_extra{    
+    publishDir ".genotype/imputed", mode: 'symlink'
+    input:
+        tuple   val(type),
+                val(info)
+    output:
+        path("*")
+    script:
+    """
+    curl -o ukb_${type}_${info}.tgz https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/ukb_${type}_${info}.tgz
+    tar -xvf ukb_${type}_${info}.tgz
+    rm ukb_${type}_${info}.tgz
+    """
+}
+
+process obtain_imputed_data{
+    publishDir ".genotype/imputed", mode: 'symlink'
+    input:
+        each chr
+        each type
+        path(ukbgene)
+        path(key)
+    output:
+        path "ukb_${type}_chr${chr}_v2.bgen"
+    script:
+    """
+    ./${ukbgene} ${type} -c${chr} -a${key}
+    """
+}
+
 process download_greedy_related{
-    publishDir "software/bin", mode: 'move', overwrite: true
+    publishDir "software/bin", mode: 'symlink', overwrite: true
     module 'git'
     module 'cmake'
-    executor 'local'
     output:
         path "GreedyRelated", emit: greedy
     script:
@@ -110,8 +229,7 @@ process download_greedy_related{
 
 process download_executables{
     // need to copy here, as we will need ukbfetch for later use
-    publishDir "software/bin", mode: 'copy', overwrite: true
-    executor 'local'
+    publishDir "software/bin", mode: 'symlink', overwrite: true
     input:
         tuple   val(name),
                 val(url)
@@ -125,8 +243,7 @@ process download_executables{
 }
 
 process download_files{
-    publishDir "references", mode: 'move', overwrite: true
-    executor 'local'
+    publishDir "references", mode: 'symlink', overwrite: true
     input:
         tuple   val(name),
                 val(url)
