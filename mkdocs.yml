@@ -8,9 +8,11 @@ nav:
     - Applications:
         - admin/new_application.md
         - admin/new_researcher.md
+    - Getting Started:
+        -  admin/init_structure.md
     - Using UK Biobank: 
-	- admin/basic_qc.md
-	- admin/data_manipulation.md
+        - admin/basic_qc.md
+        - admin/data_manipulation.md
 theme: 
     name: readthedocs
     highlightjs: false
