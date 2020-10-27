@@ -6,7 +6,7 @@ The UK Biobank is a very large population-based prospective study that includes 
 The UK Biobank is funded by the Medical Research Council, Wellcome Trust, British Heart Foundation, Diabetes UK, Department of Health, Cancer Research UK, Welsh Government, Scottish Government, and Northwest Regional Development Agency. UK Biobank is supported by the National Health Service (NHS).
 
 <center>
-<img src="ukb_centres.png" alt="ukb_centres" width="300" /> 
+<img src="img/ukb_centres.png" alt="ukb_centres" width="300" /> 
 <figcaption>Figure 1. The UK Biobank cohort recruitment centres </figcaption>
 </center>
 
