@@ -50,6 +50,7 @@ workflow download_software{
     download_greedy_related()
     emit:
         download_executables
+
 }
 
 workflow download_references{
@@ -63,13 +64,23 @@ workflow download_references{
 }
 
 workflow download_genotypes{
-    
+    take: software
+    main:
+        chr = Channel.of(1..22)
+        ukbgene=software.filter{{it == "ukbgene"}
+        ukbgene.view()
 }
 workflow download_imputed{
-
+    take: software
+    main:
+        chr = Channel.of(1..22)
+    
 }
 workflow download_exome{
-
+    take: software
+    main:
+        chr = Channel.of(1..22)
+    
 }
 /*
  * This section contains the actual code for each processes
