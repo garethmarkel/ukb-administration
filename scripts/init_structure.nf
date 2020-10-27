@@ -21,11 +21,17 @@ if(params.help) {
     exit 1
 }
 
+id = Channel.from("${params.id}")
+key = Channel.fromPath("${params.key}")
 workflow{
     // First, we need to download all required software into desired directory
     download_software()
     // We then download the required reference files
     download_references()
+    // now start downloading the genotype files 
+    download_genotypes(download_software.out)
+    download_imputed(download_software.out)
+    download_exome(download_software.out)
 }
 
 workflow download_software{
@@ -55,6 +61,21 @@ workflow download_references{
     ukb \
         | download_files
 }
+
+workflow download_genotypes{
+    
+}
+workflow download_imputed{
+
+}
+workflow download_exome{
+
+}
+/*
+ * This section contains the actual code for each processes
+ *
+ */
+
 process download_greedy_related{
     publishDir "software/bin", mode: 'move', overwrite: true
     module 'git'
