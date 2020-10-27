@@ -132,7 +132,7 @@ process obtain_exome_bim{
         path("*")
     script:
     """
-    curl -o curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
+    curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
     unzip UKBexomeOQFEbim.zip
     # rename the files to ensure consistency
     rm UKBexomeOQFEbim.zip
