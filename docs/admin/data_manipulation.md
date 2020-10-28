@@ -2,14 +2,16 @@
 
 The best way to get familiar with the data available in UK Biobank is to browse their [data showcase](https://biobank.ctsu.ox.ac.uk/crystal/browse.cgi). You can also [search](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi) for specific fields or keywords.
 
-## Main dataset - General overview
+## Main dataset
 
-A main, single UKB dataset containing all the fields included in the approved application can be a very large file (17-70GB depending on file extension) not efficient to work with. Therefore, the UK Biobank data available in Minerva is split in multiple, smaller .tab files. *For each .tab file, each individual is a row, and the field codes are the variable names* (in the format f.XXXXX.X.X). 
-The individual IDs are coded in the field “f.eid” and are application specific (individual’s id numbers will be different for each application).
+A main, single UKB dataset containing all the fields included in the approved application can be a very large file (17-70GB depending on file extension) not efficient to work with. Therefore, the UK Biobank data available in Minerva is split in multiple, smaller .tab files.
+
+For each .tab file, each individual is a row, and the field codes are the variable names (in the format *f.XXXXX.X.X*). 
+The individual IDs are coded in the field “f.eid” and are application specific (Note that individual’s id numbers will be different for each application).
 
 <center>
 
-| f.eid   | f.22040.<span style="color:red">0.0.</span> | f.42038.<span style="color:red"> 0.0. </span> | f.42037.<span style="color:red"> 0.0. </span> |
+| f.eid   | f.22040.<span style="color:red">0.0.</span> | f.42038.<span style="color:red">0.0.</span> | f.42037.<span style="color:red">0.0.</span> |
 |---------|---------------------------------------------|-----------------------------------------------|-----------------------------------------------|
 | 5967229 | NA                                          | 1                                             | 23                                            |
 | 4674807 | NA                                          | NA                                            | NA                                            |
@@ -18,9 +20,8 @@ The individual IDs are coded in the field “f.eid” and are application specif
 
 </center>
 
-Highlighted <span style="color:red">in red</span> are the instance and array codes from the UKB field codes. These two numbers are separated by a dot e.g. variable.instance.array.
-**Instance** refers the assessment instance (or visit). **Array** captures multiple answers to the same "question". See UKB documentation for detailed descriptions of [instance](https://biobank.ctsu.ox.ac.uk/crystal/instance.cgi?id=2) and [array](https://biobank.ctsu.ox.ac.uk/crystal/help.cgi?cd=array).
-
+Highlighted <span style="color:red">in red</span> are the instance and array codes from the UKB field codes. These two numbers are separated by a dot e.g. *variable.instance.array.*
+**Instance** refers the assessment instance (or visit). **Array** capture multiple answers that may be given to the same question. See UKB documentation for detailed descriptions of [instance](https://biobank.ctsu.ox.ac.uk/crystal/instance.cgi?id=2) and [array](https://biobank.ctsu.ox.ac.uk/crystal/help.cgi?cd=array).
 
 Let’s see two examples, one where a field has multiple instances, and another example where a field has multiple arrays. 
 
@@ -42,7 +43,7 @@ Let’s see two examples, one where a field has multiple instances, and another 
 For each instance, participants indicated how many medications they were taking. Each medication would be recorded as a new item and will be stored as a new variable. 
 
 The maximum number of items present for any participant will define how many variables the field. 
-For treatment medication, there was a person who recorded 47 items, and therefore there are 47 variables per instance for this field.
+For treatment medication, there was a person who recorded 47 items, and therefore there are 47 variables per instance for this field. Each number represents categories or values to code medical treatments (For details, click [here](https://biobank.ctsu.ox.ac.uk/crystal/coding.cgi?id=4)).
 
 <center>
 
@@ -56,20 +57,47 @@ For treatment medication, there was a person who recorded 47 items, and therefor
 </center>
 
 
-## Health Record Linkage
-
+## Health Records Linkage
 
 ### Hospital inpatient episodes
 
-The Hospital inpatient episodes are divided into five tables. The master table is "hesin", which connects to four subsidiary tables (hesin_diag10, hesin_diag9, hesin_oper, hsin_birth) via the record_id key field
+Inpatient hospital data for the UK Biobank cohort contains information on when a particular diagnosis or procedure was recorded in the hospital data. This information was obtained through linkage to external data providers. 
+Inpatients are defined as persons who are admitted to hospital and occupy a hospital bed. Diagnoses are coded according to the World Health Organization’s International Classification of Diseases and Related Health Problems (Both [ICD-10](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) and [ICD-9](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41271) codes are available). All operations and procedures are coded according to the Office of Population, Censuses and Surveys [(OPCS)](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41272). Click [here](https://biobank.ndph.ox.ac.uk/ukb/ukb/docs/HospitalEpisodeStatistics.pdf) for more details on the UK Biobank Hospital inpatient data.
 
-- *hesin:* Main table for hospital records, it contains all the primary information about each hospital episode, including the primary diagnosis (columns diag_icd10 or diag_icd9) and the primary operation (column oper4). Each record_id can appear only one time in this table.
+**Due to the format and complexity of the record-level data, data on Hospital inpatient episodes is not provided as part of the main UK Biobank dataset but as separate data tables**. 
+It is also important to note that the hospital inpatient data is available to researchers in two formats: summary and record-level data. Detailed explanations about data collection and the two data formats available can be found [here](https://biobank.ndph.ox.ac.uk/ukb/label.cgi?id=2000).
 
-- *hesin_diag10:* subsidiary table for hospital diagnoses, it contains all the secondary diagnoses coded in ICD-10 for each hospital episode. Each record_id can appear multiple times in this table. 
+#### Record-level inpatient data
+Record level inpatient data is divided into seven interrelated database tables. The core table is "hesin", which connects to the subsidiary tables via a "record_id" field.
 
-- *hesin_diag9:* subsidiary table for hospital diagnoses, it contains all the secondary diagnoses coded in ICD-90 for each hospital episode. Each record_id can appear multiple times iin this table.
+<center>
+<img src="/img/HES_tables.png" alt="HES_tables" width="600" />
+<figcaption> Record-level data in seven interrelated data tables. Figure obtained from UK Biobank website</figcaption>
+</center>
 
-- *hesin_oper:* subsidiary table for hospital operations, it contains all the secondary operations for each hospital episode. Each record_id can appear multiple times in this table. 
+Below there is an example of how a *hesin* table looks like. For a hesin table, the same individual (eid) can appear more than once, but each inpatient episode (record_id) for a participant is stored as a single record, i.e. a row of data. **This differs from the format of the UK Biobank main dataset, which provides a single row of data per participant**.
 
-- *hesin_birth:* subsidiary table for hospital births, it contains all birth data for each hospital episode. Each record_id can appear multiple times in this table.
+The hesin table provides information on inpatient episodes of care for England, Wales and Scotland, including details on admissions and discharge, the type of episode and -where applicable- how an episode fits into a hospital spell (that is, the full time a patient spends in hospital from admission to discharge).
 
+|     eid        |     record_id    |     admidate      |     diag_icd10    |     disdate       |     epiend        |     epistart      |     opdate        |     oper4    |
+|----------------|------------------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|--------------|
+|     1234567    |     9073133      |     2003-05-11    |     R198          |     2003-05-15    |     2003-05-15    |     2003-05-15    |                   |     X948     |
+|     1234567    |     1195874      |     2003-07-05    |     R104          |     2003-06-05    |     2003-06-05    |     2003-06-05    |     2003-06-05    |     H151     |
+|     6467723    |     1134531      |     2000-02-01    |                   |     2000-05-01    |     2000-05-01    |     2000-05-01    |                   |     X668     |
+|     5123456    |     3345750      |     2006-09-16    |     L720          |     2006-05-16    |     2006-05-16    |     2006-05-16    |     2006-05-16    |     S045     |
+|     5123456    |     2343109      |                   |     M8414         |                   |     2005-10-05    |     2005-10-05    |     2005-10-05    |     W200     |
+|     5123456    |     4223415      |                   |     M8414         |                   |     2005-10-05    |     2005-10-05    |     2005-10-05    |     W231     |
+
+<p>&nbsp;</p>
+
+#### Summary-level hospital inpatient data
+
+UK Biobank has also created summary fields that provide the first date of any given diagnostic or operation code, which may be sufficient for many researchers’ needs. More information about summary-level hospital inpatient data can be found [here](https://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=2000).
+
+### Hospital outpatient episodes
+
+### Death registrations
+
+### Cancer registrations
+
+### Primary care
