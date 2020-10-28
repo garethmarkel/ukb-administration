@@ -80,11 +80,16 @@ workflow download_genotypes{
 workflow download_imputed{
     take: software
     main:
-        chr = Channel.of(1..22,"X","Y","XY","MT")
+        chr = Channel.of(1..22,"X","Y","XY")
         type = Channel.of("hap", "imp")
         ukbgene=software.filter{it.baseName == "ukbgene"}
         // download the bgen files (both imputation and haplotypes)
-        obtain_imputed_data(chr, type, ukbgene, key)
+        chr \
+            | combine(type) \
+            | filter{ !(it[0]=="XY" && it[2]=="hap")} \
+            | combine(ukbgene) \
+            | combine(key) \
+            | obtain_imputed_data
         // download the index and the file containing the maf and info score
         // maf and info score only available for imputation data
         type \
@@ -102,7 +107,7 @@ workflow download_exome{
         // population level: PLINK + pVCF
         // individual level: VCF + CRAM
         // for now, we only download PLINK format data (as pVCF isn't available as of yet)
-        obtain_exome_plink(chr, gfetch, key)
+        //obtain_exome_plink(chr, gfetch, key)
         obtain_exome_bim()
 }
 /*
@@ -132,7 +137,7 @@ process obtain_exome_bim{
         path("*")
     script:
     """
-    curl -o curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
+    curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
     unzip UKBexomeOQFEbim.zip
     # rename the files to ensure consistency
     rm UKBexomeOQFEbim.zip
@@ -195,10 +200,10 @@ process obtain_imp_extra{
 process obtain_imputed_data{
     publishDir ".genotype/imputed", mode: 'symlink'
     input:
-        each chr
-        each type
-        path(ukbgene)
-        path(key)
+        tuple   val(chr),
+                val(type),
+                path(ukbgene),
+                path(key)
     output:
         path "ukb_${type}_chr${chr}_v2.bgen"
     script:
