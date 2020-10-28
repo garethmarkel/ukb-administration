@@ -80,8 +80,8 @@ workflow download_genotypes{
 workflow download_imputed{
     take: software
     main:
-        chr = Channel.of(1..22,"X","Y","XY")
-        type = Channel.of("hap", "imp")
+        chr = Channel.of(1..22,"X","XY")
+        type = Channel.of( "imp")
         ukbgene=software.filter{it.baseName == "ukbgene"}
         // download the bgen files (both imputation and haplotypes)
         chr \
