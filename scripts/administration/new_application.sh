@@ -181,6 +181,9 @@ mkdir -p ${dir}/phenotype/raw
 mkdir -p ${dir}/phenotype/raw/encrypted
 mkdir -p ${dir}/phenotype/raw/keys
 mkdir -p ${dir}/phenotype/withdrawn
+# Get the relatedness information
+cd ${dir}/phenotype
+${ukbgene} rel
 
 date=`date`
 cd ${dir}

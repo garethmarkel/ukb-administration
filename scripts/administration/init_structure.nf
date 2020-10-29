@@ -24,18 +24,21 @@ if(params.help) {
 id = Channel.from("${params.id}")
 key = Channel.fromPath("${params.key}")
 workflow{
-    // First, we need to download all required software into desired directory
+    //1. Download all required software
     download_software()
-    // We then download the required reference files
+    // 2. Download required reference files
     download_references()
-    // now start downloading the genotype files 
+    // 3. Download Genotype files 
     download_genotypes(download_software.out)
+    // 4. Download Imputation files
     download_imputed(download_software.out)
+    // 5. Download Exome Sequencing files
     download_exome(download_software.out)
 }
 
 workflow download_software{
     // Link to all UK Biobank executables
+    // These are required for basic operations on raw UK biobank data
     ukb = Channel.from(
         ["ukbmd5", "https://biobank.ctsu.ox.ac.uk/crystal/util/ukbmd5"],
         ["ukbconv","https://biobank.ctsu.ox.ac.uk/crystal/util/ukbconv"],
@@ -47,14 +50,19 @@ workflow download_software{
     ) 
     ukb \
         | download_executables
-    // also download greedy related, which is required for the QC script
+    // Download greedy related, which is required for the QC script
     download_greedy_related()
+    // Download ukb_sql, which is used for constructing the SQL database
+    download_ukb_sql_constructor()
     emit:
         download_executables.out
-
 }
 
 workflow download_references{
+    // 1. Download the reference file. 
+    //    Data_Showcase contain detail information of all available phenotype on UKB
+    //    Codings contain the coding code for each phenotype
+    //    encoding.ukb is required for the extraction of UKB phenotypes
     ukb = Channel.from(
         ["encoding.ukb", "https://biobank.ctsu.ox.ac.uk/crystal/util/encoding.ukb"],
         ["Data_Dictionary_Showcase.csv","https://biobank.ctsu.ox.ac.uk/~bbdatan/Data_Dictionary_Showcase.csv"],
@@ -67,6 +75,7 @@ workflow download_references{
 workflow download_genotypes{
     take: software
     main:
+        // 1. Genotyped files contain all chromosome
         chr = Channel.of(1..22,"X","Y","XY","MT")
         ukbgene=software.filter{it.baseName == "ukbgene"}
         // download the genotype bed file
@@ -80,8 +89,10 @@ workflow download_genotypes{
 workflow download_imputed{
     take: software
     main:
+        // Imputation file does not contain Y and MT
         chr = Channel.of(1..22,"X","XY")
-        type = Channel.of( "imp")
+        // We have both imputation and haplotype data
+        type = Channel.of("hap", "imp")
         ukbgene=software.filter{it.baseName == "ukbgene"}
         // download the bgen files (both imputation and haplotypes)
         chr \
@@ -101,15 +112,20 @@ workflow download_imputed{
 workflow download_exome{
     take: software
     main:
+        // Exome sequencing data only contain X and Y but not XY and MT
+        // for users who want to analyze those chromosome, they might need to 
+        // download the individual level data manually
         chr = Channel.of(1..22, "X", "Y")
         gfetch=software.filter{it.baseName == "gfetch"}
         // there are 4 types of exome sequencing data, 
         // population level: PLINK + pVCF
         // individual level: VCF + CRAM
         // for now, we only download PLINK format data (as pVCF isn't available as of yet)
-        //obtain_exome_plink(chr, gfetch, key)
+        obtain_exome_plink(chr, gfetch, key)
+        // finally, download the bim files
         obtain_exome_bim()
 }
+
 /*
  * This section contains the actual code for each processes
  *
@@ -212,6 +228,26 @@ process obtain_imputed_data{
     """
 }
 
+process download_ukb_sql_constructor{
+    publishDir "software/bin", mode: 'symlink', overwrite: true
+    module 'git'
+    module 'cmake'
+    output:
+        path "ukb_sql"
+    script:
+    """
+    git clone https://gitlab.com/choishingwan/ukb_process.git; \
+    mv ukb_process src; \
+    cd src; \
+    mkdir build; \
+    cd build ; \
+    cmake ../; \
+    make; \
+    cd ../../; \
+    mv src/bin/ukb_sql .
+    """
+
+}
 process download_greedy_related{
     publishDir "software/bin", mode: 'symlink', overwrite: true
     module 'git'
