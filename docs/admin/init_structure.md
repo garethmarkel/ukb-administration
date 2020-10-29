@@ -38,7 +38,7 @@ Make sure you have the following
 
 3. Run the following command
     ```bash
-    nextflow run scripts/init_structure.nf \
+    nextflow run scripts/administration/init_structure.nf \
         --key <your key file> \
         --id <application id> \
         -c scripts/download.config
@@ -58,20 +58,25 @@ After running the script, your directory should look like the following
   |
   |- .genotype
   |    |
-  |    |- genotyped # Folder contain per chromosome bed and bim files
+  |    |-- genotyped # Folder contain per chromosome bed and bim files
   |    |
-  |    |- imputed # Folder contain per chromosome bgen and bgi files
+  |    |-- imputed # Folder contain per chromosome bgen and bgi files
   |
   |- .exome
   |    |
-  |    |- PLINK # Folder contain plink format exome sequencing data
+  |    |-- PLINK # Folder contain plink format exome sequencing data
   |
   |- references # Folder contain UK Biobank related references
   | 
   |- software # Folder contain UK Biobank related software and some utility tools
   |    |
-  |    |- bin # Where the software executable locates
+  |    |-- bin # Where the software executable locates
   | 
   |- scripts # Contain all scripts related to UK Biobank management
-
+       |
+       |-- administration
+       |
+       |-- QC
+       |
+       |-- examples
 ```
