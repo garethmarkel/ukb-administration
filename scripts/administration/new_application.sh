@@ -184,8 +184,9 @@ mkdir -p ${dir}/phenotype/withdrawn
 
 date=`date`
 cd ${dir}
-log=ukb${id}_init.log
+log=${dir}/ukb${id}_init.log
 echo "Application ${id} built on ${date}" | tee ${log}
+echo "with new_application.sh ${version} ${date} " | tee -a ${log}
 echo "Has access to genotyped data: ${has_genotype}" | tee -a ${log}
 echo "Has access to imputed data: ${has_imputed}" | tee -a ${log}
 echo "Has access to haplotype data: ${has_haplotype}" | tee -a ${log}
