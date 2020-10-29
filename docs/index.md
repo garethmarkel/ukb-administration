@@ -18,7 +18,7 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 - To promote innovative science by maximizing access to the resource. UK Biobank is open to bona fide researchers an    ywhere in the world, including those funded by academia and industry.
 
 !!! note 
-	The age range was based on compromise to get people without a disease, and to get significant health outcomes during early years of follow up. This prospective approach enables the measurement of risk factors before the disease develops, and therefore 1) avoids reverse causality and recall bias, 2) improves measurement detail, 3) reduces measurement error. 
+	The participants age range in the UK Biobank cohort was based on compromise to get people without a disease, and to get significant health outcomes during early years of follow up. This prospective approach enables the measurement of risk factors before the disease develops, and therefore 1) avoids reverse causality and recall bias, 2) improves measurement detail, 3) reduces measurement error. 
 
 ## Participants demographics
 

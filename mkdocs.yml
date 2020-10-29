@@ -6,8 +6,9 @@ authors:
 nav:
     - index.md
     - Applications:
-        - admin/new_application.md
+        - admin/ukb_access_process.md
         - admin/new_researcher.md
+        - admin/new_application.md
     - Getting Started:
         -  admin/init_structure.md
     - Using UK Biobank: 

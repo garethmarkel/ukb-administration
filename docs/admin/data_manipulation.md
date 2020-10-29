@@ -25,7 +25,7 @@ Highlighted <span style="color:red">in red</span> are the instance and array cod
 
 Let’s see two examples, one where a field has multiple instances, and another example where a field has multiple arrays. 
 
-*Example of field with multiple instances:* Standing height (field number 50) was measured 4 times. (For details, click [here](https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=50)). You will see the following in your .tab file:
+*Example of field with multiple instances:* Standing height (field number 50) was measured 4 times. (For details on this specific field, click [here](https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=50)). You will see the following in your .tab file:
 
 <center>
 
@@ -43,7 +43,7 @@ Let’s see two examples, one where a field has multiple instances, and another 
 For each instance, participants indicated how many medications they were taking. Each medication would be recorded as a new item and will be stored as a new variable. 
 
 The maximum number of items present for any participant will define how many variables the field. 
-For treatment medication, there was a person who recorded 47 items, and therefore there are 47 variables per instance for this field. Each number represents categories or values to code medical treatments (For details, click [here](https://biobank.ctsu.ox.ac.uk/crystal/coding.cgi?id=4)).
+For treatment medication, there was a person who recorded 47 items, and therefore there are 47 variables per instance for this field. Each number represents categories or values to code medical treatments (For details on the treatments coding, click [here](https://biobank.ctsu.ox.ac.uk/crystal/coding.cgi?id=4)).
 
 <center>
 
