@@ -1,5 +1,5 @@
 # New Researcher
-Researchers who have not registered to use the UK Biobank resource can register in the [Access Management System](https://bbams.ndph.ox.ac.uk/ams/)
+Researchers who have not registered to use the UK Biobank resource can register in the [Access Management System.](https://bbams.ndph.ox.ac.uk/ams/)
 
 You will be expected to provide the following information to the UK biobank:
 
