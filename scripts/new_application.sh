@@ -58,7 +58,9 @@ echo "(C) 2020 Shing Wan (Sam) Choi"
 echo "MIT License"
 echo ""
 echo ""
-
+if [ "${root}" == "." ]; then
+    root=`pwd`
+fi
 ukbgene=${root}/software/bin/ukbgene
 error=false
 # Check if user provided the required key file
@@ -82,24 +84,75 @@ if [[ "${error}" == "true" ]]; then
 fi
 
 prefix="ukb${id}"
+
 # Now build the directory structure
 dir=${root}/application/${prefix}
-mkdir -p ${dir}
-# Start working in the directory
-mv ${dir}
+
 # First, check if we have access to genotype data
-has_genotype="no"
-ln -s ${key} .
-keyName="$(basename -- ${key})"
-{ # try
-    ukbgene cal -c1 -m -a${keyName}  &&
-    #save your output
-    has_genotype="yes"
-
-} || { # catch
-    # save log for exception 
-}
-
-echo "Has access right to genotype: ${has_genotype}"
 mkdir -p ${dir}/genotyped
+cd ${dir}/genotyped
+has_genotype="no"
+ln -s ${key} . 2> /dev/null
+keyName="$(basename -- ${key})"
+{ # try to download fam file. Can only download if we have permission
+    ${ukbgene} cal -c1 -m -a${keyName}  &&
+    has_genotype="yes"
+}
+if [ "${has_genotype}" == "yes" ]; then
+    for f in ${root}/.genotype/genotyped/{*bed,*bim};do
+        name="$(basename -- ${f})"
+        name="${name/ukb_cal/ukb${id}}"
+        ln -s ${f} ${name} 2> /dev/null
+    done
+    fam=`ls *.fam`
+    mv ${fam} ukb${id}_chr1_v2.fam
+    fam="ukb${id}_chr1_v2.fam"
+    for ((i=2; i<=22; i++));
+    do
+        ln -s ${fam} ukb${id}_chr${i}_v2.fam
+    done
+    misc=( "X" "XY" "Y" "MT" )
+    for i in ${misc[@]};
+    do
+        ln -s ${fam} ukb${id}_chr${i}_v2.fam
+    done
+    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt .
+    rm ${keyName}
+else
+    cd ${dir}
+    rm -rf genotyped
+fi
+# Next we work with imputed data
+has_imputed="no"
 mkdir -p ${dir}/imputed
+cd ${dir}/imputed
+ln -s ${key} . 2> /dev/null
+keyName="$(basename -- ${key})"
+{  # try to download sample file. Can only download if we have permission
+    ${ukbgene} imp -c1 -m -a${keyName}  &&
+    has_imputed="yes"
+}
+if [ "${has_imputed}" == "yes" ]; then
+    for f in ${root}/.genotype/genotyped/{*bed,*bim};do
+        name="$(basename -- ${f})"
+        name="${name/ukb_cal/ukb${id}}"
+        ln -s ${f} ${name} 2> /dev/null
+    done
+    fam=`ls *.fam`
+    mv ${fam} ukb${id}_chr1_v2.fam
+    fam="ukb${id}_chr1_v2.fam"
+    for ((i=2; i<=22; i++));
+    do
+        ln -s ${fam} ukb${id}_chr${i}_v2.fam
+    done
+    misc=( "X" "XY" "Y" "MT" )
+    for i in ${misc[@]};
+    do
+        ln -s ${fam} ukb${id}_chr${i}_v2.fam
+    done
+    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt .
+    rm ${keyName}
+else
+    cd ${dir}
+    rm -rf imputed
+fi
