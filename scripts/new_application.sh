@@ -19,7 +19,33 @@ usage()
    echo
 }
 
-
+link_files(){
+    reference=$1
+    fileSuffix=$2
+    idxSuffix=$3 # Or bim for plink
+    sampleSuffix=$4
+    type=$5
+    for f in ${root}/.genotype/genotyped/ukb_${type}{*${fileSuffix},*${idxSuffix}};do
+        name="$(basename -- ${f})"
+        name="${name/ukb_${type}/ukb${id}}"
+        ln -s ${f} ${name} 2> /dev/null
+    done
+    tmp=`ls *22*${fileSuffix}`
+    vtmp=${tmp##*_}
+    version=${vtmp%.*}
+    fam=`ls *.${sampleSuffix}`
+    mv ${fam} ukb${id}_chr1_${version}.${sampleSuffix}
+    fam="ukb${id}_chr1_v2.${sampleSuffix}"
+    for ((i=2; i<=22; i++));
+    do
+        ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix}
+    done
+    misc=( "X" "XY" "Y" "MT" )
+    for i in ${misc[@]};
+    do
+        ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix}
+    done
+}
 key=""
 id=""
 root=""
@@ -99,23 +125,12 @@ keyName="$(basename -- ${key})"
     has_genotype="yes"
 }
 if [ "${has_genotype}" == "yes" ]; then
-    for f in ${root}/.genotype/genotyped/{*bed,*bim};do
-        name="$(basename -- ${f})"
-        name="${name/ukb_cal/ukb${id}}"
-        ln -s ${f} ${name} 2> /dev/null
-    done
-    fam=`ls *.fam`
-    mv ${fam} ukb${id}_chr1_v2.fam
-    fam="ukb${id}_chr1_v2.fam"
-    for ((i=2; i<=22; i++));
-    do
-        ln -s ${fam} ukb${id}_chr${i}_v2.fam
-    done
-    misc=( "X" "XY" "Y" "MT" )
-    for i in ${misc[@]};
-    do
-        ln -s ${fam} ukb${id}_chr${i}_v2.fam
-    done
+ reference=$1
+    fileSuffix=$2
+    idxSuffix=$3 # Or bim for plink
+    sampleSuffix=$4
+    prefix=$5
+    link_files ${root}/.genotype/genotyped/ bed bim fam cal 
     ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt .
     rm ${keyName}
 else
@@ -133,26 +148,52 @@ keyName="$(basename -- ${key})"
     has_imputed="yes"
 }
 if [ "${has_imputed}" == "yes" ]; then
-    for f in ${root}/.genotype/genotyped/{*bed,*bim};do
-        name="$(basename -- ${f})"
-        name="${name/ukb_cal/ukb${id}}"
-        ln -s ${f} ${name} 2> /dev/null
-    done
-    fam=`ls *.fam`
-    mv ${fam} ukb${id}_chr1_v2.fam
-    fam="ukb${id}_chr1_v2.fam"
-    for ((i=2; i<=22; i++));
-    do
-        ln -s ${fam} ukb${id}_chr${i}_v2.fam
-    done
-    misc=( "X" "XY" "Y" "MT" )
-    for i in ${misc[@]};
-    do
-        ln -s ${fam} ukb${id}_chr${i}_v2.fam
-    done
-    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt .
+    link_files ${root}/.genotype/imputed/ bgen bgi sample imp 
+    ln -s ${root}/.genotype/imputed/*mfi* .
     rm ${keyName}
 else
     cd ${dir}
     rm -rf imputed
 fi
+
+# Next we work with haplotyped data
+has_haplotype="no"
+mkdir -p ${dir}/imputed
+cd ${dir}/imputed
+ln -s ${key} . 2> /dev/null
+keyName="$(basename -- ${key})"
+{  # try to download sample file. Can only download if we have permission
+    ${ukbgene} hap -c1 -m -a${keyName}  &&
+    has_haplotype="yes"
+}
+if [ "${has_haplotype}" == "yes" ]; then
+    link_files ${root}/.genotype/imputed/ bgen bgi sample hap 
+    rm ${keyName}
+else
+    cd ${dir}
+    rm -rf imputed
+fi
+# TODO: Exome sequencing data
+#       Do it after everything else is completed
+
+# Now add phenotype folder
+mkdir -p ${dir}/phenotype/raw
+mkdir -p ${dir}/phenotype/raw/encrypted
+mkdir -p ${dir}/phenotype/raw/keys
+mkdir -p ${dir}/phenotype/withdrawn
+
+date=`date`
+cd ${dir}
+log=ukb${id}_init.log
+echo "Application ${id} built on ${date}" | tee ${log}
+echo "Has access to genotyped data: ${has_genotype}" | tee -a ${log}
+echo "Has access to imputed data: ${has_imputed}" | tee -a ${log}
+echo "Has access to haplotype data: ${has_haplotype}" | tee -a ${log}
+echo "Please download the access keys and put it into"
+echo ""
+echo "${dir}/phenotype/raw/keys"
+echo ""
+echo "and put the encrypted UK Biobank phenotype file into "
+echo ""
+echo "${dir}/phenotype/raw/encrypted"
+echo ""
