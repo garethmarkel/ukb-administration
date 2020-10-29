@@ -205,7 +205,7 @@ process obtain_imputed_data{
                 path(ukbgene),
                 path(key)
     output:
-        path "ukb_${type}_chr${chr}_v2.bgen"
+        path "ukb_${type}_chr${chr}_v3.bgen"
     script:
     """
     ./${ukbgene} ${type} -c${chr} -a${key}
