@@ -25,26 +25,29 @@ link_files(){
     idxSuffix=$3 # Or bim for plink
     sampleSuffix=$4
     type=$5
-    for f in ${root}/.genotype/genotyped/ukb_${type}{*${fileSuffix},*${idxSuffix}};do
+    for f in ${reference}/ukb_${type}{*${fileSuffix},*${idxSuffix}};do
         name="$(basename -- ${f})"
         name="${name/ukb_${type}/ukb${id}}"
         ln -s ${f} ${name} 2> /dev/null
     done
-    tmp=`ls *22*${fileSuffix}`
-    vtmp=${tmp##*_}
-    version=${vtmp%.*}
-    fam=`ls *.${sampleSuffix}`
-    mv ${fam} ukb${id}_chr1_${version}.${sampleSuffix}
-    fam="ukb${id}_chr1_v2.${sampleSuffix}"
-    for ((i=2; i<=22; i++));
-    do
-        ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix}
-    done
-    misc=( "X" "XY" "Y" "MT" )
-    for i in ${misc[@]};
-    do
-        ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix}
-    done
+    # Only need to duplicate the sample file for plink
+    if [[ ${fileSuffix} == "fam" ]]; then
+        tmp=`ls *22*${fileSuffix}`
+        vtmp=${tmp##*_}
+        version=${vtmp%.*}
+        fam=`ls *.${sampleSuffix}`
+        mv ${fam} ukb${id}_chr1_${version}.${sampleSuffix}
+        fam="ukb${id}_chr1_v2.${sampleSuffix}"
+        for ((i=2; i<=22; i++));
+        do
+            ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix} 2> /dev/null
+        done
+        misc=( "X" "XY" "Y" "MT" )
+        for i in ${misc[@]};
+        do
+            ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix} 2> /dev/null
+        done
+    fi
 }
 key=""
 id=""
@@ -108,7 +111,7 @@ fi
 if [[ "${error}" == "true" ]]; then
     exit -1
 fi
-
+key=` readlink -f ${key}`
 prefix="ukb${id}"
 
 # Now build the directory structure
@@ -118,61 +121,54 @@ dir=${root}/application/${prefix}
 mkdir -p ${dir}/genotyped
 cd ${dir}/genotyped
 has_genotype="no"
-ln -s ${key} . 2> /dev/null
+ln -s ${key} .  2> /dev/null
 keyName="$(basename -- ${key})"
 { # try to download fam file. Can only download if we have permission
     ${ukbgene} cal -c1 -m -a${keyName}  &&
     has_genotype="yes"
 }
 if [ "${has_genotype}" == "yes" ]; then
- reference=$1
-    fileSuffix=$2
-    idxSuffix=$3 # Or bim for plink
-    sampleSuffix=$4
-    prefix=$5
     link_files ${root}/.genotype/genotyped/ bed bim fam cal 
-    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt .
-    rm ${keyName}
+    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt . 2> /dev/null
 else
     cd ${dir}
     rm -rf genotyped
 fi
+rm ${keyName}
 # Next we work with imputed data
 has_imputed="no"
 mkdir -p ${dir}/imputed
 cd ${dir}/imputed
 ln -s ${key} . 2> /dev/null
-keyName="$(basename -- ${key})"
 {  # try to download sample file. Can only download if we have permission
     ${ukbgene} imp -c1 -m -a${keyName}  &&
     has_imputed="yes"
 }
 if [ "${has_imputed}" == "yes" ]; then
     link_files ${root}/.genotype/imputed/ bgen bgi sample imp 
-    ln -s ${root}/.genotype/imputed/*mfi* .
-    rm ${keyName}
+    ln -s ${root}/.genotype/imputed/*mfi* . 2> /dev/null
 else
     cd ${dir}
     rm -rf imputed
 fi
+rm ${keyName}
 
 # Next we work with haplotyped data
 has_haplotype="no"
 mkdir -p ${dir}/imputed
 cd ${dir}/imputed
 ln -s ${key} . 2> /dev/null
-keyName="$(basename -- ${key})"
 {  # try to download sample file. Can only download if we have permission
     ${ukbgene} hap -c1 -m -a${keyName}  &&
     has_haplotype="yes"
 }
 if [ "${has_haplotype}" == "yes" ]; then
-    link_files ${root}/.genotype/imputed/ bgen bgi sample hap 
-    rm ${keyName}
+    link_files ${root}/.genotype/imputed/ bgen bgi sample hap
 else
     cd ${dir}
     rm -rf imputed
 fi
+rm ${keyName}
 # TODO: Exome sequencing data
 #       Do it after everything else is completed
 
@@ -183,8 +179,10 @@ mkdir -p ${dir}/phenotype/raw/keys
 mkdir -p ${dir}/phenotype/withdrawn
 # Get the relatedness information
 cd ${dir}/phenotype
-${ukbgene} rel
-
+ln -s ${key} . 2> /dev/null
+${ukbgene} rel -a${keyName}
+rm ${keyName}
+cp ${key} ${dir}/phenotype/raw/keys
 date=`date`
 cd ${dir}
 log=${dir}/ukb${id}_init.log
