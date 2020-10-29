@@ -12,8 +12,8 @@ nav:
     - Getting Started:
         -  admin/init_structure.md
     - Using UK Biobank: 
-        - admin/basic_qc.md
         - admin/data_manipulation.md
+        - admin/basic_qc.md
 theme: 
     name: readthedocs
     highlightjs: false
