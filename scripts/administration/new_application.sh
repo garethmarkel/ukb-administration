@@ -34,18 +34,18 @@ link_files(){
     if [[ ${fileSuffix} == "fam" ]]; then
         tmp=`ls *22*${fileSuffix}`
         vtmp=${tmp##*_}
-        version=${vtmp%.*}
+        dataVersion=${vtmp%.*}
         fam=`ls *.${sampleSuffix}`
-        mv ${fam} ukb${id}_chr1_${version}.${sampleSuffix}
-        fam="ukb${id}_chr1_v2.${sampleSuffix}"
+        mv ${fam} ukb${id}_chr1_${dataVersion}.${sampleSuffix}
+        fam="ukb${id}_chr1_v${dataVersion}.${sampleSuffix}"
         for ((i=2; i<=22; i++));
         do
-            ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix} 2> /dev/null
+            ln -s ${fam} ukb${id}_chr${i}_${dataVersion}.${sampleSuffix} 2> /dev/null
         done
         misc=( "X" "XY" "Y" "MT" )
         for i in ${misc[@]};
         do
-            ln -s ${fam} ukb${id}_chr${i}_${version}.${sampleSuffix} 2> /dev/null
+            ln -s ${fam} ukb${id}_chr${i}_${dataVersion}.${sampleSuffix} 2> /dev/null
         done
     fi
 }
@@ -91,6 +91,7 @@ if [ "${root}" == "." ]; then
     root=`pwd`
 fi
 ukbgene=${root}/software/bin/ukbgene
+gfetch=${root}/software/bin/gfetch
 error=false
 # Check if user provided the required key file
 if [ -z "${key}" ]; then
@@ -106,6 +107,14 @@ fi
 if [[ ! -f "${ukbgene}" ]]; then
     error=true;
     echo "Error: ukbgene binary not found";
+    echo "Please make sure you have correctly specified the root directory";
+fi
+if [[ "${error}" == "true" ]]; then
+    exit -1
+fi
+if [[ ! -f "${gfetch}" ]]; then
+    error=true;
+    echo "Error: gfetch binary not found";
     echo "Please make sure you have correctly specified the root directory";
 fi
 if [[ "${error}" == "true" ]]; then
@@ -171,6 +180,39 @@ fi
 rm ${keyName}
 # TODO: Exome sequencing data
 #       Do it after everything else is completed
+has_exome="no"
+mkdir -p ${dir}/exome/PLINK
+cd ${dir}/exome/PLINK
+ln -s ${key} . 2> /dev/null
+{
+    ${gfetch} 23155 -c1 -m -a${keyName} &&
+    has_exome="yes"
+}
+# Format of the exome files are slightly different, so we can't reuse the function
+if [ "${has_exome}" == "yes" ]; then
+    
+    for f in ${root}/.exome/PLINK/UKBexomeOQFE{*bed,*bim};do
+        name="$(basename -- ${f})"
+        name="${name/UKBexomeOQFE/ukb${id}}"
+        ln -s ${f} ${name} 2> /dev/null
+    done
+    # Only need to duplicate the sample file for plink
+    fam=`ls *.fam`
+    mv ${fam} ukb${id}_chr1.fam
+    fam="ukb${id}_chr1.fam"
+    for ((i=2; i<=22; i++));
+    do
+        ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
+    done
+    misc=( "X" "Y" )
+    for i in ${misc[@]};
+    do
+        ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
+    done
+else
+    cd ${dir}
+    rm -rf exome/PLINK
+fi
 
 # Now add phenotype folder
 mkdir -p ${dir}/phenotype/raw
@@ -191,6 +233,7 @@ echo "with new_application.sh ${version} ${date} " | tee -a ${log}
 echo "Has access to genotyped data: ${has_genotype}" | tee -a ${log}
 echo "Has access to imputed data: ${has_imputed}" | tee -a ${log}
 echo "Has access to haplotype data: ${has_haplotype}" | tee -a ${log}
+echo "Has access to exome sequencing data: ${has_exome}" | tee -a ${log}
 echo "Please download the access keys and put it into"
 echo ""
 echo "${dir}/phenotype/raw/keys"
