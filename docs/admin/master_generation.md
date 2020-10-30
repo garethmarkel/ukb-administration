@@ -1,0 +1,2 @@
+# Generate SQL and "Pick up and go" data
+In this section, we will go through how to construct the phenotype SQL database and the "pick up and go" data where a standard set of quality controls (QC) were performed. 
