@@ -25,6 +25,7 @@ params.sexSD = 3
 params.maleF = 0.8
 params.femaleF = 0.2
 params.thres = 0.044
+// NOTE: This script works on single genotype file. We need one that's not separated by chromosome
 if(params.help){
     System.out.println("")
     System.out.println("Prepare UK biobank data - Version: $version ($timestamp)")
@@ -97,18 +98,6 @@ include {   extract_sqc;
             filter_sex_mismatch;
             finalize_data } from './modules/plink_qc.nf'
 
-// load all common files 
-code_showcase=Channel.fromPath("${params.data}")
-data_showcase=Channel.fromPath("${params.data}")
-drug=Channel.fromPath("${params.drug}")
-encoding=Channel.fromPath("${params.encoding}")
-gp=Channel.fromPath("${params.gp}")
-greedy=Channel.fromPath("${params.greed}")
-ukbconv = Channel.fromPath("${params.conv}")
-ukbsql=Channel.fromPath("${params.sql}")
-ukbunpack = Channel.fromPath("${params.unpack}")
-withdrawn=Channel.fromPath("${params.drop}")
-
 // function to check if file exists
 def fileExists = { fn ->
    if (fn.exists())
@@ -116,6 +105,23 @@ def fileExists = { fn ->
     else
        error("\n\n-----------------\nFile $fn does not exist\n\n---\n")
 }
+// load all common files 
+code_showcase=Channel.fromPath("${params.code}")
+data_showcase=Channel.fromPath("${params.data}")
+drug=Channel.fromPath("${params.drug}")
+encoding=Channel.fromPath("${params.encoding}")
+genotype = Channel
+            .fromFilePairs("${params.bfile}.{bed,bim,fam}",size:3, flat : true){ file -> file.baseName }  
+            .ifEmpty { error "No matching plink files" }        
+            .map { a -> [fileExists(a[1]), fileExists(a[2]), fileExists(a[3])] } 
+gp=Channel.fromPath("${params.gp}")
+greedy=Channel.fromPath("${params.greed}")
+rel = Channel.fromPath("${params.rel}")            
+ukbconv = Channel.fromPath("${params.conv}")
+ukbsql=Channel.fromPath("${params.sql}")
+ukbunpack = Channel.fromPath("${params.unpack}")
+withdrawn=Channel.fromPath("${params.drop}")
+
 
 // main workflow
 workflow{
@@ -125,8 +131,11 @@ workflow{
     extract_ukb_pheno()
     // 3. Construct the SQL file
     build_sql(extract_ukb_pheno.out.pheno)
-    //plink_qc(build_workspace.out.greedy)
-    //generate_log(check_version.out.version_info, plink_qc.out.qc_info)
+    // 4. Perform the QC filtering
+    plink_qc(build_sql.out)
+    // 5. Generate the log file
+    generate_log(   check_version.out.version_info, 
+                    plink_qc.out.qc_info)
 }
 
 workflow check_version{
@@ -177,25 +186,25 @@ workflow build_sql{
 }
 
 workflow plink_qc{
-    take: greedy
+    take: sql
     main:
-        sqc = Channel.fromPath("${params.sqc}")
-        extract_sqc(sqc, "${params.out}")
-        genotype = Channel
-            .fromFilePairs("${params.bfile}.{bed,bim,fam}",size:3, flat : true){ file -> file.baseName }  
-            .ifEmpty { error "No matching plink files" }        
-            .map { a -> [fileExists(a[1]), fileExists(a[2]), fileExists(a[3])] } 
+        // 1. Perform the first genotype missingness filtering
         first_pass_geno(    genotype, 
                             params.geno, 
                             params.out)
+        // 2. Do 4 mean clustering to extract EUR samples
         extract_eur(    extract_sqc.out.covar, 
                         params.kmean, 
                         params.seed, 
                         params.out)
+        // 3. Extract samples based on UK Biobank QC pipeline                    
+        extract_sqc(sql, "${params.out}")
+        // 4. Now remove all drop outs and samples that failed the UK Biobank QC
         remove_dropout_and_invalid( genotype, 
                                     extract_sqc.out.het, 
                                     withdrawn, 
                                     params.out)
+        // 5. Need to account for either using maf or mac filtering
         maf = params.maf
         if(!params.maf && !params.mac){
             // if both not provided, use default value
@@ -208,6 +217,7 @@ workflow plink_qc{
         if(params.mac){
             maf_mac=maf_mac+" --mac "+params.mac
         }
+        // 6. Run the second pass QC with --geno --maf/--mac --hwe and sample filtering
         basic_qc(   genotype, 
                     first_pass_geno.out.snp, 
                     extract_eur.out.eur, 
@@ -216,11 +226,12 @@ workflow plink_qc{
                     params.geno, 
                     maf_mac, 
                     params.out)
-
+        // 7. Generate the file indicating the long LD region
         generate_high_ld_region(    basic_qc.out.qc, 
                                     genotype, 
                                     params.build, 
                                     params.out)
+        // 8. Perform prunning
         prunning(   genotype,
                     basic_qc.out.qc, 
                     generate_high_ld_region.out, 
@@ -230,11 +241,12 @@ workflow plink_qc{
                     params.maxSize,
                     params.seed,
                     params.out)
+        // 9. Perform sex check (on top of UKB pipeline just in case)
         calculate_stat_for_sex( genotype,
                                 basic_qc.out.qc,
                                 prunning.out,
                                 params.out)
-                                
+        // 10. Remove samples with mismatch genetic and reported sex                        
         filter_sex_mismatch(    basic_qc.out.qc, 
                                 calculate_stat_for_sex.out,
                                 extract_sqc.out.sex,
@@ -243,22 +255,25 @@ workflow plink_qc{
                                 params.maleF,
                                 params.femaleF,
                                 params.out)
-        rel = Channel.fromPath("${params.rel}")                        
+        // 11. Use Greedy related to remove related samples            
         relatedness_filtering(  greedy, 
                                 rel,
                                 filter_sex_mismatch.out.valid,
                                 params.thres,
                                 params.seed,
                                 params.out)
+        // 12. Also extract first degree samples on the side                        
         extract_first_degree(   filter_sex_mismatch.out.valid,
                                 rel,
                                 relatedness_filtering.out.removed,
                                 params.out )
+        // 13. Generate the finalized SNP and fam file
         finalize_data(  genotype,
                         basic_qc.out.qc, 
                         filter_sex_mismatch.out.mismatch,
                         relatedness_filtering.out.removed, 
                         params.out)
+        // 14. We want to gather the filtering statistic
         qc_information = extract_sqc.out.meta \
             | combine(first_pass_geno.out.meta) \
             | combine(remove_dropout_and_invalid.out.meta) \
@@ -270,12 +285,6 @@ workflow plink_qc{
             | combine(finalize_data.out.meta) 
         combine_meta(params.out, qc_information.collect())
     emit: 
-        covar = extract_sqc.out.covar
-        eur = extract_eur.out.eur
-        pca = extract_eur.out.pca
-        qced= finalize_data.out.qced
-        family = extract_first_degree.out.family
-        kinship = extract_first_degree.out.plot
         qc_info = combine_meta.out
 }
 

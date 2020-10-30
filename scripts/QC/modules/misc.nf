@@ -59,47 +59,41 @@ process write_log{
     echo "================================" >> ${out}.log
 echo "
 
-    |--- ${out}.log # This log file
+    |-- ${out}.log # This log file
     |
-    |--- genotype
-    |     |
-    |     |--- ${out}-qc.fam # Post QC fam file. Should use this in analyses
-    |     |
-    |     |--- ${out}-qc.snplist # Post QC snp file. Should use this in analyses
-    |     |
-    |     |--- ${out}-*mean-EUR # file contains european samples
-    |     |
-    |     |--- ${out}.parents # Parental information. Useful if want to include family data
-    |     |
-    |     |---${out}.sibs # Sibling information. Useful if want to include family data
+    |-- genotyped
+    |    |
+    |    |-- ${out}-qc.fam # Post QC fam file. Should use this in analyses
+    |    |
+    |    |-- ${out}-qc.snplist # Post QC snp file. Should use this in analyses
+    |    |
+    |    |-- ${out}-*mean-EUR # file contains european samples
+    |    |
+    |    |-- ${out}.parents # Parental information. Useful if want to include family data
+    |    |
+    |    |-- ${out}.sibs # Sibling information. Useful if want to include family data
     |
-    |--- phenotype
-    |     |
-    |     |--- ${out}.covar # Covariate information. Contain batch and 40 PCs
-    |     |
-    |     |--- *.field_finder # field finder for phenotype extraction from the *.tab files
-    |     |
-    |     |--- *.tab # Raw text phenotype information. Useful for non-sql operation
-    |     |
-    |     |--- ${out}.db # SQLite database containing all phenotype information
+    |-- imputed
+    |
+    |-- phenotype
+    |    |
+    |    |-- ${out}.covar # Covariate information. Contain batch and 40 PCs
+    |    |
+    |    |-- ${out}.db # SQLite database containing all phenotype information
+    |    |
+    |    |-- raw
+    |        |
+    |        |-- *.field_finder # field finder for phenotype extraction from the *.tab files
+    |        |
+    |        |-- *.tab # Raw text phenotype information. Useful for non-sql operation
+    |        |
+    |        |-- withdrawn # Folder containing the withdrawn samples
     |     
-    |--- plot
-    |     |
-    |     |--- ${out}-kinship.png # Plot showing the IBS0 and kinship relationship
-    |     |
-    |     |--- ${out}-pca.png # Plot illustrating kmean results
-    |
-    |--- software
-    |     |
-    |     |--- GreedyRelated # Software for relatedness filtering
-    |     |
-    |     |--- ukb_process # Software for database construction
-    |
-    |--- reference
-    |     |
-    |     |-- Data_Dictionary_Showcase.csv # File contain meta information of phenotypes
-    |     |
-    |     |-- Codings_Showcase.csv # File contains coding meaning
+    |-- plots
+        |
+        |-- ${out}-kinship.png # Plot showing the IBS0 and kinship relationship
+        |
+        |-- ${out}-pca.png # Plot illustrating kmean results
  "   >> ${out}.log
     """
 
