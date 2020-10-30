@@ -51,6 +51,7 @@ Make sure you have the following
     ```bash
     rm -rf work
     ```
+
 ## Final structure
 After running the script, your directory should look like the following
 ```
@@ -58,7 +59,7 @@ After running the script, your directory should look like the following
   |
   |- .genotype
   |    |
-  |    |-- genotyped # Folder contain per chromosome bed and bim files
+  |    |-- genotyped # Folder contain whole genome bed and bim file
   |    |
   |    |-- imputed # Folder contain per chromosome bgen and bgi files
   |
@@ -80,3 +81,9 @@ After running the script, your directory should look like the following
        |
        |-- examples
 ```
+
+!!! Warning "Important"
+    Once all data are downloaded, remove the `work` folder which contains all intermediate files. 
+    Most importantly, the per-chromosome plink genotyped data are included. 
+    If you want to keep a copy of the per-chromosome plink files, you can find the bed and bim file
+    with `ls <root>/work/*/*/*{*bed,*bim}`
