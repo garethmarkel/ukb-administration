@@ -97,7 +97,9 @@ workflow download_imputed{
         // download the bgen files (both imputation and haplotypes)
         chr \
             | combine(type) \
-            | filter{ !(it[0]=="XY" && it[2]=="hap")} \
+            | filter{it[1]=="imp"} \
+            | filter{ !(it[0]=="XY" && it[1]=="hap")} \
+            | filter{ !(it[0]=="X" && it[1]=="hap")} \
             | combine(ukbgene) \
             | combine(key) \
             | obtain_imputed_data
@@ -132,7 +134,7 @@ workflow download_exome{
  */
 
 process obtain_exome_plink{
-    publishDir ".exome/PLINK", mode: 'symlink'
+    publishDir ".exome/PLINK", mode: 'move'
     input:
         each chr
         path(gfetch)
@@ -148,7 +150,7 @@ process obtain_exome_plink{
 
 
 process obtain_exome_bim{
-    publishDir ".exome/PLINK", mode: 'symlink'
+    publishDir ".exome/PLINK", mode: 'move'
     output:
         path("*")
     script:
@@ -161,7 +163,7 @@ process obtain_exome_bim{
 }
 
 process obtain_bim_files{
-    publishDir ".genotype/genotyped", mode: 'symlink'
+    publishDir ".genotype/genotyped", mode: 'move'
     output:
         path("*")
     script:
@@ -175,7 +177,7 @@ process obtain_bim_files{
 }
 
 process obtain_snp_qc{
-    publishDir ".genotype/genotyped", mode: 'symlink'
+    publishDir ".genotype/genotyped", mode: 'move'
     output:
         path("ukb_snp_qc.txt")
     script:
@@ -185,7 +187,7 @@ process obtain_snp_qc{
 }
 
 process obtain_genotype_data{
-    publishDir ".genotype/genotyped", mode: 'symlink'
+    publishDir ".genotype/genotyped", mode: 'move'
     input:
         each chr
         path(ukbgene)
@@ -199,7 +201,7 @@ process obtain_genotype_data{
 }
 
 process obtain_imp_extra{    
-    publishDir ".genotype/imputed", mode: 'symlink'
+    publishDir ".genotype/imputed", mode: 'move'
     input:
         tuple   val(type),
                 val(info)
@@ -214,14 +216,14 @@ process obtain_imp_extra{
 }
 
 process obtain_imputed_data{
-    publishDir ".genotype/imputed", mode: 'symlink'
+    publishDir ".genotype/imputed", mode: 'move'
     input:
         tuple   val(chr),
                 val(type),
                 path(ukbgene),
                 path(key)
     output:
-        path "ukb_${type}_chr${chr}_v3.bgen"
+        path "ukb_${type}_chr${chr}_v*.bgen"
     script:
     """
     ./${ukbgene} ${type} -c${chr} -a${key}
@@ -229,7 +231,7 @@ process obtain_imputed_data{
 }
 
 process download_ukb_sql_constructor{
-    publishDir "software/bin", mode: 'symlink', overwrite: true
+    publishDir "software/bin", mode: 'move', overwrite: true
     module 'git'
     module 'cmake'
     output:
@@ -249,7 +251,7 @@ process download_ukb_sql_constructor{
 
 }
 process download_greedy_related{
-    publishDir "software/bin", mode: 'symlink', overwrite: true
+    publishDir "software/bin", mode: 'move', overwrite: true
     module 'git'
     module 'cmake'
     output:
@@ -270,7 +272,7 @@ process download_greedy_related{
 
 process download_executables{
     // need to copy here, as we will need ukbfetch for later use
-    publishDir "software/bin", mode: 'symlink', overwrite: true
+    publishDir "software/bin", mode: 'copy', overwrite: true
     input:
         tuple   val(name),
                 val(url)
@@ -284,7 +286,7 @@ process download_executables{
 }
 
 process download_files{
-    publishDir "references", mode: 'symlink', overwrite: true
+    publishDir "references", mode: 'move', overwrite: true
     input:
         tuple   val(name),
                 val(url)
