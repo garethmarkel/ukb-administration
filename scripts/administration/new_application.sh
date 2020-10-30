@@ -19,36 +19,6 @@ usage()
    echo
 }
 
-link_files(){
-    reference=$1
-    fileSuffix=$2
-    idxSuffix=$3 # Or bim for plink
-    sampleSuffix=$4
-    type=$5
-    for f in ${reference}/ukb_${type}{*${fileSuffix},*${idxSuffix}};do
-        name="$(basename -- ${f})"
-        name="${name/ukb_${type}/ukb${id}}"
-        ln -s ${f} ${name} 2> /dev/null
-    done
-    # Only need to duplicate the sample file for plink
-    if [[ ${fileSuffix} == "fam" ]]; then
-        tmp=`ls *22*${fileSuffix}`
-        vtmp=${tmp##*_}
-        dataVersion=${vtmp%.*}
-        fam=`ls *.${sampleSuffix}`
-        mv ${fam} ukb${id}_chr1_${dataVersion}.${sampleSuffix}
-        fam="ukb${id}_chr1_v${dataVersion}.${sampleSuffix}"
-        for ((i=2; i<=22; i++));
-        do
-            ln -s ${fam} ukb${id}_chr${i}_${dataVersion}.${sampleSuffix} 2> /dev/null
-        done
-        misc=( "X" "XY" "Y" "MT" )
-        for i in ${misc[@]};
-        do
-            ln -s ${fam} ukb${id}_chr${i}_${dataVersion}.${sampleSuffix} 2> /dev/null
-        done
-    fi
-}
 key=""
 id=""
 root=""
@@ -87,6 +57,11 @@ echo "(C) 2020 Shing Wan (Sam) Choi"
 echo "MIT License"
 echo ""
 echo ""
+####################################################
+#                                                  #
+#              Input sanity check                  #
+#                                                  #
+####################################################
 if [ "${root}" == "." ]; then
     root=`pwd`
 fi
@@ -120,31 +95,58 @@ fi
 if [[ "${error}" == "true" ]]; then
     exit -1
 fi
-key=` readlink -f ${key}`
-prefix="ukb${id}"
 
+key=` readlink -f ${key}`
+keyName="$(basename -- ${key})"
+prefix="ukb${id}"
 # Now build the directory structure
 dir=${root}/application/${prefix}
 
-# First, check if we have access to genotype data
+####################################################
+#                                                  #
+#             Obtain Genotyped data                #
+#                                                  #
+####################################################
 mkdir -p ${dir}/genotyped
 cd ${dir}/genotyped
-has_genotype="no"
+
 ln -s ${key} .  2> /dev/null
-keyName="$(basename -- ${key})"
+has_genotype="no"
 { # try to download fam file. Can only download if we have permission
     ${ukbgene} cal -c1 -m -a${keyName}  &&
     has_genotype="yes"
 }
+rm ${keyName}
 if [ "${has_genotype}" == "yes" ]; then
-    link_files ${root}/.genotype/genotyped/ bed bim fam cal 
+    ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bed
+    ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bim
+    mv *.fam ukb${id}.fam
     ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt . 2> /dev/null
 else
     cd ${dir}
     rm -rf genotyped
 fi
-rm ${keyName}
-# Next we work with imputed data
+####################################################
+#                                                  #
+#      Function for linking multiple files         #
+#                                                  #
+####################################################
+link_files(){
+    reference=$1
+    fileSuffix=$2
+    idxSuffix=$3 # Or bim for plink
+    type=$4
+    for f in ${reference}/ukb_${type}{*${fileSuffix},*${idxSuffix}};do
+        name="$(basename -- ${f})"
+        name="${name/ukb_${type}/ukb${id}_${type}}"
+        ln -s ${f} ${name} 2> /dev/null
+    done
+}
+####################################################
+#                                                  #
+#             Obtain Imputed data                  #
+#                                                  #
+####################################################
 has_imputed="no"
 mkdir -p ${dir}/imputed
 cd ${dir}/imputed
@@ -153,16 +155,19 @@ ln -s ${key} . 2> /dev/null
     ${ukbgene} imp -c1 -m -a${keyName}  &&
     has_imputed="yes"
 }
+rm ${keyName}
 if [ "${has_imputed}" == "yes" ]; then
-    link_files ${root}/.genotype/imputed/ bgen bgi sample imp 
+    link_files ${root}/.genotype/imputed/ bgen bgi imp 
     ln -s ${root}/.genotype/imputed/*mfi* . 2> /dev/null
 else
     cd ${dir}
     rm -rf imputed
 fi
-rm ${keyName}
-
-# Next we work with haplotyped data
+####################################################
+#                                                  #
+#             Obtain Haplotype data                #
+#                                                  #
+####################################################
 has_haplotype="no"
 mkdir -p ${dir}/imputed
 cd ${dir}/imputed
@@ -171,15 +176,19 @@ ln -s ${key} . 2> /dev/null
     ${ukbgene} hap -c1 -m -a${keyName}  &&
     has_haplotype="yes"
 }
-if [ "${has_haplotype}" == "yes" ]; then
-    link_files ${root}/.genotype/imputed/ bgen bgi sample hap
-else
-    cd ${dir}
-    rm -rf imputed
-fi
 rm ${keyName}
-# TODO: Exome sequencing data
-#       Do it after everything else is completed
+if [ "${has_haplotype}" == "yes" ]; then
+    link_files ${root}/.genotype/imputed/ bgen bgi hap
+elif [ "${has_imputed}" != "yes" ]; then
+    cd ${dir}
+        rm -rf imputed
+    fi
+fi
+####################################################
+#                                                  #
+#         Obtain Exome Sequencing data             #
+#                                                  #
+####################################################
 has_exome="no"
 mkdir -p ${dir}/exome/PLINK
 cd ${dir}/exome/PLINK
@@ -188,15 +197,13 @@ ln -s ${key} . 2> /dev/null
     ${gfetch} 23155 -c1 -m -a${keyName} &&
     has_exome="yes"
 }
-# Format of the exome files are slightly different, so we can't reuse the function
+
 if [ "${has_exome}" == "yes" ]; then
-    
     for f in ${root}/.exome/PLINK/UKBexomeOQFE{*bed,*bim};do
         name="$(basename -- ${f})"
         name="${name/UKBexomeOQFE/ukb${id}}"
         ln -s ${f} ${name} 2> /dev/null
     done
-    # Only need to duplicate the sample file for plink
     fam=`ls *.fam`
     mv ${fam} ukb${id}_chr1.fam
     fam="ukb${id}_chr1.fam"
@@ -213,18 +220,32 @@ else
     cd ${dir}
     rm -rf exome/PLINK
 fi
-
-# Now add phenotype folder
+####################################################
+#                                                  #
+#             Add Phenotype folder                 #
+#                                                  #
+####################################################
 mkdir -p ${dir}/phenotype/raw
 mkdir -p ${dir}/phenotype/raw/encrypted
 mkdir -p ${dir}/phenotype/raw/keys
 mkdir -p ${dir}/phenotype/withdrawn
-# Get the relatedness information
-cd ${dir}/phenotype
+
+####################################################
+#                                                  #
+#         Get relatedness information              #
+#                                                  #
+####################################################
+cd ${dir}/genotyped
 ln -s ${key} . 2> /dev/null
 ${ukbgene} rel -a${keyName}
 rm ${keyName}
 cp ${key} ${dir}/phenotype/raw/keys
+
+####################################################
+#                                                  #
+#                   Print log                      #
+#                                                  #
+####################################################
 date=`date`
 cd ${dir}
 log=${dir}/ukb${id}_init.log
