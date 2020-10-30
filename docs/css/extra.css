@@ -141,12 +141,27 @@ code {
     line-height: 120%;
 }
 
+
+.others tbody { 
+    font-size: 70%;
+}
+    
+.others td {
+    font-family: sans-serif;
+    font-size: 100%;
+    padding:0 15px;
+    line-height: 150%;
+}
+.others tr:nth-child() {
+    background-color: #f2f2f2;
+}
+
 table tbody { 
-    font-size: 60%;
+    font-size: 100%;
 }
 
 table th {
-    font-size: 60%;
+    font-size: 100%;
 }
 
 table td {
