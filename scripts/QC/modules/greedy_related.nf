@@ -1,25 +1,3 @@
-process download_greedy_related{
-    publishDir "software", mode: 'copy', overwrite: true
-    module 'git'
-    module 'cmake'
-    executor 'local'
-    output:
-        path "GreedyRelated", emit: greedy
-    script:
-    """
-    git clone https://gitlab.com/choishingwan/GreedyRelated.git; \
-    mv GreedyRelated src; \
-    cd src; \
-    mkdir build; \
-    cd build ; \
-    cmake ../; \
-    make; \
-    cd ../../; \
-    mv src/bin/GreedyRelated .
-    """
-}
-
-
 process relatedness_filtering{
     cpus 1
     executor 'lsf'
@@ -53,7 +31,9 @@ process relatedness_filtering{
 }
 
 process extract_first_degree{
-    publishDir "genotype", mode: 'copy', overwrite: true
+    publishDir "genotype", mode: 'copy', overwrite: true, pattern: "*parents"
+    publishDir "genotype", mode: 'copy', overwrite: true, pattern: "*sibs"
+    publishDir "plots", mode: 'copy', overwrite: true, pattern: "*png"
     cpus 1
     memory '10G'
     module 'R'
@@ -63,7 +43,8 @@ process extract_first_degree{
         path(removed)
         val(out)
     output:
-        tuple path("${out}.parents"), path("${out}.sibs"), emit: family
+        tuple   path("${out}.parents"), 
+                path("${out}.sibs"), emit: family
         path "${out}-kinship.png", emit: plot
         path "${out}-family.meta", emit: meta
     script:
