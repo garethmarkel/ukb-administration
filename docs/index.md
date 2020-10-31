@@ -37,33 +37,237 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 
 We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=timelines_all) for the most updated information and timelines about data availability. 
 
-|  |     NUMBER OF PARTICIPANTS   |  DETAILS  |   DATE OF DATA ACQUISITION   |   DATA FIRST AVAILABLE FOR RESEARCH |
-|-----------------------------------------------------|--------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------|------------------------------------------|
-|     **UK BIOBANK ASSESSMENT CENTRE**                |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     UKB Baseline assessment                         |     Whole cohort                                       |     - Socio-demographics and lifestyle factors collected   with touchscreen questionnaire and brief verbal interview.     - Physical measurements (blood pressure, arterial   stiffness, eye measures, body composition, hand-grip strength, ECG, etc).     - Collection of blood, urine and saliva samples    |     2006-2010                   |     Q2 2012                              |
-|     Repeat of baseline assessment                   |     20,000 to 25,000                                   |     Same as above. [Link to UKB](https://biobank.ctsu.ox.ac.uk/~bbdatan/Repeat_assessment_doc_v1.0.pdf)                                                                                                                                                                                                               |     2012-2013                   |     Q3 2013                              |
-|     **ONLINE FOLLOW-UP**         |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     Online 24-h dietary recall web questionnaire    |     210,000                                            |     Detailed questions on the intake of foods and beverages consumed during the previous 24-hour period. [Link to UKB](https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/DietWebQ.pdf)                                                                                                                               |     2011-2012                   |     Q2 2013                              |
-|     Digestive health                                |     ~180,000                                           |     Questionnaire with self-reported information on abdominal and associated symptoms for the study of Irritable bowel syndrome and related disorders. [Link to UKB](https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/digestive_health.pdf)                                                                         |     2017                        |     2018                                 |
-|     Food (and other) preferences                    |     ~180,000                                           |     Questionnaire with items reflecting both sensory preferences (bitter, sweet etc.) and foodstuff preferences (fruit, vegetables, meat, etc.) [Link to UKB](https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/foodpref.pdf)                                                                                        |     Q4 2019                     |     Q1 2020                              |
-|     Physical activity data with accelerometry       |     100,000                                            |     Wrist worn tri-axial accelerometer - type, intensity, and duration of PA; one-week test. [Link to UKB](https://doi.org/10.1371/journal.pone.0169649)                                                                                                                                                              |     2013-2015                   |     2015                                 |
-|     Online ‘Healthy Work questionnaire’             |     100,000 – 120,000                                  |     Occupational history since finishing full time education; respiratory health outcomes and medication for these conditions; and smoking habits. [Link to UKB](https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/OccupHealthOSCAR.pdf)                                                                             |     Q3 2015                     |     Q2 2017                              |
-|     Questionnaire on cognitive function             |     100,000 to 120,000                                 |     Tests for mood, fluid intelligence, trail making, symbol digit substitution pairs matching, numeric memory. [Link to UKB](http://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=116)                                                                                                                                  |                                 |                                          |
-|     Questionnaire on mental health                  |     ~160,000                                           |     Questionnaire on life-time experiences of mental disorders. [Link to UKB](https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/mental_health_online.pdf)                                                                                                                                                            |     2016                        |     Q3 2017                              |
-|     **IMAGING**                                     |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     Multimodal imaging                              |     Goal: 100,000. ~40k available as of early 2020     |     MRI - Brain, heart, abdomen, bone densitometry (DXA)                                                                                                                                                                                                                                                       |     pilot from 2014-            |     2015                                 |
-|     **HEALTH RECORD LINKAGE**                           |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     Death registrations                             |     Whole cohort                                       |     ICD coded cause specific mortality                                                                                                                                                                                                                                                                         |     2006-                       |     Q2 2013                              |
-|     Cancer registrations                            |     Whole cohort                                       |     ICD coded cancer diagnoses                                                                                                                                                                                                                                                                                 |     1981-                       |     Q2 2013                              |
-|     Hospital inpatient episodes                     |     Whole cohort                                       |     ICD coded diagnoses                                                                                                                                                                                                                                                                                        |     1997-                       |     Q2 2013                              |
-|     Hospital outpatient episodes                    |     Whole cohort                                       |     Limited ICD and procedure codes                                                                                                                                                                                                                                                                            |     2003-                       |     2015                                 |
-|     Primary care                                    |     Whole cohort                                       |     Read-coded information including diagnoses, measurements, referrals. Prescriptions.                                                                                                                                                                                                                        |     variable                    |     Q3-4 2017                            |
-|     **GENETIC DATA**                                |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     Genotyping (baseline samples)                   |     Whole cohort                                       |     50,000 participants genotyped using the UK BiLEVE array and 100,000 participants   genotyped on the UK Biobank array. [Link to QC and imputation details.](https://doi.org/10.1101/166298)                                                                                                                         |     2013-2015                   |     Q3 - 2017                            |
-|     Exome sequencing                                |     50,000 – Whole   cohort planned Q4 2020            |     gVCF and CRAM files for 49,960 exomes available. [Link to Exome-seq FAQs](https://www.ukbiobank.ac.uk/wp-content/uploads/2020/06/UK-Biobank-50k-Exome-Release-FAQ-June-2020.pdf). Joint-call exome data in pVCF format, sample-level variant (VCFs) and sequence data (CRAMs) for the first 200k exomes planned for November 2020                                                                                                                                            |                                 |     Q4 - 2019                            |
-|     Whole genome sequencing                         |     Whole cohort planned Q4 2022                       |    For more information on the release of whole genome sequencing data click [here.](https://www.ukbiobank.ac.uk/2019/09/uk-biobank-leads-the-way-in-genetics-research-to-tackle-chronic-diseases/)                                                                                                                                                                            |     TBA                         |     TBA                                  |
-|     **BIOCHEMICAL DATA**                            |                                                        |                                                                                                                                                                                                                                                                                                                |                                 |                                          |
-|     Serum biomarker data                            |     Whole cohort                                       |     Urine, packed red blood cells (PRBC) and serum assay data for all participants. [Link to UKB](https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/serum_biochemistry.pdf)                                                                                                                                        |     2006-2010 and 2013          |     Q1 2019                              |
+### UK BIOBANK ASSESSMENT CENTRE
+ <table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>UKB Baseline assessment</td>
+    <td>Whole cohort</td>
+    <td> 
+		<ul>
+  			<li>
+			  Socio-demographics and lifestyle factors collected with touchscreen questionnaire and brief verbal interview.
+			</li>
+  			<li>
+			  Physical measurements (blood pressure, arterial stiffness, eye measures, body composition, hand-grip strength, ECG, etc).
+			</li>
+  			<li>
+			  Collection of blood, urine and saliva samples
+			</li>
+		</ul> 
+	</td>
+	<td>2006-2010</td>
+	<td>Q2 2012</td>
+  </tr>
+  <tr>
+    <td>Repeat of baseline assessment</td>
+    <td>20,000 - 25,000</td>
+    <td> 
+		Same as above. <a href="https://biobank.ctsu.ox.ac.uk/~bbdatan/Repeat_assessment_doc_v1.0.pdf">Link to UKB</a>
+	<td>2012-2013</td>
+	<td>Q3 2013</td>
+  </tr>
+  </table>
 
+### ONLINE FOLLOW-UP
+ <table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>Online 24-h dietary recall web questionnaire</td>
+    <td>210,000</td>
+    <td> 
+		Detailed questions on the intake of foods and beverages consumed during the previous 24-hour period. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/DietWebQ.pdf">Link to UKB</a>
+	</td>
+	<td>2011-2012</td>
+	<td>Q2 2013</td>
+  </tr>
+  <tr>
+    <td>Digestive health</td>
+    <td>~180,000</td>
+    <td> 
+		Questionnaire with self-reported information on abdominal and associated symptoms for the study of Irritable bowel syndrome and related disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/digestive_health.pdf">Link to UKB</a>
+	<td>2017</td>
+	<td>2018</td>
+  </tr>
+  <tr>
+    <td>Food (and other) preferences</td>
+    <td>~180,000</td>
+    <td> 
+		Questionnaire with items reflecting both sensory preferences (bitter, sweet etc.) and foodstuff preferences (fruit, vegetables, meat, etc.) <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/foodpref.pdf">Link to UKB</a>
+	<td>Q4 2019</td>
+	<td>Q1 2020</td>
+  </tr>
+  <tr>
+    <td>Physical activity data with accelerometry</td>
+    <td>100,000</td>
+    <td> 
+		Wrist worn tri-axial accelerometer - type, intensity, and duration of PA; one-week test. <a href="https://doi.org/10.1371/journal.pone.0169649">Link to UKB</a>
+	<td>2013-2015</td>
+	<td>2015</td>
+  </tr>
+  <tr>
+    <td>Online ‘Healthy Work questionnaire’</td>
+    <td>100,000 – 120,000</td>
+    <td> 
+		Occupational history since finishing full time education; respiratory health outcomes and medication for these conditions; and smoking habits. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/OccupHealthOSCAR.pdf">Link to UKB</a>
+	<td>Q3 2015</td>
+	<td>Q2 2017</td>
+  </tr>
+  <tr>
+    <td>Questionnaire on cognitive function</td>
+    <td>100,000 – 120,000</td>
+    <td> 
+		Tests for mood, fluid intelligence, trail making, symbol digit substitution pairs matching, numeric memory. <a href="http://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=116">Link to UKB</a>
+	<td></td>
+	<td></td>
+  </tr>
+  <tr>
+    <td>Questionnaire on mental health</td>
+    <td>~160,000</td>
+    <td> 
+		Questionnaire on life-time experiences of mental disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/mental_health_online.pdf">Link to UKB</a>
+	<td>2016</td>
+	<td>Q3 2017</td>
+  </tr>
+  </table>
 
+### IMAGING
+<table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>Multimodal imaging</td>
+    <td>Goal: 100,000. ~40k available as of early 2020</td>
+    <td>  MRI - Brain, heart, abdomen, bone densitometry (DXA)</td>
+	<td>2014-</td>
+	<td>2015</td>
+  </tr>
+  </table>
+
+### HEALTH RECORD LINKAGE
+
+<table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>Death registrations</td>
+    <td>Whole cohort</td>
+    <td>ICD coded cause specific mortality</td>
+	<td>2006-</td>
+	<td>Q2 2013</td>
+  </tr>
+  <tr>
+    <td>Cancer registrations</td>
+    <td>Whole cohort</td>
+    <td>ICD coded cancer diagnoses</td>
+	<td>1981-</td>
+	<td>Q2 2013</td>
+  </tr>
+  <tr>
+    <td>Hospital inpatient episodes</td>
+    <td>Whole cohort</td>
+    <td>ICD coded diagnoses</td>
+	<td>1997-</td>
+	<td>Q2 2013</td>
+  </tr>
+  <tr>
+    <td>Hospital outpatient episodes</td>
+    <td>Whole cohort</td>
+    <td>Limited ICD and procedure codes</td>
+	<td>2003-</td>
+	<td>2015</td>
+  </tr>
+  <tr>
+    <td>Primary care</td>
+    <td>Whole cohort</td>
+    <td>Read-coded information including diagnoses, measurements, referrals. Prescriptions.</td>
+	<td>variable</td>
+	<td>Q3-4 2017</td>
+  </tr>
+</table>
+
+### GENETIC DATA
+
+<table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>Genotyping (baseline samples)</td>
+    <td>Whole cohort</td>
+    <td>
+		50,000 participants genotyped using the UK BiLEVE array and 100,000 participants   genotyped on the UK Biobank array.
+		<a href="https://doi.org/10.1101/166298">Link to QC and imputation details.</a>
+	</td>
+	<td>2013-2015</td>
+	<td>Q3 - 2017</td>
+  </tr>
+  <tr>
+    <td>Exome sequencing</td>
+    <td>50,000 – Whole cohort planned Q4 2020</td>
+    <td>
+		VCF and CRAM files for 49,960 exomes available. 
+		<a href="https://www.ukbiobank.ac.uk/wp-content/uploads/2020/06/UK-Biobank-50k-Exome-Release-FAQ-June-2020.pdf">Link to Exome-seq FAQs</a> Joint-call exome data in pVCF format, sample-level variant (VCFs) and sequence data (CRAMs) for the first 200k exomes planned for November 2020
+	</td>
+	<td></td>
+	<td>Q4 - 2019</td>
+  </tr>
+  <tr>
+    <td>Whole genome sequencing</td>
+    <td>Whole cohort planned Q4 2022</td>
+    <td>
+		For more information on the release of whole genome sequencing data click <a href="https://www.ukbiobank.ac.uk/2019/09/uk-biobank-leads-the-way-in-genetics-research-to-tackle-chronic-diseases/">here.</a>
+	</td>
+	<td>TBA</td>
+	<td>TBA</td>
+  </tr>
+</table>
+
+### BIOCHEMICAL DATA
+
+<table class="others">
+  <tr>
+    <th></th>
+	<th><b>NUMBER OF PARTICIPANTS</b></th>
+    <th><b>DETAILS</b></th>
+    <th><b>DATE OF DATA ACQUISITION</b></th>
+	<th><b>DATA FIRST AVAILABLE FOR RESEARCH</b></th>
+  </tr>
+  <tr>
+    <td>Serum biomarker data</td>
+    <td>Whole cohort</td>
+    <td>
+		Urine, packed red blood cells (PRBC) and serum assay data for all participants. 
+		<a href="https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/serum_biochemistry.pdf">Link to UKB.</a>
+		</td>
+	<td>2006-2010 and 2013</td>
+	<td>Q1 2019</td>
+  </tr>
+</table>
 

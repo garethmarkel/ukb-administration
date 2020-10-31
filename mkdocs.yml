@@ -11,6 +11,8 @@ nav:
         - admin/new_application.md
     - Getting Started:
         -  admin/init_structure.md
+        -  admin/init_application.md
+        -  admin/master_generation.md
     - Using UK Biobank: 
         - admin/data_manipulation.md
         - admin/basic_qc.md
