@@ -168,7 +168,7 @@ process combine_genotype{
                 path("ukb.bim")
     script:
     """
-    ./${ukbgene} cal -m -c${chr} -a${key}
+    ./${ukbgene} cal -m -c1 -a${key}
     fam=`ls *.fam`
     ls *bed | sed 's/.bed//g' | awk -v f=\$fam '{ print \$1".bed "\$1".bim "f}' > merge_list
     plink \
