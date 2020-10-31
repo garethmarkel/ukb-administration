@@ -228,13 +228,14 @@ fi
 mkdir -p ${dir}/phenotype/raw
 mkdir -p ${dir}/phenotype/raw/encrypted
 mkdir -p ${dir}/phenotype/raw/keys
-mkdir -p ${dir}/phenotype/withdrawn
+mkdir -p ${dir}/withdrawn
 
 ####################################################
 #                                                  #
 #         Get relatedness information              #
 #                                                  #
 ####################################################
+mkdir -p ${dir}/genotyped
 cd ${dir}/genotyped
 ln -s ${key} . 2> /dev/null
 ${ukbgene} rel -a${keyName}
