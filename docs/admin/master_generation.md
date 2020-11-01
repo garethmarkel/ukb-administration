@@ -125,4 +125,50 @@ ukb<ID>
 ### Pipeline breakdown
 We will briefly go through the steps performed in the pipeline. 
 
-1. 
+!!!note
+    You can customize some of the filtering threshold in the pipeline by providing different parameters. For more information, please read the help message from the pipeline `nextflow run prepare_ukb.nf --help`
+
+#### Quality Control
+1. Filter SNPs with high missing call rates (default: 0.02)
+2. Perform 4 mean clustering on the first 2 principal components (PC) to extract samples with European ancestry
+3. Filter out samples with excessively high relatedness, missingness, heterozygosity rate as indicated by UK Biobank, and samples who withdrawn their consent.
+4. Filter SNPs with low MAF (default: 0.01), significant deviate from Hardy Weinberg Equailibrium (default: 1e-8) and with high missing call rates (default 0.02)
+5. Perform prunning. High LD regions are excluded. 
+6. Perform sex mismatch check. Samples with F-statistics 3 SD away from their gender's mean are removed by default.
+7. Use `GreedyRelated` to remove related samples. 
+
+#### Phenotype Database generation
+1. Automatically decrypt the encrypted data
+2. Convert the decrypted data to R format
+3. Generate SQL using `ukb_sql`
+
+## Manually Building the SQL 
+Here are the breakdown of how to generate the SQL database manually
+
+1. Decrypt the encrypted data using `ukbunpack`
+    ```
+    ukbunpack <encrypted file> <key>
+    ```
+2. Convert the decrypted data to R format using `ukbconv` and `encode.ukb`
+    ```
+    ukbconv <decrypted file> r -eencode.ukb
+    ```
+
+    !!! note
+        No space between the parameter and input
+
+3. Run `ukb_sql`
+    ```
+     ukb_sql \
+        -d Data_Dictionary_Showcase.csv \
+        -c Codings.csv \
+        -p <comma delimited list of phenotype files> \
+        --out <id>.db \
+        -g <Clinical event records > \
+        -u <Prescription records> \
+        -D \
+        -w <withdrawn samples>
+    ```
+
+    !!! note
+        Clinical event records and Prescription records are optional
