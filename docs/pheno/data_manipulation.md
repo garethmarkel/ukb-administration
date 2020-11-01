@@ -1,4 +1,4 @@
-# Using UK Biobank showcase data
+# Understanding UK Biobank showcase data
 
 The best way to get familiar with the data available in UK Biobank is to browse their [data showcase](https://biobank.ctsu.ox.ac.uk/crystal/browse.cgi). You can also [search](http://biobank.ctsu.ox.ac.uk/crystal/search.cgi) for specific fields or keywords.
 
@@ -12,11 +12,11 @@ The individual IDs are coded in the field “f.eid” and are application specif
 <center>
 
 | f.eid   | f.22040.<span style="color:red">0.0.</span> | f.42038.<span style="color:red">0.0.</span> | f.42037.<span style="color:red">0.0.</span> |
-|---------|---------------------------------------------|-----------------------------------------------|-----------------------------------------------|
-| 5967229 | NA                                          | 1                                             | 23                                            |
-| 4674807 | NA                                          | NA                                            | NA                                            |
-| 1456203 | 3330                                        | 2                                             | 575                                           |
-| 3723112 | NA                                          | 1                                             | 380                                           |
+|---|---|---|---|
+| 5967229 | NA | 1   | 23  |
+| 4674807 | NA | NA| NA|
+| 1456203 | 3330| 2| 575|
+| 3723112 | NA| 1| 380|
 
 </center>
 
@@ -30,11 +30,11 @@ Let’s see two examples, one where a field has multiple instances, and another 
 <center>
 
 | f.eid   | f.50.<span style="color:red">0.0.</span> | f.50.<span style="color:red">1.0.</span> | f.50.<span style="color:red">2.0.</span> | f.50.<span style="color:red">3.0.</span> |
-|---------|------------------------------------------|------------------------------------------|------------------------------------------|------------------------------------------|
-| 5967229 | 156                                      | 155                                      | 156                                      | 156                                      |
-| 4674807 | 178                                      | 178                                      | 178                                      | 177                                      |
-| 1456203 | 175                                      | 175                                      | 175                                      | 175                                      |
-| 3723112 | 161                                      | 161                                      | 161                                      | 161                                      |
+|---|---|---|---|---|
+| 5967229 | 156| 155| 156| 156|
+| 4674807 | 178| 178| 178| 177|
+| 1456203 | 175| 175| 175| 175|
+| 3723112 | 161| 161| 161| 161|
 
 </center>
 
@@ -79,7 +79,7 @@ Below there is an example of how a *hesin* table looks like. For a hesin table, 
 
 The hesin table provides information on inpatient episodes of care for England, Wales and Scotland, including details on admissions and discharge, the type of episode and -where applicable- how an episode fits into a hospital spell (that is, the full time a patient spends in hospital from admission to discharge).
 
-|     eid        |     record_id    |     admidate      |     diag_icd10    |     disdate       |     epiend        |     epistart      |     opdate        |     oper4    |
+|     eid|record_id    |     admidate      |     diag_icd10    |     disdate       |     epiend        |     epistart      |     opdate        |     oper4    |
 |----------------|------------------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|--------------|
 |     1234567    |     9073133      |     2003-05-11    |     R198          |     2003-05-15    |     2003-05-15    |     2003-05-15    |                   |     X948     |
 |     1234567    |     1195874      |     2003-07-05    |     R104          |     2003-06-05    |     2003-06-05    |     2003-06-05    |     2003-06-05    |     H151     |

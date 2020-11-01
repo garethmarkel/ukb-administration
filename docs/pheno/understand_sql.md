@@ -1,9 +1,17 @@
 # Using the SQL database
-In this section, we will try to understand the basics of the UK Biobank phenotype database, and how to use it. 
+
+There are many advantages of using the SQL database instead of the [plain text phenotype files](tradition.md). 
+The most important advantage is that with SQL database, phenotypes can be extracted using scripts that refer to the unique phenotype field IDs, which allow for better reproducibility. 
+In addition, data inside the SQL database is indexed, which allow quicker access to the data. 
+
+However, the main disadvantage of using the SQL database is that it does require some knowledge of the SQL language, which can be difficult for new comer. 
+Here we will try to present information on the basic structure of the database, and also provide some example SQL scripts for new comers. 
+Hopefully, this should help to familiar yourself with how to use the SQL database. 
 
 !!! note
 
     To access the database, you must have [sqlite3](https://sqlite.org/index.html) installed. 
+
 
 ## Database Structure 
 To use the SQL database we must first understand the basic structure of the database. 

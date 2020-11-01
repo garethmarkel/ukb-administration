@@ -60,6 +60,7 @@ nextflow run \
     Change all field with <> to the correct files.
     If you have manually organized / downloaded your files, please replace the fields accordingly. 
 
+### Expected result
 After the script complete, your application folder should have the following files and structures
 
 ```
