@@ -16,6 +16,7 @@ nav:
     - Using UK Biobank: 
         - admin/data_manipulation.md
         - admin/basic_qc.md
+        - pheno/understand_sql.md
 theme: 
     name: readthedocs
     highlightjs: false
