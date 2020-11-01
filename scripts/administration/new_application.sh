@@ -182,8 +182,8 @@ if [ "${has_haplotype}" == "yes" ]; then
 elif [ "${has_imputed}" != "yes" ]; then
     cd ${dir}
         rm -rf imputed
-    fi
 fi
+
 ####################################################
 #                                                  #
 #         Obtain Exome Sequencing data             #
