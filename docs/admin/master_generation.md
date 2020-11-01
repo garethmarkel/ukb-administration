@@ -52,14 +52,77 @@ nextflow run \
     --unpack ${root}/software/bin/ukbunpack 
     --sql ${root}/software/bin/ukb_sq \
     --drop ${application}/withdrawn/<name to withdrawn file> \
-    --rel ${application}/genotyped/<relatedness file> 
+    --rel ${application}/genotyped/<relatedness file> \
+    --out ukb${id}
 ```
 
 !!! note
     Change all field with <> to the correct files.
     If you have manually organized / downloaded your files, please replace the fields accordingly. 
 
-After the script complete, you will obtain the following:
-```
+After the script complete, your application folder should have the following files and structures
 
 ```
+ukb<ID>
+  |
+  |-- genotyped 
+  |    |
+  |    |-- ukb<ID>.bed
+  |    |
+  |    |-- ukb<ID>.bim
+  |    |
+  |    |-- ukb<ID>.bed
+  |    |
+  |    |-- ukb<ID>-qc.snplist # File containing SNPs that passed filtering
+  |    |
+  |    |-- ukb<ID>-qc.fam # File containing EUR Samples that passed filtering
+  |    |
+  |    |-- ukb<ID>-qc.parents # Parents of samples in ukb<ID>-qc.fam that also passed filtering (except relatedness)
+  |    |
+  |    |-- ukb<ID>-qc.sibs # Siblings of samples in ukb<ID>-qc.fam that also passed filtering (except relatedness)
+  |    |
+  |    |-- ukb<ID>-4mean-EUR # European samples determined via 4 mean clustering
+  |
+  |-- plots
+  |    |
+  |    |-- ukb<ID>-kinship.png # Kinship plot
+  |    |
+  |    |-- ukb<ID>-pca.png # PCA population plot with 4 mean clustering colors
+  |
+  |-- imputed
+  |
+  |-- exome
+  |    |   
+  |    |-- PLINK
+  |
+  |-- phenotype
+  |    |
+  |    |-- raw
+  |    |    |
+  |    |    |-- encrypted
+  |    |    |
+  |    |    |-- keys
+  |    |    |
+  |    |    |-- *.tab # Plain text phenotype files
+  |    |    |
+  |    |    |-- *.field_finders # helper file indicating phenotype column number in the plain text files
+  |    |
+  |    |-- withdrawn
+  |    |
+  |    |-- ukb<ID>_rel_s488251.dat # This is the relatedness file
+  |    |
+  |    |-- ukb<ID>.sex # Samples with mismatch sex information
+  |    |
+  |    |-- ukb<ID>.invalid # Samples with high missingness, excessive relatedness or high heterozygousity
+  |    |
+  |    |-- ukb<ID>.covar # File contains UK Biobank genotyping batch and 40 PCs. Useful for downstream analyses
+  |    |
+  |    |-- ukb<ID>.db # Phenotype database
+  |
+  |-- ukb<ID>_init.log
+```
+
+### Pipeline breakdown
+We will briefly go through the steps performed in the pipeline. 
+
+1. 
