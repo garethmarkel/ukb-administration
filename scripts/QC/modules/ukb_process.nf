@@ -7,7 +7,7 @@ process construct_sql{
     module 'cmake'
     time '12h'
     cpus '1'
-    memory '100G'
+    memory '20G'
     executor 'lsf'
     input:
         path(ukb_process)
@@ -31,7 +31,7 @@ process construct_sql{
         -d ${data_showcase} \
         -c ${code_showcase} \
         -p \${phenotype} \
-        --out ${out} \
+        --out ${out}.db \
         -g ${gp} \
         -u ${drug} \
         -D \

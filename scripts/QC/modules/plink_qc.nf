@@ -1,4 +1,43 @@
+process extract_sqc_test{
+    publishDir "phenotype", mode: 'copy', overwrite: true
+    input:
+        path(db)
+        val(out)
+    output:
+        path "${out}.invalid", emit: het
+        path "${out}.sex", emit: sex
+        path "${out}.covar", emit: covar
+        path "${out}-het.meta", emit: meta
+    script:
+    """
+    echo "
+    .mode csv
+    .header on
+    .output ${out}.sex
+    SELECT  s.sample_id AS FID,
+            s.sample_id AS IID
+    FROM    Participant s
+            WHERE withdrawn = 0
+            
+    FROM    Participant s
+            LEFT JOIN   f31 sex ON
+                        s.sample_id=sex.sample_id
+                        AND sex.instance = 0
+            LEFT JOIN   f21003 age ON
+                        s.sample_id=age.sample_id
+                        AND age.instance = 0
+            LEFT JOIN   f54 centre ON
+                        s.sample_id=centre.sample_id
+                        AND centre.instance = 0
+            LEFT JOIN   f${fieldID} trait ON
+                        s.sample_id=trait.sample_id
+                        AND trait.instance = 0;
+    .quit
+        " > sql;
+    sqlite3 ${db} < sql
+    """
 
+}
 process extract_sqc{
     publishDir "phenotype", mode: 'copy', overwrite: true
     module 'R'
@@ -135,7 +174,8 @@ process basic_qc{
 }
 
 process extract_eur{
-    publishDir "genotype", mode: 'copy', overwrite: true
+    publishDir "genotype", mode: 'copy', overwrite: true, pattern: '*EUR'
+    publishDir "plots", mode: 'copy', overwrite: true, pattern: '*png'
     module 'R'
     executor 'lsf'
     input:

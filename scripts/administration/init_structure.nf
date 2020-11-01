@@ -84,6 +84,14 @@ workflow download_genotypes{
         obtain_bim_files()
         // download the SNP QC files
         obtain_snp_qc()
+        // combine the per chromosome files into a single file
+        // need the key and ukbgene to get the fam file 
+        combine_genotype(
+            ukbgene,
+            key,
+            obtain_genotype_data.out.collect(),
+            obtain_bim_files.out.collect()
+            )
 }
 
 workflow download_imputed{
@@ -97,7 +105,6 @@ workflow download_imputed{
         // download the bgen files (both imputation and haplotypes)
         chr \
             | combine(type) \
-            | filter{it[1]=="imp"} \
             | filter{ !(it[0]=="XY" && it[1]=="hap")} \
             | filter{ !(it[0]=="X" && it[1]=="hap")} \
             | combine(ukbgene) \
@@ -144,10 +151,32 @@ process obtain_exome_plink{
     script:
     """
     ./${gfetch} 23155 -c${chr} -a${key}
-    mv ukb23155_c${chr}_b0_v1.bed UKBexomeOQFE_chr${chr}.bed
+    mv ukb23155_c${chr}_*.bed UKBexomeOQFE_chr${chr}.bed
     """
 }
 
+process combine_genotype{
+    publishDir ".genotype/genotyped/", mode: 'move'
+    module "plink"
+    input:
+        path(ukbgene)
+        path(key)
+        path("*")
+        path("*")
+    output:
+        tuple   path("ukb.bed"),
+                path("ukb.bim")
+    script:
+    """
+    ./${ukbgene} cal -m -c1 -a${key}
+    fam=`ls *.fam`
+    ls *bed | sed 's/.bed//g' | awk -v f=\$fam '{ print \$1".bed "\$1".bim "f}' > merge_list
+    plink \
+        --merge-list merge_list \
+        --make-bed \
+        --out ukb
+    """
+}
 
 process obtain_exome_bim{
     publishDir ".exome/PLINK", mode: 'move'
@@ -163,7 +192,6 @@ process obtain_exome_bim{
 }
 
 process obtain_bim_files{
-    publishDir ".genotype/genotyped", mode: 'move'
     output:
         path("*")
     script:
@@ -187,13 +215,12 @@ process obtain_snp_qc{
 }
 
 process obtain_genotype_data{
-    publishDir ".genotype/genotyped", mode: 'move'
     input:
         each chr
         path(ukbgene)
         path(key)
     output:
-        path "ukb_cal_chr${chr}_v2.bed"
+        path "ukb_cal_chr${chr}_v*.bed"
     script:
     """
     ./${ukbgene} cal -c${chr} -a${key}
