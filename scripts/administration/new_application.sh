@@ -109,7 +109,7 @@ dir=${root}/application/${prefix}
 ####################################################
 mkdir -p ${dir}/genotyped
 cd ${dir}/genotyped
-
+rm -rf * # Remove everything just in case
 ln -s ${key} .  2> /dev/null
 has_genotype="no"
 { # try to download fam file. Can only download if we have permission
@@ -148,8 +148,9 @@ link_files(){
 #                                                  #
 ####################################################
 has_imputed="no"
-mkdir -p ${dir}/imputed
+mkdir -p ${dir}/Imputed
 cd ${dir}/imputed
+rm -rf * # Remove everything just in case
 ln -s ${key} . 2> /dev/null
 {  # try to download sample file. Can only download if we have permission
     ${ukbgene} imp -c1 -m -a${keyName}  &&
@@ -169,8 +170,11 @@ fi
 #                                                  #
 ####################################################
 has_haplotype="no"
-mkdir -p ${dir}/imputed
-cd ${dir}/imputed
+if [ "${has_imputed}" == "no" ]; then
+    mkdir -p ${dir}/imputed
+    cd ${dir}/imputed
+    rm -rf * # Remove everything just in case
+fi
 ln -s ${key} . 2> /dev/null
 {  # try to download sample file. Can only download if we have permission
     ${ukbgene} hap -c1 -m -a${keyName}  &&
@@ -192,6 +196,7 @@ fi
 has_exome="no"
 mkdir -p ${dir}/exome/PLINK
 cd ${dir}/exome/PLINK
+rm -rf * # Remove everything just in case
 ln -s ${key} . 2> /dev/null
 {
     ${gfetch} 23155 -c1 -m -a${keyName} &&
