@@ -1,5 +1,9 @@
-# Generate SQL and "Pick up and go" data
-In this section, we will go through how to construct the phenotype SQL database and the "pick up and go" data where a standard set of quality controls (QC) were performed. 
+# Data Preparation
+In this section, we will go through how to construct the phenotype SQL database and perform basic quality controls on the genetic data.
+There are two possible approaches:
+
+1. Using our [all in one pipeline](#all-in-one-pipeline)
+2. Manual preparation
 
 
 ## All in one pipeline
@@ -137,28 +141,16 @@ ukb<ID>
   |-- ukb<ID>_init.log
 ```
 
-### Pipeline breakdown
-We will briefly go through the steps performed in the pipeline. 
+## Manual Preparation
+If one does not want to use our pipeline, they can always run all the quality controls and database generation manually. 
+Here, we provide a break down of steps taken in our pipeline.
 
-!!!note
-    You can customize some of the filtering threshold in the pipeline by providing different parameters. For more information, please read the help message from the pipeline `nextflow run prepare_ukb.nf --help`
+!!! Warning
+    This section is currently a placeholder. All scripts are simple extract from our pipeline and has not been 
+    tested. Use with care.
 
-#### Quality Control
-1. Filter SNPs with high missing call rates (default: 0.02)
-2. Perform 4 mean clustering on the first 2 principal components (PC) to extract samples with European ancestry
-3. Filter out samples with excessively high relatedness, missingness, heterozygosity rate as indicated by UK Biobank, and samples who withdrawn their consent.
-4. Filter SNPs with low MAF (default: 0.01), significant deviate from Hardy Weinberg Equailibrium (default: 1e-8) and with high missing call rates (default 0.02)
-5. Perform prunning. High LD regions are excluded. 
-6. Perform sex mismatch check. Samples with F-statistics 3 SD away from their gender's mean are removed by default.
-7. Use `GreedyRelated` to remove related samples. 
-
-#### Phenotype Database generation
-1. Automatically decrypt the encrypted data
-2. Convert the decrypted data to R format
-3. Generate SQL using `ukb_sql`
-
-## Manually Building the SQL 
-Here are the breakdown of how to generate the SQL database manually
+### Phenotype processing
+Here are the breakdown of how to generate process the encrypted phenotype data manually:
 
 1. Decrypt the encrypted data using `ukbunpack`
     ```
@@ -172,7 +164,7 @@ Here are the breakdown of how to generate the SQL database manually
     !!! note
         No space between the parameter and input
 
-3. Run `ukb_sql`
+3. If you wish to generate the SQL database, run `ukb_sql`
     ```
      ukb_sql \
         -d Data_Dictionary_Showcase.csv \
@@ -187,3 +179,225 @@ Here are the breakdown of how to generate the SQL database manually
 
     !!! note
         Clinical event records and Prescription records are optional
+
+### Quality Control of Genetic data
+1. First, define our parameters. You can change it according to your need. 
+``` bash 
+# Genotype file prefix
+bfile=ukb
+# Seed. 
+# Same seed on same data will generate same QC output
+# Thus allow one to replicate results
+seed=1234
+# Basic QC filtering
+geno=0.02
+hwe=1e-8
+maf=0.01
+# Prunning parameters
+windSize=200
+windStep=50
+r2=0.2
+maxSize=10000
+# Relatedness filtering
+greedy=<path to greedy relatedness executable>
+related=<relatedness file >
+kinship=0.044
+# Output prefix
+out=ukb<ID>
+```
+
+2. First, filter out all SNPs with high missing call rate. 
+    This is done so that we can ensure other filtering are only done after SNPs with excessively high missing call rate is removed
+    ```
+    plink   --bfile 
+            --geno ${geno} \
+            --write-snplist \
+            --out ${out}-geno${geno}
+    ```
+
+    !!! note 
+        Throughout this pipeline we try to avoid using `--make-bed` as the `bed` file is generally large. 
+        Instead, we will use `--write-snplist` and `--make-just-fam` to generate the filtered SNP list and
+        sample list respectively, so that we can reduce the amount of storage space required. 
+
+3. Extract IDs of samples who have excessive heterozygousity rate, sex mismatch or excessive relatedness based on UK Biobank. 
+    Also extract the Principal components. 
+
+    !!! note
+        If you have EGA account, then you can download the `sqc` file directly from EGA, which contains all of these information.
+        Otherwise, you will need to manually extract these information from the phenotype files. 
+
+4. Perform 4 mean clustering on the first 2 PC to extract samples with European ancestry
+
+    !!! note
+        Please replace any variable with <> with the appropriate name / number
+
+    ```R
+    library(data.table)
+    library(ggplot2)
+    library(ggsci)
+    cov <- fread("<covariate>")
+    # Set the seed for the kmean clustering
+    set.seed("<seed>") 
+    # Change the kmean variable if you want to use a different number of cluster
+    kmean <- 4
+    pc1k<-kmeans(cov[,PC1], kmean)
+    pc2k<-kmeans(cov[,PC2], kmean)
+    # Cluster name defined by cluster number on PC1 and PC2
+    cov[,clusters:=as.factor(paste(pc1k$cluster,pc2k$cluster,sep="."))]
+    
+    g <- ggplot(cov, aes(x=PC1,y=PC2, color=clusters))+
+            geom_point()+
+            theme_classic()+
+            scale_color_npg()
+    ggsave("<out>-pca.png", plot=g, height=7,width=7)
+    max.cluster <- names(which.max(table(cov[,clusters])))
+    # We assume the largest cluster is the EUR cluster
+    eur <- cov[clusters==max.cluster,c("FID", "IID")]
+    fwrite(cov[clusters==max.cluster,c("FID", "IID")], paste0("${out}-",kmean,"mean-EUR"), quote=F, na="NA", sep="\t")
+    ```
+
+5. Filter out samples with excessively high relatedness, missingness, heterozygosity rate as indicated by UK Biobank, and samples who withdrawn their consent.
+    
+    ```R
+    library(data.table)
+    library(magrittr)
+    fam <- fread("<fam file>") %>%
+        setnames(., c("V1", "V2"),c("FID", "IID")) %>%
+        .[,c("FID", "IID")]
+    invalid <- fread("<sampels who doesn't pass UKB filtering>")        
+    dropout <- fread("<drop out samples>", header=F)
+    fam <- fam[IID%in% dropout[,V1]]
+    rbind(invalid, fam) %>%
+        fwrite(., "<out>-remove", sep="\t")
+    ```
+
+6. Filter SNPs with low MAF, significant deviate from Hardy Weinberg Equailibrium and with high missing call rates 
+
+    ```
+    plink   --keep ${out}-4mean-EUR \
+            --bfile ${bfile} \
+            --geno ${geno} \
+            --maf ${maf} \
+            --hwe ${hwe} \
+            --write-snplist \
+            --make-just-fam \
+            --out ${out}-basic-qc \
+            --remove ${out}-remove
+    ```
+
+6. Perform prunning. High LD regions are excluded. (Thanks to [Joni](https://twitter.com/Joni_Coleman))
+    
+    ``` bash
+    echo "1     48000000     52000000   High_LD
+    2     86000000     100500000    High_LD
+    2     134500000     138000000   High_LD
+    2     183000000     190000000   High_LD
+    3     47500000     50000000 High_LD
+    3     83500000     87000000 High_LD
+    3     89000000     97500000 High_LD
+    5     44500000     50500000 High_LD
+    5     98000000     100500000    High_LD
+    5     129000000     132000000   High_LD
+    5     135500000     138500000   High_LD
+    6     25000000     35000000 High_LD
+    6     57000000     64000000 High_LD
+    6     140000000     142500000   High_LD
+    7     55000000     66000000 High_LD
+    8     7000000     13000000  High_LD
+    8     43000000     50000000 High_LD
+    8     112000000     115000000   High_LD
+    10     37000000     43000000    High_LD
+    11     46000000     57000000    High_LD
+    11     87500000     90500000    High_LD
+    12     33000000     40000000    High_LD
+    12     109500000     112000000  High_LD
+    20     32000000     34500000 High_LD" > high_ld_37
+     plink \
+        --bfile     ${bfile} \
+        --extract   ${out}-basic-qc.snplist \
+        --keep      ${out}-basic-qc.fam \
+        --make-set  high_ld_37 \
+        --write-set  \
+        --out ${out}
+    ```
+
+7. Perform Pruning
+    ```bash
+     plink \
+            --bed ${bed} \
+            --bim ${bim} \
+            --fam ${fam} \
+            --extract ${out}-basic-qc.snplist \
+            --keep ${out}-basic-qc.fam \
+            --indep-pairwise ${wind_size} ${wind_step} ${wind_r2} \
+            --out ${out}-qc \
+            --thin-indiv-count ${max_size} \
+            --seed ${seed} \
+            --exclude ${out}.set
+    ```
+
+    !!! note
+        `--thin-indiv-count` restrict maximum number of samples used for LD calculation, thus speeding up prunning
+
+7. Calculate Sex F-statistics. 
+    ```    bash
+    plink \
+        --bed ${bed} \
+        --bim ${bim} \
+        --fam ${fam} \
+        --extract ${out}-qc.prune.in \
+        --keep ${qc_fam} \
+        --check-sex \
+        --out ${out}
+    ```
+
+8. Remove samples with F-statistics 3 SD away from their gender's mean
+    ```R
+    library(data.table)
+    library(magrittr)
+    fam <- fread("<QCed fam file>")
+    # Read in sex information and remove samples that doesn't pass QC
+    sex <- fread("<Read in biological Sex>") %>%
+        merge(., fread("<Read in sex check>")) %>%
+        .[FID %in% fam[,V1] & FID > 0]
+    sd <- 3
+    sex.bound <- sex[,.(m=mean(F), s=sd(F)), by="Submitted.Gender"]
+    sex[,invalid := FALSE]
+    bound <- sex.bound[Submitted.Gender=="M"]
+    sex[   Submitted.Gender=="M" &
+        ( F < bound[,m] -bound[,s]*sd ), invalid:=TRUE]
+    bound <- sex.bound[Submitted.Gender=="F"]
+    sex[   Submitted.Gender=="F" &
+        (F > bound[,m] + bound[,s]*sd), invalid:=TRUE]
+    invalid <- sex[invalid==TRUE]
+    fwrite(invalid, "${out}.sex-mismatch", sep="\t")
+    fwrite(sex[invalid==FALSE], "${out}.sex-valid", sep="\t")
+    ```
+8. Use `GreedyRelated` to remove related samples. 
+
+    ```bash
+    ./${greedy} \
+        -r ${related} \
+        -i ID1 \
+        -I ID2 \
+        -f Kinship \
+        -k ${out}.sex-valid  \
+        -o ${out}-invalid.samples \
+        -t ${kinship} \
+        -s ${seed}
+    ```
+
+9. Generate finalized `fam` and `snplist` file
+    
+    ``` bash
+     plink \
+        --bed ${bfile} \
+        --extract ${out}-basic-qc.snplist \
+        --keep ${out}.sex-valid \
+        --remove ${out}-invalid.samp,les \
+        --make-just-fam \
+        --write-snplist \
+        --out ${out}-qc
+    ```
+    This will generate the `${out}-qc.fam` and `${out}-qc.snplist` files which can be used for downstream analyses

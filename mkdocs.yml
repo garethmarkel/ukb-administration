@@ -17,7 +17,6 @@ nav:
         - pheno/data_manipulation.md
         - pheno/understand_sql.md
         - pheno/tradition.md
-        - admin/basic_qc.md
 theme: 
     name: readthedocs
     highlightjs: false
