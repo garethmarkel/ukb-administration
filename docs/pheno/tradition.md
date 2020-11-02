@@ -8,11 +8,11 @@ In this section, we provide a step by step example of extracting a phenotype fro
 ## Step by step guide
 1. Go into `phenotype/raw/`
 2. Search for the phenotype of interest in the field_finder files using `grep`
-    ```
+    ```bash
     grep [Hh]eight *.field_finder
     ```
     You might see the following:
-    ```
+    ```bash
     ukb12345.field_finder:32	f.50.0.0	Standing.height
     ukb12345.field_finder:33	f.50.1.0	Standing.height
     ukb12345.field_finder:34	f.50.2.0	Standing.height
@@ -32,8 +32,8 @@ In this section, we provide a step by step example of extracting a phenotype fro
     !!! note 
         You will not see the `ukbxxxxx.field_finder` prefix if there is only one set of phenotype in your folder
 3. Extract the phenotype from the text file, assuming the first column contains the sample ID
-    ```
-    awk '{print $1,$32}` ukb12345.tab > height.txt
+    ```bash
+    awk '{print $1,$32}' ukb12345.tab > height.txt
     ```
 
     !!! Warning

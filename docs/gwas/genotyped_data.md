@@ -9,32 +9,34 @@ When using the UK Biobank data, the genotyping batch (Field ID: [22000](https://
 You can run a GWAS on the genotyped UK Biobank data using PLINK 1.9 as follow
 
 === "Binary Trait"
-```bash hl_lines="4"
-plink   --bfile <genotype file prefix> \
-        --keep <post-QC sample list> \
-        --extract <post-QC SNP list> \
-        --logistic hide-covar \
-        --pheno <Phenotype file> \
-        --pheno-name <name of phenotype> \
-        --covar <covariate file> \
-        --covar-name  <name of covariates> \
-        --out <output name>
-```
+
+    ```bash hl_lines="4"
+    plink   --bfile <genotype file prefix> \
+            --keep <post-QC sample list> \
+            --extract <post-QC SNP list> \
+            --logistic hide-covar \
+            --pheno <Phenotype file> \
+            --pheno-name <name of phenotype> \
+            --covar <covariate file> \
+            --covar-name  <name of covariates> \
+            --out <output name>
+    ```
+
 === "Continuous Trait"
 
-```bash hl_lines="4" 
-plink   --bfile <genotype file prefix> \
-        --keep <post-QC sample list> \
-        --extract <post-QC SNP list> \
-        --linear hide-covar \
-        --pheno <Phenotype file> \
-        --pheno-name <name of phenotype> \
-        --covar <covariate file> \
-        --covar-name  <name of covariates> \
-        --out <output name>
-```
+    ```bash hl_lines="4" 
+    plink   --bfile <genotype file prefix> \
+            --keep <post-QC sample list> \
+            --extract <post-QC SNP list> \
+            --linear hide-covar \
+            --pheno <Phenotype file> \
+            --pheno-name <name of phenotype> \
+            --covar <covariate file> \
+            --covar-name  <name of covariates> \
+            --out <output name>
+    ```
 
 
-!!! Note:
+!!! Note
     You can igore `--covar-name` if your covariate file only contain covariates you want to included in the analysis.
     Similarly, if your phenotype file only contain the phenotype of interest, you can ignore `--pheno-name`

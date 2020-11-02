@@ -194,7 +194,7 @@ We recommend one to write down the SQL commands in a `.sql` file and use the SQL
 sqlite3 ukb<ID>.db < command.sql
 ```
 where `command.sql` is the sql command file containing the following header
-``` sqlite
+``` sql
 .header on
 .mode csv
 .output <name>.csv

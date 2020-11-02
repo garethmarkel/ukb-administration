@@ -37,7 +37,7 @@ You need to ensure that you have `nextflow` installed. You will also need the fo
 ### Run the pipeline
 Assuming you have constructed the UK Biobank folder as instructed. 
 You can run the pipeline **in your application folder** as follow
-```
+```bash
 id=<application ID>
 root=<path to ukb root>
 application=${root}/application/ukb${id}
@@ -153,11 +153,11 @@ Here, we provide a break down of steps taken in our pipeline.
 Here are the breakdown of how to generate process the encrypted phenotype data manually:
 
 1. Decrypt the encrypted data using `ukbunpack`
-    ```
+    ```bash
     ukbunpack <encrypted file> <key>
     ```
 2. Convert the decrypted data to R format using `ukbconv` and `encode.ukb`
-    ```
+    ```bash
     ukbconv <decrypted file> r -eencode.ukb
     ```
 
@@ -165,7 +165,7 @@ Here are the breakdown of how to generate process the encrypted phenotype data m
         No space between the parameter and input
 
 3. If you wish to generate the SQL database, run `ukb_sql`
-    ```
+    ```bash
      ukb_sql \
         -d Data_Dictionary_Showcase.csv \
         -c Codings.csv \
@@ -208,7 +208,7 @@ out=ukb<ID>
 
 2. First, filter out all SNPs with high missing call rate. 
     This is done so that we can ensure other filtering are only done after SNPs with excessively high missing call rate is removed
-    ```
+    ```bash
     plink   --bfile 
             --geno ${geno} \
             --write-snplist \
@@ -274,7 +274,7 @@ out=ukb<ID>
 
 6. Filter SNPs with low MAF, significant deviate from Hardy Weinberg Equailibrium and with high missing call rates 
 
-    ```
+    ```bash
     plink   --keep ${out}-4mean-EUR \
             --bfile ${bfile} \
             --geno ${geno} \
@@ -341,7 +341,7 @@ out=ukb<ID>
         `--thin-indiv-count` restrict maximum number of samples used for LD calculation, thus speeding up prunning
 
 7. Calculate Sex F-statistics. 
-    ```    bash
+    ```bash
     plink \
         --bed ${bed} \
         --bim ${bim} \

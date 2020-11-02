@@ -7,12 +7,12 @@ UK Biobank supplies the relatedness file *ukbA_rel_sP.txt* with header: ID1, ID2
 
 The *ukbA_rel_sP.txt* file lists the pairs of individuals related up to the third degree in the data set. It is a plaintext file with space separated columns as follows:
 
-| Column name    | Data type       | Info                                                                                                                                                                                                                    |
-|----------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|     ID1        |     String      |     sample_id for individual 1 in related pair.                                                                                                                                                                         |
-|     ID2        |     String      |     sample_id for individual 2 in related pair                                                                                                                                                                          |
-|     HetHet     |     Numeric     |     Fraction of markers for which the pair both have a heterozygous genotype (output from KING software).                                                                                                               |
-|     IBS0       |     Numeric     |     Fraction of markers for which the pair shares zero alleles (output from KING software).                                                                                                                             |
+| Column name    | Data type       | Info|
+|---|------|
+|     ID1|     String      |     sample_id for individual 1 in related pair.|
+|     ID2        |     String      |     sample_id for individual 2 in related pair|
+|     HetHet     |     Numeric     |     Fraction of markers for which the pair both have a heterozygous genotype (output from KING software).|
+|     IBS0       |     Numeric     |     Fraction of markers for which the pair shares zero alleles (output from KING software).|
 |     Kinship    |     Numeric     |     Estimate of the kinship coefficient for this pair based on the set of markers used in the kinship inference (output from KING software). The set of markers is indicated by the field: used.in.kinship.inference    |
 
 <br>
