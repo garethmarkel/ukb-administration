@@ -1,5 +1,6 @@
 image: python:latest
-deploy:
+
+pages:
   stage: deploy
   only:
     - master
@@ -11,3 +12,4 @@ deploy:
   artifacts:
     paths:
       - public
+  
