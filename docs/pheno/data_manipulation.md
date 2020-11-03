@@ -71,9 +71,9 @@ It is also important to note that the hospital inpatient data is available to re
 Record level inpatient data is divided into seven interrelated database tables. The core table is "hesin", which connects to the subsidiary tables via a "record_id" field.
 
 <center>
-<img src="..//img/HES_tables.png" alt="HES_tables" width="600" />
-<figcaption> Record-level data in seven interrelated data tables. Figure obtained from UK Biobank website</figcaption>
+![HES_tables](../img/HES_tables.png)
 </center>
+<figcaption> Record-level data in seven interrelated data tables. Figure obtained from UK Biobank website</figcaption>
 
 Below there is an example of how a *hesin* table looks like. For a hesin table, the same individual (eid) can appear more than once, but each inpatient episode (record_id) for a participant is stored as a single record, i.e. a row of data. **This differs from the format of the UK Biobank main dataset, which provides a single row of data per participant**.
 
