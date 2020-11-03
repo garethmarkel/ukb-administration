@@ -31,6 +31,7 @@ In this section, we provide a step by step example of extracting a phenotype fro
 
     !!! note 
         You will not see the `ukbxxxxx.field_finder` prefix if there is only one set of phenotype in your folder
+        
 3. Extract the phenotype from the text file, assuming the first column contains the sample ID
     ```bash
     awk '{print $1,$32}' ukb12345.tab > height.txt
