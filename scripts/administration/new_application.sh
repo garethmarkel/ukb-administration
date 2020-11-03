@@ -119,7 +119,7 @@ has_genotype="no"
 rm ${keyName}
 if [ "${has_genotype}" == "yes" ]; then
     ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bed
-    ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bim
+    ln -s ${root}/.genotype/genotyped/ukb.bim ukb${id}.bim
     mv *.fam ukb${id}.fam
     ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt . 2> /dev/null
 else
