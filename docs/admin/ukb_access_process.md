@@ -17,5 +17,5 @@ We encourage you to read the [UK Biobank Access Management System User Guide](ht
 The following figure shows the stages in the application and review process (with  the indicative timelines in parentheses). For further details and the roles of the different parties in the application and review process, visit [the official UK Biobank documentation.](https://www.ukbiobank.ac.uk/wp-content/uploads/2012/09/Access-Procedures-2011-1.pdf)
 
 <center>
-<img src="/img/ukb_process.png" alt="ukb_process" width="700"/>
+<img src="..//img/ukb_process.png" alt="ukb_process" width="700"/>
 </center>

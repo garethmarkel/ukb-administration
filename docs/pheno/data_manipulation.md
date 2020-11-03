@@ -71,7 +71,7 @@ It is also important to note that the hospital inpatient data is available to re
 Record level inpatient data is divided into seven interrelated database tables. The core table is "hesin", which connects to the subsidiary tables via a "record_id" field.
 
 <center>
-<img src="/img/HES_tables.png" alt="HES_tables" width="600" />
+<img src="..//img/HES_tables.png" alt="HES_tables" width="600" />
 <figcaption> Record-level data in seven interrelated data tables. Figure obtained from UK Biobank website</figcaption>
 </center>
 
