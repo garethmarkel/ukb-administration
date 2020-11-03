@@ -212,7 +212,8 @@ out=ukb<ID>
     plink   --bfile 
             --geno ${geno} \
             --write-snplist \
-            --out ${out}-geno${geno}
+            --out ${out} \
+            -geno${geno}
     ```
 
     !!! note 
