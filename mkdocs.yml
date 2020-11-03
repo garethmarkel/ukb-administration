@@ -14,8 +14,11 @@ nav:
         -  admin/init_application.md
         -  admin/master_generation.md
     - Using UK Biobank: 
-        - admin/data_manipulation.md
-        - admin/basic_qc.md
+        - pheno/data_manipulation.md
+        - pheno/understand_sql.md
+        - pheno/tradition.md
+        - gwas/genotyped_data.md
+        - gwas/imputed_data.md
 theme: 
     name: readthedocs
     highlightjs: false
@@ -36,6 +39,7 @@ markdown_extensions:
 
 extra_css:
   - css/extra.css
+  - css/details.css 
 
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'

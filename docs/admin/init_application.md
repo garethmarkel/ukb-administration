@@ -85,7 +85,7 @@ The primary care records are stored in the data portal. To download these data, 
 2. Navigate to the projects tab and click the view button next to the relevant application ID.  ![view application](../img/view_application.png)
 3. Select data tab at the top right, and then click “Go to Showcase to refresh or download data”. ![view data](../img/view_data.png)
 4. Select data portal from the top right, then click Connect. ![data portal](../img/data_portal.png)
-5. Select table download. ![table download](../img/data_download.png)
+5. Select table download. ![table download](../img/table_download.png)
 6. Type in the table you want to download and click "Fetch Table". ![fetch table](../img/fetch_table.png)
 
     !!! note
