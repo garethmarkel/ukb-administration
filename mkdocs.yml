@@ -9,16 +9,16 @@ nav:
         - admin/ukb_access_process.md
         - admin/new_researcher.md
         - admin/new_application.md
-    - Getting Started:
-        -  admin/init_structure.md
-        -  admin/init_application.md
-        -  admin/master_generation.md
     - Using UK Biobank: 
         - pheno/data_manipulation.md
         - pheno/understand_sql.md
         - pheno/tradition.md
         - gwas/genotyped_data.md
         - gwas/imputed_data.md
+    - For Administrators:
+        -  admin/init_structure.md
+        -  admin/init_application.md
+        -  admin/master_generation.md
 theme: 
     name: readthedocs
     highlightjs: false
