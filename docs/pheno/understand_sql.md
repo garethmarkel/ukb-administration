@@ -1,4 +1,4 @@
-# Using the SQL database
+# Phenotype extraction - SQL
 
 There are many advantages of using the SQL database instead of the [plain text phenotype files](tradition.md). 
 The most important advantage is that with SQL database, phenotypes can be extracted using scripts that refer to the unique phenotype field IDs, which allow for better reproducibility. 

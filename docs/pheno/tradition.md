@@ -1,4 +1,4 @@
-# Using the plain text phenotypes
+# Phenotype extraction - Plain text
 Comparing to the SQL database, exctracting phenotypes from the text files are simpler, require only basic knowledge of `grep` and `awk`. 
 In this section, we provide a step by step example of extracting a phenotype from the text file.
 
