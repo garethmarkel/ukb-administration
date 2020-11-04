@@ -15,7 +15,7 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 - To allow detailed investigations of genetic and non-genetic determinants of disease of middle and old age. UK Biobank provides extensive and precise assessments of exposures with comprehensive follow up and characterization of many different health-related outcomes.
 
 
-- To promote innovative science by maximizing access to the resource. UK Biobank is open to bona fide researchers an    ywhere in the world, including those funded by academia and industry.
+- To promote innovative science by maximizing access to the resource. UK Biobank is open to bona fide researchers anywhere in the world, including those funded by academia and industry.
 
 !!! note 
 	The participants age range in the UK Biobank cohort was based on compromise to get people without a disease, and to get significant health outcomes during early years of follow up. This prospective approach enables the measurement of risk factors before the disease develops, and therefore 1) avoids reverse causality and recall bias, 2) improves measurement detail, 3) reduces measurement error. 
@@ -35,7 +35,7 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 
 ## Current and planned data for UK Biobank
 
-We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=timelines_all) for the most updated information and timelines about data availability. 
+We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=timelines_all) for the most updated information and timelines about data availability. 
 
 ### UK BIOBANK ASSESSMENT CENTRE
  <table class="others">
@@ -74,6 +74,7 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
 	<td>Q3 2013</td>
   </tr>
   </table>
+  <br/>
 
 ### ONLINE FOLLOW-UP
  <table class="others">
@@ -142,6 +143,7 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
 	<td>Q3 2017</td>
   </tr>
   </table>
+   <br/>
 
 ### IMAGING
 <table class="others">
@@ -154,12 +156,13 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
   </tr>
   <tr>
     <td>Multimodal imaging</td>
-    <td>Goal: 100,000. ~40k available as of early 2020</td>
-    <td>  MRI - Brain, heart, abdomen, bone densitometry (DXA)</td>
+    <td>Goal: Imaging available for 100,000 participants. ~40k ready as of early 2020</td>
+    <td>  MRI imaging for brain, heart, abdomen and bone densitometry (DXA)</td>
 	<td>2014-</td>
 	<td>2015</td>
   </tr>
   </table>
+   <br/>
 
 ### HEALTH RECORD LINKAGE
 
@@ -206,7 +209,8 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
 	<td>variable</td>
 	<td>Q3-4 2017</td>
   </tr>
-</table>
+  </table>
+  <br/>
 
 ### GENETIC DATA
 
@@ -230,7 +234,7 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
   </tr>
   <tr>
     <td>Exome sequencing</td>
-    <td>50,000 – Whole cohort planned Q4 2020</td>
+    <td>50,000 exomes available – Whole cohort planned Q4 2020</td>
     <td>
 		VCF and CRAM files for 49,960 exomes available. 
 		<a href="https://www.ukbiobank.ac.uk/wp-content/uploads/2020/06/UK-Biobank-50k-Exome-Release-FAQ-June-2020.pdf">Link to Exome-seq FAQs</a> Joint-call exome data in pVCF format, sample-level variant (VCFs) and sequence data (CRAMs) for the first 200k exomes planned for November 2020
@@ -247,7 +251,8 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
 	<td>TBA</td>
 	<td>TBA</td>
   </tr>
-</table>
+  </table>
+  <br/>
 
 ### BIOCHEMICAL DATA
 
@@ -269,5 +274,5 @@ We encourage to visit [this website](https://biobank.ctsu.ox.ac.uk/crystal/exinf
 	<td>2006-2010 and 2013</td>
 	<td>Q1 2019</td>
   </tr>
-</table>
-
+  </table>
+  <br/>
