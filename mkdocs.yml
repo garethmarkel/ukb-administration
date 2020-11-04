@@ -11,8 +11,9 @@ nav:
         - admin/new_application.md
     - Using UK Biobank: 
         - pheno/data_manipulation.md
-        - pheno/understand_sql.md
         - pheno/tradition.md
+        - pheno/understand_sql.md
+    - Genetic analyses:
         - gwas/genotyped_data.md
         - gwas/imputed_data.md
     - For Administrators:
