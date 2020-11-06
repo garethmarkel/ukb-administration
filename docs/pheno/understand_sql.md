@@ -1,12 +1,10 @@
-# Using the SQL database
+# Phenotype extraction - SQL
 
 There are many advantages of using the SQL database instead of the [plain text phenotype files](tradition.md). 
-The most important advantage is that with SQL database, phenotypes can be extracted using scripts that refer to the unique phenotype field IDs, which allow for better reproducibility. 
-In addition, data inside the SQL database is indexed, which allow quicker access to the data. 
+The most important advantage is that with the SQL database phenotypes can be extracted using scripts that refer to the unique phenotype field IDs, improving reproducibility. 
+In addition, data inside the SQL database is indexed, which allows quicker access to the data. 
 
-However, the main disadvantage of using the SQL database is that it does require some knowledge of the SQL language, which can be difficult for new comer. 
-Here we will try to present information on the basic structure of the database, and also provide some example SQL scripts for new comers. 
-Hopefully, this should help to familiar yourself with how to use the SQL database. 
+The main disadvantage of using the SQL database is that it requires some knowledge of SQL language, which can be difficult for new comers. To overcome this issue, this document gives and overview of the basic structure of the SQL database and provides example SQL scripts to get well-acquainted with the SQL database. 
 
 !!! note
 
@@ -14,10 +12,18 @@ Hopefully, this should help to familiar yourself with how to use the SQL databas
 
 
 ## Database Structure 
-To use the SQL database we must first understand the basic structure of the database. 
-The SQL database contains one table for each phenoytpe, with name of `fxxxx` where `xxxx` is the field ID of the phenotype. 
-In addition, there are some core data table that provide basic information regarding the UK Biobank phenotypes and the current application.
-Below are the detail descriptions of different data tables presented within our SQL database:
+To use the SQL database we must first understand the basic structure of a [relational database](https://en.wikipedia.org/wiki/Relational_database), where each table is a file on its own. The relationships between tables/files are established through 'keys'. Depending on their role, keys are defined as [primary](https://en.wikipedia.org/wiki/Primary_key) or [foreign](https://en.wikipedia.org/wiki/Foreign_key). In brief, *primary keys* are a set of attributes in a table (e.g. one or more columns) that uniquely identifies rows in a given table, whereas *foreign keys* are a set of attributes that refers to the primary key of another table. The foreign key links the two tables.
+
+In our UK Biobank SQL database, each phenotype is contained in one table with name `fxxxx` (where `xxxx` is the field ID of the phenotype). The `fxxxx` tables are all linked to a 'participant' table through the sample_id field, which contains information about participant withdrawal (Figure below, panel A). 
+
+A large proportion of the data data-fields within the UK Biobank repository are categorical. A data-coding is a mapping between the actual data and the values used to represent it within the database -for example the value "44" may be stored to represent "Born in Great Britain", with "33" representing "Born in France". Please visit [the UK Biobank documentation](https://biobank.ndph.ox.ac.uk/ukb/help.cgi?cd=data_coding) for more information about data coding. 
+To include the data-coding matching in the SQL scripts for phenotype extraction, other data tables need to be considered in the SQL script. The structure of these tables are represented in the Figure below, panel B.
+
+![alt tex](./../img/sql.png)
+
+<br>
+
+Detailed descriptions of the different data tables within our SQL database can be found in the following table:
 
 <table>
 <th colspan="4">
@@ -186,6 +192,7 @@ data_meta
     <td></td>
 </tr>
 </table>
+<br>
 
 ## Using the SQL database
 Basic understand of the SQL language is required to efficiently use our SQL database. 
@@ -200,34 +207,48 @@ where `command.sql` is the sql command file containing the following header
 .output <name>.csv
 ```
 
-Below are some examples of how to use the SQL database
+Below we provide users with three examples of how to use the SQL database:
+
+1. **Basic Usage:** Example script to extract phenotype height, together with covariates Age, Sex, BMI and Centre.
+2. **Use data-coding:** Example script to extract phenotypes from categorical data-fields that contain data-coding information. 
+3. **ICD10 example:** Example script to extract phenotypes from ICD-10 codes.
+
+Useful basic SQL commands used in the following scripts:
+
+- Command FROM and JOIN --> indicate the tables that we are going to use
+
+- Command SELECT --> indicates the columns that we select
+
+- Command WHERE --> indicates the rows that we select 
+
 
 === "Basic usage"
     ``` sql
     .header on
     .mode csv
-    -- Output to file named Height.csv
-    .output Height.csv 
-    SELECT  s.sample_id AS FID, 
-            s.sample_id AS IID,
-            age.pheno AS Age,
-            sex.pheno AS Sex,
-            bmi.pheno AS BMI,
-            centre.pheno AS Centre
-    FROM    Participant s 
+    .output Height.csv 	-- Output to file named Height.csv
+
+    SELECT  s.sample_id AS FID, 	-- select sample_id from table 's' and call it FID 
+            s.sample_id AS IID, 	-- select sample_id from table 's' and call it IID
+            age.pheno AS Age, 		-- select pheno from table 'age' and call it Age
+            sex.pheno AS Sex, 		-- select pheno from table 'sex' and call it Sex
+            bmi.pheno AS BMI, 		-- select pheno from table 'bmi' and call it BMI
+            centre.pheno AS Centre 	-- select pheno from table 'centre' and call it Centre
+
+    FROM    Participant s 		 	-- using table 'participant', now named as 's'
             JOIN    f21001 bmi ON 
-                    s.sample_id=bmi.sample_id       -- join the BMI table by sample ID
-                    AND bmi.instance = 0            -- only getting the baseline phenotype
+                    s.sample_id=bmi.sample_id   -- join the BMI table by sample ID
+                    AND bmi.instance = 0        -- only getting the baseline phenotype
             JOIN    f31 sex ON
-                    s.sample_id=sex.sample_id       -- join the Sex table by sample ID
-                    AND sex.instance = 0            -- only getting the baseline phenotype
+                    s.sample_id=sex.sample_id   -- join the Sex table by sample ID
+                    AND sex.instance = 0        -- only getting the baseline phenotype
             JOIN    f21003 age ON 
-                    s.sample_id=age.sample_id       -- join the Age table by sample ID
-                    AND age.instance = 0            -- only getting the baseline phenotype
+                    s.sample_id=age.sample_id   -- join the Age table by sample ID
+                    AND age.instance = 0        -- only getting the baseline phenotype
             JOIN    f54 centre ON 
-                    s.sample_id=centre.sample_id    -- join the UKB assessment centre table by sample ID
-                    AND centre.instance = 0         -- only getting the baseline phenotype
-            WHERE   s.withdrawn = 0;                -- Exclude any samples who withdrawn their consent
+                    s.sample_id=centre.sample_id -- join the UKB assessment centre table by sample ID
+                    AND centre.instance = 0      -- only getting the baseline phenotype
+            WHERE   s.withdrawn = 0;             -- Exclude any samples who withdrawn their consent
     .quit
 
     ```
@@ -236,26 +257,41 @@ Below are some examples of how to use the SQL database
     ``` sql
     .header on
     .mode csv    
-    -- Output to file named NumDepress.csv 
-    .output NumDepress.csv 
+    .output NumDepress.csv 		-- Output to file named NumDepress.csv 
 
-    -- First, we build the phenotype code table
+
+    -- The following code creates a temporary table named `pheno_code` containing
+    -- code_meta.value and code_meta.meaning for all the entries with 
+    -- data_meta.field_id=20442:
+
     CREATE TEMP TABLE pheno_code
     AS
-    SELECT  cm.value AS value,
-            cm.meaning AS meaning
-    FROM    code_meta cm
-    JOIN    data_meta dm on          
-            dm.field_id=20442 AND   -- Extract the Field correspond to phenotype from data meta
-            dm.coding = cm.code_id; -- Extract the data coding (value and meaning) for this phenotype
+    SELECT	cm.value AS value,	-- select value from table 'cm' and call it value
+            	cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
+    FROM    	code_meta cm		-- using table 'code_meta', now named as cm
+    JOIN    	data_meta dm on dm.coding=cm.code_id
+    WHERE       dm.field_id=20442;      
 
 
-    SELECT  s.sample_id AS FID,
-            s.sample_id AS IID,
-            (CASE WHEN depress.pheno IN           -- If phenotype is found in data coding
+    -- The following code creates a dataset that joins
+    -- table participant (called s), and table f20442 where withdrawn=0 & instance=0
+    -- for each row in the new dataset:
+    --		FID=s.sample_id
+    --		IID=s.sample_id
+    --		if f20442.pheno in pheno_code.value:
+    --			Pheno = pheno_code.meaning where pheno_code.value=f20442.pheno
+    --			# Get meaning of those rows whose value = content of column pheno in table f20442
+    --		else:
+    --			Pheno = f20442.pheno
+
+    SELECT  s.sample_id AS FID,		
+            s.sample_id AS IID,	
+
+            (CASE WHEN depress.pheno IN 
                 (
                     SELECT value 
                     FROM pheno_code
+                    WHERE value=depress.pheno -- Adding this row filters only pheno of interest speeding up script (you dont parse whole dataset in next subquery) 
                 )
             THEN  
             (
@@ -265,11 +301,11 @@ Below are some examples of how to use the SQL database
             )
             ELSE depress.pheno                      -- Otherwise, return the phenotype code directly
             END) AS Pheno
-    FROM    Participant s
-            JOIN f20442 depress ON 
-            s.sample_id=depress.sample_id
-            AND depress.instance = 0                -- only select the baseline measurement
-    WHERE   s.withdrawn = 0;
+
+    FROM 	Participant s
+    JOIN 	f20442 depress ON s.sample_id=depress.sample_id
+    WHERE	s.withdrawn=0 AND depress.instance=0;
+    
     .quit
     ```
 

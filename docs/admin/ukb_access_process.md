@@ -4,11 +4,11 @@ There are 5 stages that must take place before you can access the UK Biobank Res
 
 1. **Registration:** To confirm the identity of each researcher intending to use the Resource, to check their bona fides before registering them as a potential user.
 
-2. **Application:** To allow UK Biobank to assess: (i) whether the proposed research is likely to be approved; (ii) whether the proposed research meets the required criteria for access (including legal and ethics standards); (iii) whether the Resource contains the data and/or samples required for theproposed research; (iv) whether the amount of depletable sample required is scientifically justified; (vi) the cost of providing such data and/or samples.
+2. **Application:** To allow UK Biobank to assess: (i) whether the proposed research is likely to be approved; (ii) whether the proposed research meets the required criteria for access (including legal and ethics standards); (iii) whether the resource contains the data and/or samples required for the proposed research; (iv) whether the amount of depletable sample required is scientifically justified; (vi) the cost of providing such data and/or samples.
 
-3. **Access Sub-Committee (ASC) review:** The ASC is a sub-committee of the UK Biobank Board, and is responsible for making key access decisions, notably those regarding the use of depletable samples, recontactor potentially contentious research. The ASC meets on a quarterly basis.
+3. **Access Sub-Committee (ASC) review:** The ASC is a sub-committee of the UK Biobank Board, and is responsible for making key access decisions, notably those regarding the use of depletable samples, or potentially contentious research.
 
-4. **Material Transfer Agreement (MTA):** For approved applications, the MTA needs to be executed and access charges paid beforere lease of data and/or samples to the Applicant Principal Investigator (PI).
+4. **Material Transfer Agreement (MTA):** For approved applications, a MTA between UK Biobank and the institution the researcher is affiliated needs to be executed. Access charges need also to be paid beforere lease of data and/or samples to the Applicant Principal Investigator (PI).
 
 5. **Sample / Data Release:** Materials will only be released after payment and execution of the MTA. Data is typically released on a weekly basis, whereas samples are released to an agreed timetable.
 
@@ -18,4 +18,6 @@ The following figure shows the stages in the application and review process (wit
 
 <center>
 ![ukb_process](../img/ukb_process.png)
+Source: [UK Biobank documentation](https://www.ukbiobank.ac.uk/wp-content/uploads/2011/11/Access_Procedures_Nov_2011.pdf)
 </center>
+</br>

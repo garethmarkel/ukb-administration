@@ -1,17 +1,23 @@
-# Using the plain text phenotypes
-Comparing to the SQL database, exctracting phenotypes from the text files are simpler, require only basic knowledge of `grep` and `awk`. 
-In this section, we provide a step by step example of extracting a phenotype from the text file.
+# Phenotype extraction - Plain text
+Compared to using the SQL database, extracting phenotypes from .tab files requires only basic knowledge of `grep` and `awk`. 
+In this section, we provide a step by step tutoria of how to extract a phenotype from the .tab file.
 
 !!! important
     We assume the UK biobank application folder follows [our proposed structure](../../admin/master_generation/#expected-result).
 
 ## Step by step guide
-1. Go into `phenotype/raw/`
-2. Search for the phenotype of interest in the field_finder files using `grep`
+1. Go into `phenotype/raw/`. Inside that folder, you will see two types of files: ukbXXXXX.tab and ukbXXXXX.field_finder.
+
+	- **ukbXXXXX.field_finder** contains the field information (f.XXXXX.X.X) and the description of the field (i.e. Standing.height).
+	- **ukbXXXXX.tab** contains the phenotype information for each individual (each individual is one row), and the field codes are the variable names.
+
+2. Search for the phenotype of interest in the field_finder files using `grep`. For example, if your phenotype of interest is height, you should grep the word [Hh]eight across all the ".field_finder" files in the raw folder:
+
     ```bash
     grep [Hh]eight *.field_finder
     ```
-    You might see the following:
+    For the example of height, you might see the following. 
+ 
     ```bash
     ukb12345.field_finder:32	f.50.0.0	Standing.height
     ukb12345.field_finder:33	f.50.1.0	Standing.height
@@ -22,12 +28,10 @@ In this section, we provide a step by step example of extracting a phenotype fro
     ukb23456.field_finder:38	f.51.2.0	Seated.height
     ukb23456.field_finder:39	f.51.3.0	Seated.height
     ```
-    The format of the field finder file is as follow
     
-    | Column Index | FieldID.Instance.Array | Phenotype name|
-    |---|---|---|
+    The output indicates that in the tab file **ukb12345.tab**, columns 32 to 35 contain information about the field f.50.X.X. which represents 'Stainding.height'. 
 
-    To select the baseline measurement of the standing height, we will want to extract the `32` column from `ukb12345.tab`
+    To extract the first instance  measurement of standing height *(f.50.0.0)*, we will want to extract the column `32` from `ukb12345.tab`
 
     !!! note 
         You will not see the `ukbxxxxx.field_finder` prefix if there is only one set of phenotype in your folder
