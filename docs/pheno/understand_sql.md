@@ -75,16 +75,7 @@ code
     <td>code_id</td>
     <td>Data-coding ID</td>
     <td>int</td>
-    <td>primary key</td>
-</tr>
-<th colspan="4">
-code_meta
-</th>
-<tr>
-    <td>code_id</td>
-    <td>Data-coding ID</td>
-    <td>int</td>
-    <td>foreign key (code:code_id)</td>
+    <td></td>
 </tr>
 <tr>
     <td>value</td>
@@ -180,7 +171,7 @@ data_meta
     <td></td>
 </tr>
 <tr>
-    <td>coding</td>
+    <td>code_id</td>
     <td>Data-coding used for this phenotype</td>
     <td>int</td>
     <td>foreign (code:code_id)</td>
@@ -261,16 +252,16 @@ Useful basic SQL commands used in the following scripts:
 
 
     -- The following code creates a temporary table named `pheno_code` containing
-    -- code_meta.value and code_meta.meaning for all the entries with 
+    -- code.value and code.meaning for all the entries with 
     -- data_meta.field_id=20442:
 
     CREATE TEMP TABLE pheno_code
     AS
-    SELECT	cm.value AS value,	-- select value from table 'cm' and call it value
-            	cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
-    FROM    	code_meta cm		-- using table 'code_meta', now named as cm
-    JOIN    	data_meta dm on dm.coding=cm.code_id
-    WHERE       dm.field_id=20442;      
+    SELECT	cm.value AS value,	    -- select value from table 'cm' and call it value
+            cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
+    FROM    code cm		            -- using table 'code', now named as cm
+    JOIN    data_meta dm on dm.coding=cm.code_id
+    WHERE   dm.field_id=20442;      
 
 
     -- The following code creates a dataset that joins
