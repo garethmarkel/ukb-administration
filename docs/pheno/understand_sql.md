@@ -260,7 +260,8 @@ Useful basic SQL commands used in the following scripts:
     SELECT	cm.value AS value,	    -- select value from table 'cm' and call it value
             cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
     FROM    code cm		            -- using table 'code', now named as cm
-    JOIN    data_meta dm on dm.coding=cm.code_id
+    JOIN    data_meta dm ON 
+            dm.coding=cm.code_id
     WHERE   dm.field_id=20442;      
 
 
@@ -269,34 +270,23 @@ Useful basic SQL commands used in the following scripts:
     -- for each row in the new dataset:
     --		FID=s.sample_id
     --		IID=s.sample_id
-    --		if f20442.pheno in pheno_code.value:
-    --			Pheno = pheno_code.meaning where pheno_code.value=f20442.pheno
-    --			# Get meaning of those rows whose value = content of column pheno in table f20442
+    --		if Meaning isn't null, use meaning as phenotype, 
     --		else:
     --			Pheno = f20442.pheno
-
-    SELECT  s.sample_id AS FID,		
-            s.sample_id AS IID,	
-
-            (CASE WHEN depress.pheno IN 
-                (
-                    SELECT value 
-                    FROM pheno_code
-                    WHERE value=depress.pheno -- Adding this row filters only pheno of interest speeding up script (you dont parse whole dataset in next subquery) 
-                )
-            THEN  
-            (
-                SELECT meaning 
-                FROM pheno_code 
-                WHERE value = depress.pheno         -- Return the meaning as phenoytpe
-            )
-            ELSE depress.pheno                      -- Otherwise, return the phenotype code directly
-            END) AS Pheno
-
-    FROM 	Participant s
-    JOIN 	f20442 depress ON s.sample_id=depress.sample_id
-    WHERE	s.withdrawn=0 AND depress.instance=0;
-    
+    SELECT      s.sample_id AS FID,
+                s.sample_id AS IID,
+                COALESCE(
+                    pheno_code.meaning, 
+                    depress.pheno) AS Pheno -- use first non-null / empty item as phenotype
+    FROM        f20442 depress
+    JOIN        Participant s
+    -- Join pheno_code into depress, meaning will be an empty string if 
+    -- the phenotype is not presented as a value in pheno_code (LEFT JOIN)
+    LEFT JOIN   pheno_code ON        
+                pheno_code.value=depress.pheno 
+    WHERE       depress.instance=0 AND
+                s.sample_id = depress.sample_id AND
+                s.withdrawn = 0;
     .quit
     ```
 
