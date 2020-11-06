@@ -213,6 +213,15 @@ Below we provide users with three examples of how to use the SQL database:
 2. **Use data-coding:** Example script to extract phenotypes from categorical data-fields that contain data-coding information. 
 3. **ICD10 example:** Example script to extract phenotypes from ICD-10 codes.
 
+Useful basic SQL commands used in the following scripts:
+
+- Command FROM and JOIN --> indicate the tables that we are going to use
+
+- Command SELECT --> indicates the columns that we select
+
+- Command WHERE --> indicates the rows that we select 
+
+
 === "Basic usage"
     ``` sql
     .header on
@@ -250,23 +259,39 @@ Below we provide users with three examples of how to use the SQL database:
     .mode csv    
     .output NumDepress.csv 		-- Output to file named NumDepress.csv 
 
-    -- First, we build the phenotype code table
+
+    -- The following code creates a temporary table named `pheno_code` containing
+    -- code_meta.value and code_meta.meaning for all the entries with 
+    -- data_meta.field_id=20442:
+
     CREATE TEMP TABLE pheno_code
     AS
-    SELECT  cm.value AS value,		-- select value from table 'cm' and call it value
-            cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
+    SELECT	cm.value AS value,	-- select value from table 'cm' and call it value
+            	cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
+    FROM    	code_meta cm		-- using table 'code_meta', now named as cm
+    JOIN    	data_meta dm on dm.coding=cm.code_id
+    WHERE       dm.field_id=20442;      
 
-    FROM    code_meta cm		-- using table 'code_meta', now named as cm
-    JOIN    data_meta dm on             
-            dm.field_id=20442 AND   	-- extract the field (20442) corresponding to phenotype from dm
-            dm.coding = cm.code_id; 	-- extract the data coding (value and meaning) for this phenotype
 
-    SELECT  s.sample_id AS FID,		-- select sample_id from table 's' and call it FID
-            s.sample_id AS IID,		-- select sample_id from table 's' and call it IID
-            (CASE WHEN depress.pheno IN -- if phenotype is found in data coding
+    -- The following code creates a dataset that joins
+    -- table participant (called s), and table f20442 where withdrawn=0 & instance=0
+    -- for each row in the new dataset:
+    --		FID=s.sample_id
+    --		IID=s.sample_id
+    --		if f20442.pheno in pheno_code.value:
+    --			Pheno = pheno_code.meaning where pheno_code.value=f20442.pheno
+    --			# Get meaning of those rows whose value = content of column pheno in table f20442
+    --		else:
+    --			Pheno = f20442.pheno
+
+    SELECT  s.sample_id AS FID,		
+            s.sample_id AS IID,	
+
+            (CASE WHEN depress.pheno IN 
                 (
                     SELECT value 
                     FROM pheno_code
+                    WHERE value=depress.pheno -- Adding this row filters only pheno of interest speeding up script (you dont parse whole dataset in next subquery) 
                 )
             THEN  
             (
@@ -276,11 +301,11 @@ Below we provide users with three examples of how to use the SQL database:
             )
             ELSE depress.pheno                      -- Otherwise, return the phenotype code directly
             END) AS Pheno
-    FROM    Participant s
-            JOIN f20442 depress ON 
-            s.sample_id=depress.sample_id
-            AND depress.instance = 0                -- only select the baseline measurement
-    WHERE   s.withdrawn = 0;
+
+    FROM 	Participant s
+    JOIN 	f20442 depress ON s.sample_id=depress.sample_id
+    WHERE	s.withdrawn=0 AND depress.instance=0;
+    
     .quit
     ```
 
