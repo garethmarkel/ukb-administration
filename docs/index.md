@@ -7,10 +7,11 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 
 <center>
 <img src="img/ukb_centres.png" alt="ukb_centres" width="300" /> 
-<figcaption>Figure 1. The UK Biobank cohort recruitment centres </figcaption>
+
+Figure 1. The UK Biobank cohort recruitment centres (Source: [UK Biobank](https://biobank.ndph.ox.ac.uk/showcase/exinfo.cgi?src=UKB_centres_map))
 </center>
 
-## The aims of the UK Biobank cohort
+## The aims of the UK Biobank cohort 
 
 - To allow detailed investigations of genetic and non-genetic determinants of disease of middle and old age. UK Biobank provides extensive and precise assessments of exposures with comprehensive follow up and characterization of many different health-related outcomes.
 
@@ -35,7 +36,7 @@ The UK Biobank is funded by the Medical Research Council, Wellcome Trust, Britis
 
 ## Current and planned data for UK Biobank
 
-We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=timelines_all) for the most updated information and timelines about data availability. 
+We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=timelines_all) for the most updated information and timelines about data availability. Please note number of participants in table below are approximate and may change as further updates on the cohort data recruitment become available *(Last update: November 2020)*. 
 
 ### UK BIOBANK ASSESSMENT CENTRE
  <table class="others">
@@ -60,7 +61,8 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
   			<li>
 			  Collection of blood, urine and saliva samples
 			</li>
-		</ul> 
+			<a href="https://biobank.ndph.ox.ac.uk/showcase/exinfo.cgi?src=baseline_data">Link to UKB.</a>
+		</ul>
 	</td>
 	<td>2006-2010</td>
 	<td>Q2 2012</td>
@@ -69,7 +71,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Repeat of baseline assessment</td>
     <td>20,000 - 25,000</td>
     <td> 
-		Same as above. <a href="https://biobank.ctsu.ox.ac.uk/~bbdatan/Repeat_assessment_doc_v1.0.pdf">Link to UKB</a>
+		Same as above. <a href="https://biobank.ctsu.ox.ac.uk/~bbdatan/Repeat_assessment_doc_v1.0.pdf">Link to UKB.</a>
 	<td>2012-2013</td>
 	<td>Q3 2013</td>
   </tr>
@@ -89,7 +91,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Online 24-h dietary recall web questionnaire</td>
     <td>210,000</td>
     <td> 
-		Detailed questions on the intake of foods and beverages consumed during the previous 24-hour period. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/DietWebQ.pdf">Link to UKB</a>
+		Detailed questions on the intake of foods and beverages consumed during the previous 24-hour period. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/DietWebQ.pdf">Link to UKB.</a>
 	</td>
 	<td>2011-2012</td>
 	<td>Q2 2013</td>
@@ -98,7 +100,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Digestive health</td>
     <td>~180,000</td>
     <td> 
-		Questionnaire with self-reported information on abdominal and associated symptoms for the study of Irritable bowel syndrome and related disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/digestive_health.pdf">Link to UKB</a>
+		Questionnaire with self-reported information on abdominal and associated symptoms for the study of Irritable bowel syndrome and related disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/digestive_health.pdf">Link to UKB.</a>
 	<td>2017</td>
 	<td>2018</td>
   </tr>
@@ -106,7 +108,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Food (and other) preferences</td>
     <td>~180,000</td>
     <td> 
-		Questionnaire with items reflecting both sensory preferences (bitter, sweet etc.) and foodstuff preferences (fruit, vegetables, meat, etc.) <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/foodpref.pdf">Link to UKB</a>
+		Questionnaire with items reflecting both sensory preferences (bitter, sweet etc.) and foodstuff preferences (fruit, vegetables, meat, etc.) <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/foodpref.pdf">Link to UKB.</a>
 	<td>Q4 2019</td>
 	<td>Q1 2020</td>
   </tr>
@@ -114,7 +116,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Physical activity data with accelerometry</td>
     <td>100,000</td>
     <td> 
-		Wrist worn tri-axial accelerometer - type, intensity, and duration of PA; one-week test. <a href="https://doi.org/10.1371/journal.pone.0169649">Link to UKB</a>
+		Wrist worn tri-axial accelerometer - type, intensity, and duration of PA; one-week test. <a href="https://doi.org/10.1371/journal.pone.0169649">Link to UKB.</a>
 	<td>2013-2015</td>
 	<td>2015</td>
   </tr>
@@ -122,7 +124,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Online ‘Healthy Work questionnaire’</td>
     <td>100,000 – 120,000</td>
     <td> 
-		Occupational history since finishing full time education; respiratory health outcomes and medication for these conditions; and smoking habits. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/OccupHealthOSCAR.pdf">Link to UKB</a>
+		Occupational history since finishing full time education; respiratory health outcomes and medication for these conditions; and smoking habits. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/OccupHealthOSCAR.pdf">Link to UKB.</a>
 	<td>Q3 2015</td>
 	<td>Q2 2017</td>
   </tr>
@@ -130,7 +132,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Questionnaire on cognitive function</td>
     <td>100,000 – 120,000</td>
     <td> 
-		Tests for mood, fluid intelligence, trail making, symbol digit substitution pairs matching, numeric memory. <a href="http://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=116">Link to UKB</a>
+		Tests for mood, fluid intelligence, trail making, symbol digit substitution pairs matching, numeric memory. <a href="http://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=116">Link to UKB.</a>
 	<td></td>
 	<td></td>
   </tr>
@@ -138,7 +140,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
     <td>Questionnaire on mental health</td>
     <td>~160,000</td>
     <td> 
-		Questionnaire on life-time experiences of mental disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/mental_health_online.pdf">Link to UKB</a>
+		Questionnaire on life-time experiences of mental disorders. <a href="https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/mental_health_online.pdf">Link to UKB.</a>
 	<td>2016</td>
 	<td>Q3 2017</td>
   </tr>
@@ -157,7 +159,7 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
   <tr>
     <td>Multimodal imaging</td>
     <td>Goal: Imaging available for 100,000 participants. ~40k ready as of early 2020</td>
-    <td>  MRI imaging for brain, heart, abdomen and bone densitometry (DXA)</td>
+    <td>  MRI imaging for brain, heart, abdomen and bone densitometry (DXA). <a href="https://www.ukbiobank.ac.uk/imaging-data/">Link to UKB</a></td>
 	<td>2014-</td>
 	<td>2015</td>
   </tr>
@@ -177,37 +179,51 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
   <tr>
     <td>Death registrations</td>
     <td>Whole cohort</td>
-    <td>ICD coded cause specific mortality</td>
+    <td><a href="https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=40001">Primary</a> and <a href="https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=40002">Secondary</a> ICD-10 coded cause of death. <a href="https://biobank.ndph.ox.ac.uk/showcase/label.cgi?id=100093">Link to UKB.</a></td>
 	<td>2006-</td>
 	<td>Q2 2013</td>
   </tr>
   <tr>
     <td>Cancer registrations</td>
     <td>Whole cohort</td>
-    <td>ICD coded cancer diagnoses</td>
+    <td><a href="https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=40006">ICD coded</a> cancer diagnoses.</td>
 	<td>1981-</td>
 	<td>Q2 2013</td>
   </tr>
   <tr>
     <td>Hospital inpatient episodes</td>
     <td>Whole cohort</td>
-    <td>ICD coded diagnoses</td>
+    <td>ICD coded diagnoses. <a href="https://biobank.ndph.ox.ac.uk/showcase/label.cgi?id=2002">Link to UKB.</a></td>
 	<td>1997-</td>
 	<td>Q2 2013</td>
   </tr>
   <tr>
-    <td>Hospital outpatient episodes</td>
+    <td>Algorithmically-defined outcomes</td>
     <td>Whole cohort</td>
-    <td>Limited ICD and procedure codes</td>
+    <td>Health-related events, obtained through algorithmic combinations of coded information from UK Biobank's baseline assessment data collection, linked data from hospital admissions and death registries. <a href="https://biobank.ndph.ox.ac.uk/showcase/label.cgi?id=42">Link to UKB.</a></td>
 	<td>2003-</td>
 	<td>2015</td>
   </tr>
   <tr>
     <td>Primary care</td>
-    <td>Whole cohort</td>
-    <td>Read-coded information including diagnoses, measurements, referrals. Prescriptions.</td>
+    <td>~250,000 participants</td>
+    <td>Primary care data recorded by health professionals working at general practices. Includes diagnoses, measurements, referrals etc. <a href="https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/primary_care_data.pdf">Link to UKB.</a></td>
 	<td>variable</td>
-	<td>Q3-4 2017</td>
+	<td>Q3 2019</td>
+  </tr>
+  <tr>
+    <td>First occurrences</td>
+    <td> Whole cohort</td>
+    <td>Data shows the 'first occurrence of ~1200 broad health outcomes identified from Primary Care data, Hospital inpatient data, Death Register and self-reported medical condition ICD codes. <a href="https://biobank.ndph.ox.ac.uk/showcase/showcase/docs/first_occurrences_outcomes.pdf">Link to UKB.</a></td>
+    <td> variable </td>
+    <td> Q3 2019? </td>
+  </tr>
+  <tr>
+    <td>COVID-19</td>
+    <td>Whole cohort</td>
+    <td> COVID-19 data. Includes COVID-19 tests results, GP clinical events, and prescription records. <a href="https://biobank.ctsu.ox.ac.uk/crystal/exinfo.cgi?src=COVID19_tests">Link to UKB.</a></td>
+    <td> Q2 2020 </td>
+    <td> Q3 2020 </td>
   </tr>
   </table>
   <br/>
@@ -276,3 +292,5 @@ We encourage to visit [the official UK Biobank website](https://biobank.ctsu.ox.
   </tr>
   </table>
   <br/>
+
+*Source:* Table adapted and updated from [Sudlow et al. 2015](https://dx.doi.org/10.1371%2Fjournal.pmed.1001779) 
