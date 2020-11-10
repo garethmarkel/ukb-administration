@@ -186,8 +186,8 @@ data_meta
 <br>
 
 ## Using the SQL database
-Basic understand of the SQL language is required to efficiently use our SQL database. 
-We recommend one to write down the SQL commands in a `.sql` file and use the SQL database as follow
+Basic understand of the SQL language is required to efficiently use our SQL database. Click [here](https://www.sqlitetutorial.net/) for a tutorial on SQLite
+We recommend one to write down the SQL commands in a `.sql` file and use the SQL database as follows:
 ```bash
 sqlite3 ukb<ID>.db < command.sql
 ```
@@ -213,7 +213,8 @@ Useful basic SQL commands used in the following scripts:
 - Command WHERE --> indicates the rows that we select 
 
 
-=== "Basic usage"
+## Example 1: Basic usage
+
     ``` sql
     .header on
     .mode csv
@@ -244,7 +245,8 @@ Useful basic SQL commands used in the following scripts:
 
     ```
 
-=== "Use data-coding"
+## Example 2: Phenotypes with data-coding
+
     ``` sql
     .header on
     .mode csv    
@@ -290,7 +292,8 @@ Useful basic SQL commands used in the following scripts:
     .quit
     ```
 
-=== "ICD10 example"
+## Example 3: Phenotypes from Helath Records Linkage
+
     ```sql
     .header on
     .mode csv    
