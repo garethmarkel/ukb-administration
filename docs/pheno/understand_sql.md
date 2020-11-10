@@ -186,31 +186,36 @@ data_meta
 <br>
 
 ## Using the SQL database
-Basic understand of the SQL language is required to efficiently use our SQL database. Click [here](https://www.sqlitetutorial.net/) for a tutorial on SQLite
+Basic understand of the SQL language is required to efficiently use our SQL database. Click [here](https://www.sqlitetutorial.net/) for a tutorial on SQLite.
+
 We recommend one to write down the SQL commands in a `.sql` file and use the SQL database as follows:
+
 ```bash
 sqlite3 ukb<ID>.db < command.sql
 ```
-where `command.sql` is the sql command file containing the following header
+
+where `command.sql` is the sql command file containing the following header:
+
 ``` sql
 .header on
 .mode csv
 .output <name>.csv
 ```
 
-Below we provide users with three examples of how to use the SQL database:
+Below we provide users with the same tree examples that we used in the [Phenotype extraction - Plain text](./tradition.md) section, but here we extract the phenotypes using the SQL database:
 
 1. **Basic Usage:** Example script to extract phenotype height, together with covariates Age, Sex, BMI and Centre.
 2. **Use data-coding:** Example script to extract phenotypes from categorical data-fields that contain data-coding information. 
 3. **ICD10 example:** Example script to extract phenotypes from ICD-10 codes.
 
-Useful basic SQL commands used in the following scripts:
+!!! Note
+    Useful basic SQL commands used in the following scripts:
 
-- Command FROM and JOIN --> indicate the tables that we are going to use
+    - Command FROM and JOIN --> indicate the tables that we are going to use
 
-- Command SELECT --> indicates the columns that we select
+    - Command SELECT --> indicates the columns that we select
 
-- Command WHERE --> indicates the rows that we select 
+    - Command WHERE --> indicates the rows that we select 
 
 
 ## Example 1: Basic usage
@@ -273,8 +278,8 @@ Useful basic SQL commands used in the following scripts:
     --		FID=s.sample_id
     --		IID=s.sample_id
     --		if Meaning isn't null, use meaning as phenotype, 
-    --		else:
-    --			Pheno = f20442.pheno
+    --		else Pheno = f20442.pheno
+
     SELECT      s.sample_id AS FID,
                 s.sample_id AS IID,
                 COALESCE(
@@ -282,8 +287,11 @@ Useful basic SQL commands used in the following scripts:
                     depress.pheno) AS Pheno -- use first non-null / empty item as phenotype
     FROM        f20442 depress
     JOIN        Participant s
+
+
     -- Join pheno_code into depress, meaning will be an empty string if 
     -- the phenotype is not presented as a value in pheno_code (LEFT JOIN)
+
     LEFT JOIN   pheno_code ON        
                 pheno_code.value=depress.pheno 
     WHERE       depress.instance=0 AND
@@ -292,7 +300,7 @@ Useful basic SQL commands used in the following scripts:
     .quit
     ```
 
-## Example 3: Phenotypes from Helath Records Linkage
+## Example 3: Phenotypes from Health Records Linkage
 
     ```sql
     .header on
