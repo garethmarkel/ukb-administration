@@ -299,20 +299,16 @@ Useful basic SQL commands used in the following scripts:
     .mode csv    
     -- Output to file named scz.csv 
     .output scz.csv 
-    -- First, extract all SCZ patients
-    CREATE TEMP TABLE scz
-    AS
-    SELECT  DISTINCT sample_id
-    FROM    f41270
-    WHERE   pheno LIKE '"F20_"' -- select any samples with phenotype starts with "F20X". 
-            AND instance = 0;   -- only use baseline
-  
+ 
     SELECT  s.sample_id AS FID, 
             s.sample_id AS IID,
             (CASE WHEN s.sample_id IN
                 (
-                    SELECT  sample_id
-                    FROM    scz
+                    SELECT  xx.sample_id
+                    FROM    f41270 as xx
+                    WHERE pheno LIKE '"F20_"' -- with this you dont need to creat a SCZ table
+                          AND instance=0
+                          AND s.sample_id=xx.sample_id
                 )
                 THEN 1          -- samples found in scz table are cases (1)
                 ELSE 0
