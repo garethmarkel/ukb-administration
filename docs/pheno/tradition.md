@@ -20,7 +20,7 @@ In the 'Basic usage' section, we present an example on how to extract the first 
     ```bash
     grep [Hh]eight *.field_finder
     ```
-    For the example of height, you might see the following. 
+    For the example of height, you might see the following: 
  
     ```bash
     ukb12345.field_finder:32	f.50.0.0	Standing.height
@@ -32,15 +32,15 @@ In the 'Basic usage' section, we present an example on how to extract the first 
     ukb23456.field_finder:38	f.51.2.0	Seated.height
     ukb23456.field_finder:39	f.51.3.0	Seated.height
     ```
-    
-    The output indicates that in the tab file **ukb12345.tab**, columns 32 to 35 contain information about the field f.50.X.X. which represents 'Standing.height'. 
-
-    To extract the first instance  measurement of standing height *(f.50.0.0)*, we will want to extract the column `32` from `ukb12345.tab`
 
     !!! note 
         You will not see the `ukbxxxxx.field_finder` prefix if there is only one set of phenotype in your folder
-        
-3. Extract the phenotype from the text file, assuming the first column contains the sample ID
+    
+    The output indicates that in the tab file **ukb12345.tab**, columns 32 to 35 contain information about the field f.50.X.X. which represents 'Standing.height'. 
+
+
+3. To extract the first instance measurement of standing height (f.50.0.0) from the tab file we will want to extract the column '32' from 'ukb12345.tab'. Assuming the first column contains the sample ID, the code will be as follows:
+
     ```bash
     awk '{print $1,$32}' ukb12345.tab > height.txt
     ```
@@ -51,9 +51,9 @@ In the 'Basic usage' section, we present an example on how to extract the first 
 
 ## Example 2: Phenotypes with data-coding
 
-In the 'Phenotypes with data-coding' section, we present an example of a field with categorical values, encoded by UK Biobank. 
+In this section we present an example of a field with categorical values encoded by UK Biobank. 
 
-The example consists on extracting the question "*How many periods did you have in your life lasting two or more weeks where you felt like this?"* (f.20442.0.0). This question was included in the Mental health questionnaire of the [Online follow-up](https://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=100089) and contains numerical information (the number of depressed periods), but also some values with special meanings (i.e. -818 means *"Prefer not to answer"*, and -999 means *"Too many to count/One episode ran into the next"*).
+The example consists on extracting the question "*How many periods did you have in your life lasting two or more weeks where you felt like this?"* (f.20442.0.0). This question was included in the Mental health questionnaire of the [Online follow-up](https://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=100089) and contains numerical information (the number of depressed periods), but also some values with special meanings (i.e. -818 means *"Prefer not to answer"*, and -999 means *"Too many to count / One episode ran into the next"*).
  
 
 The first steps are similar to the basic usage example:
