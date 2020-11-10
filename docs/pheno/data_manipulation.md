@@ -58,7 +58,18 @@ For example, there was a person who recorded 47 items for treatment medication. 
 
 Other examples of fields with multiple arrays are self reported [cancer illness](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20001) and [non-cancer illness](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20002) codes obtained during the verbal interview of the UK Biobank Assessment Centre. 
 
+## Phenotypes with data-coding
 
+A large proportion of the data data-fields within the UK Biobank repository are categorical. A data-coding is a mapping between the actual data and the values used to represent it within the database. For example, for the question [Country of birth](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=1647), the value 1 represents "England", whereas value 2 represents "Wales"
+
+There are two structures of data coding:
+
+- **Flat**: the data-coding is a simple list of values with no ordering or relationship between them.
+- **Tree**: the data-coding is a set of values which represent some sort of tree hierarchy, allowing an answer to be specified to whatever level of detail is known.
+
+Apart from their use in interpreting the values of a data-field, a data-coding also shows the range of answers/alternatives that were available when an item of data was entered - the data-coding may include alternatives that do not appear in the final dataset because they were not applicable to any participants in UK Biobank.
+
+*Source: [UK Biobank documentation](https://biobank.ndph.ox.ac.uk/ukb/help.cgi?cd=data_coding)*
 ## Health Records Linkage
 
 ### Hospital inpatient episodes
