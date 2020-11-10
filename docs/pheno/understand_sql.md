@@ -8,16 +8,14 @@ The main disadvantage of using the SQL database is that it requires some knowled
 
 !!! note
 
-    To access the database, you must have [sqlite3](https://sqlite.org/index.html) installed. 
-
+    To access the database, you must have [sqlite3](https://sqlite.org/index.html) installed. Click [here](https://www.sqlitetutorial.net/) for a description and tutorial on SQLite.
 
 ## Database Structure 
 To use the SQL database we must first understand the basic structure of a [relational database](https://en.wikipedia.org/wiki/Relational_database), where each table is a file on its own. The relationships between tables/files are established through 'keys'. Depending on their role, keys are defined as [primary](https://en.wikipedia.org/wiki/Primary_key) or [foreign](https://en.wikipedia.org/wiki/Foreign_key). In brief, *primary keys* are a set of attributes in a table (e.g. one or more columns) that uniquely identifies rows in a given table, whereas *foreign keys* are a set of attributes that refers to the primary key of another table. The foreign key links the two tables.
 
 In our UK Biobank SQL database, each phenotype is contained in one table with name `fxxxx` (where `xxxx` is the field ID of the phenotype). The `fxxxx` tables are all linked to a 'participant' table through the sample_id field, which contains information about participant withdrawal (Figure below, panel A). 
 
-A large proportion of the data data-fields within the UK Biobank repository are categorical. A data-coding is a mapping between the actual data and the values used to represent it within the database -for example the value "44" may be stored to represent "Born in Great Britain", with "33" representing "Born in France". Please visit [the UK Biobank documentation](https://biobank.ndph.ox.ac.uk/ukb/help.cgi?cd=data_coding) for more information about data coding. 
-To include the data-coding matching in the SQL scripts for phenotype extraction, other data tables need to be considered in the SQL script. The structure of these tables are represented in the Figure below, panel B.
+As discussed in the [previous section](./data_manipulation.md), a large proportion of the data fields within the UK Biobank repository are categorical and use data-coding to map the actual data and the values used to represent it within the database. To include the data-coding matching in the SQL scripts for phenotype extraction, the data-coding tables need to be considered in the SQL script. The structure of these tables are represented in the Figure below, panel B.
 
 ![alt tex](./../img/sql.png)
 
@@ -33,7 +31,7 @@ Participant
     <td>sample_id</td>
     <td>ID of UKB Samples</td>
     <td>int</td>
-    <td>primary key</td>
+    <td>primary key in this table</td>
 </tr>
 <tr>
     <td>withdrawn</td>
@@ -48,7 +46,7 @@ fxxxx (where xxxx is the field ID of the phenotype)
     <td>sample_id</td>
     <td>ID of UKB Samples</td>
     <td>int</td>
-    <td>primary key</td>
+    <td>primary key in this table</td>
 </tr>
 <tr>
     <td>pheno</td>
@@ -186,9 +184,8 @@ data_meta
 <br>
 
 ## Using the SQL database
-Basic understand of the SQL language is required to efficiently use our SQL database. Click [here](https://www.sqlitetutorial.net/) for a tutorial on SQLite.
-
-We recommend one to write down the SQL commands in a `.sql` file and use the SQL database as follows:
+Basic understand of the SQL language is required to efficiently use our SQL database. 
+We recommend to write down the SQL commands in a `.sql` file and use the SQL database as follows:
 
 ```bash
 sqlite3 ukb<ID>.db < command.sql
@@ -202,14 +199,8 @@ where `command.sql` is the sql command file containing the following header:
 .output <name>.csv
 ```
 
-Below we provide users with the same tree examples that we used in the [Phenotype extraction - Plain text](./tradition.md) section, but here we extract the phenotypes using the SQL database:
-
-1. **Basic Usage:** Example script to extract phenotype height, together with covariates Age, Sex, BMI and Centre.
-2. **Use data-coding:** Example script to extract phenotypes from categorical data-fields that contain data-coding information. 
-3. **ICD10 example:** Example script to extract phenotypes from ICD-10 codes.
-
 !!! Note
-    Useful basic SQL commands used in the following scripts:
+    Useful basic SQL commands used in the SQL scripts:
 
     - Command FROM and JOIN --> indicate the tables that we are going to use
 
@@ -218,7 +209,12 @@ Below we provide users with the same tree examples that we used in the [Phenotyp
     - Command WHERE --> indicates the rows that we select 
 
 
+Below we provide users with the same tree examples that we used in the [Phenotype extraction - Plain text](./tradition.md) section, but here we extract the phenotypes using the SQL database:
+
+
 ## Example 1: Basic usage
+
+In the 'Basic usage' section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
 
     ``` sql
     .header on
@@ -251,6 +247,8 @@ Below we provide users with the same tree examples that we used in the [Phenotyp
     ```
 
 ## Example 2: Phenotypes with data-coding
+
+In this section we present an example of a field with categorical values encoded by UK Biobank. 
 
     ``` sql
     .header on
@@ -301,6 +299,10 @@ Below we provide users with the same tree examples that we used in the [Phenotyp
     ```
 
 ## Example 3: Phenotypes from Health Records Linkage
+
+
+In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding 
+
 
     ```sql
     .header on
