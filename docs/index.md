@@ -23,8 +23,6 @@ Figure 1. The UK Biobank cohort recruitment centres (Source: [UK Biobank](https:
 
 ## Participants demographics
 
-*TO DO: Probably nicer to do some plots with this data???*
-
 - 	46% male
 -	57% aged 40-59 years; 43% aged 60-69 years
 -	*Less socioeconomically deprived than UK average*, but all strata represented

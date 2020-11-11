@@ -1,5 +1,5 @@
 # Initialize new application
-In this section, we will go through now to organize new applications. 
+In this section, we will go through how to organize new applications. 
 
 ## Before you start
 Make sure you have the following
@@ -60,7 +60,7 @@ UK Biobank does not provide a command line option to download the phenotype file
 As such, the delegate of each application will need to download and upload the phenotype files manually.
 Here we will go through the steps involved 
 
-### Downloading phentype files
+### Downloading phenotype files
 The encrypted dataset must be access via the UK Biobank Access Management System (AMS).
 
 !!! note

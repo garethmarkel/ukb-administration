@@ -102,7 +102,7 @@ For example, if there is a person who recorded 47 items for treatment medication
 | 3723112 | 1341        | 161         | 131          | … | 14            |
 
 <br>
-**Table 4.** Treatment medication results in four UK Biobank participants. Array number is highlighted in red. As there was one person reporting 47 different treatment/drugs, 47 columns are related to each instance in the .tab file. 
+**Table 4.** Treatment medication results in four UK Biobank participants. Array number is highlighted in red. As there was one person (participant ID 3723112 in this example) reporting 47 different treatment/drugs, 47 columns are related to each instance in the .tab file. 
 </center>
 
 The numeric values represent categories or values to code medical treatments. Further information about data-coding for categorical variables is included in the next section. For details on this specific data-coding, click [here](https://biobank.ctsu.ox.ac.uk/crystal/coding.cgi?id=4).
@@ -132,7 +132,7 @@ Continuous value types are floating-point numbers, for example the height of a p
 **Table 5.** Standing height measurements in four UK Biobank participants, as example of a continuous variable. 
 </center>
 
-Usually a histogram, deciles, minimum and maximum, and basic summary statistics (mean, std. dev) are included in the 'Data' tab of each data field (Figure 1). This information is useful before running any analysis with the field.
+Usually a histogram, deciles, minimum and maximum, and basic summary statistics (mean, std. dev) are included in the 'Data' tab of each data field (Figure 1). We recommend to always check this information before running any analysis.
 
 <center>
 ![alt tex](./../img/field_example.png)
@@ -151,7 +151,7 @@ A large proportion of the data data-fields within the UK Biobank repository are 
 **Figure 2.** Examples of three categorical data fields with A) mutually exclusive options (field [20499](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20499)), B) mutually list options (field [20003](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20003)), and C) multiple tree options (field [20004](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=20004)). 
 </center>
 
-### Data-coding 
+### Data-coding of categorical data 
 
 *Source: [UK Biobank documentation](https://biobank.ndph.ox.ac.uk/ukb/help.cgi?cd=data_coding)*
 
@@ -168,6 +168,11 @@ Similar to the two types of categorical values, there are two structures of data
 Apart from their use in interpreting the values of a data-field, a data-coding also shows the range of answers/alternatives that were available when an item of data was entered -the data-coding may include alternatives that do not appear in the final dataset because they were not applicable to any participants in UK Biobank.
 
 ## Health Records Linkage
+
+UK Biobank follows up participant's health through linkage to medical records. Upon joining UK Biobank, participants sign a consent form to allow UK Biobank to access their medical and other health-related records for research purposes. Additionally, UK Biobank has routinely linked to national death and cancer registries and to national hospital data electronic record systems for all its participants since 2010.
+
+
+
 
 ### Hospital inpatient episodes
 

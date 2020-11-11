@@ -1,7 +1,12 @@
 # Phenotype extraction - Plain text
-Compared to using the SQL database, extracting phenotypes from .tab files requires only basic knowledge of `grep` and `awk`. Other programming languages such as R or python can also be used for more 'sophisticated' phenotype extractions.
 
-In this section, we provide a step by step tutorial of **1.** how to extract a phenotype from the .tab file (Basic usage), **2.** how to incorporate data coding to the phenotyes of interest, and **3.** how to extract phenotypes from Health Records Linkage data using the ICD codes.
+## When to use the plain text approach?
+
+Compared to using the SQL database, extracting phenotypes from .tab files requires only basic knowledge of `grep` and `awk`. Other programming languages such as R or python can also be used.
+
+We recommend using the 'plain text' approach for simple ascertainment of cases or to extract simple phenotype or fields. 
+
+In this section, we provide a step by step tutorial of **1.** how to extract a phenotype from the .tab file (Basic usage), **2.** how to extract a categorical phenotype and replace the values of a data-field with their meaning, and **3.** how to extract phenotypes from Health Records Linkage data using ICD codes.
 
 !!! important
     We assume the UK biobank application folder follows [our proposed structure](../../admin/master_generation/#expected-result).
@@ -88,7 +93,6 @@ The first steps are similar to the basic usage example:
 							ifelse(f.20442.0.0 == -818, "Prefer_not_to_answer", f.20442.0.0)
     ```
 
-You can replace the value of special meanings in a more systematic/reproducible way using the [SQL approach.](./understand_sql.md) 
 
 ## Example 3: Phenotypes from Health Records Linkage 
 
