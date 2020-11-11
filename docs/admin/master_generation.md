@@ -41,9 +41,11 @@ You can run the pipeline **in your application folder** as follow
 id=<application ID>
 root=<path to ukb root>
 application=${root}/application/ukb${id}
+withdrawn=${application}/withdrawn/<name of withdrawn file>
+related=${application}/genotyped/<name of relatedness file>
 nextflow run \
     ${root}/scripts/QC/prepare_ukb.nf \
-    --bfile ${application}/genotyped/ukb \
+    --bfile ${application}/genotyped/ukb${id} \
     --code ${root}/references/Codings.csv \
     --conv ${root}/software/bin/ukbconv \
     --data ${root}/references/Data_Dictionary_Showcase.csv \
@@ -53,10 +55,10 @@ nextflow run \
     --gp ${application}/phenotype/raw/gp_clinical.txt \
     --greed ${root}/software/bin/GreedyRelated \
     --key ${application}/phenotype/raw/keys/ \
-    --unpack ${root}/software/bin/ukbunpack 
-    --sql ${root}/software/bin/ukb_sq \
-    --drop ${application}/withdrawn/<name to withdrawn file> \
-    --rel ${application}/genotyped/<relatedness file> \
+    --unpack ${root}/software/bin/ukbunpack \
+    --sql ${root}/software/bin/ukb_sql \
+    --drop ${withdrawn} \
+    --rel ${related} \
     --out ukb${id}
 ```
 
