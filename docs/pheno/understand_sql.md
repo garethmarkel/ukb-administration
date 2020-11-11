@@ -216,7 +216,7 @@ Below we provide users with the same tree examples that we used in the [Phenotyp
 
 In the 'Basic usage' section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
 
-    ``` sql
+``` sql
     .header on
     .mode csv
     .output Height.csv 	-- Output to file named Height.csv
@@ -244,13 +244,13 @@ In the 'Basic usage' section, we present an example on how to extract the first 
             WHERE   s.withdrawn = 0;             -- Exclude any samples who withdrawn their consent
     .quit
 
-    ```
+```
 
 ## Example 2: Phenotypes with data-coding
 
 In this section we present an example of a field with categorical values encoded by UK Biobank. 
 
-    ``` sql
+``` sql
     .header on
     .mode csv    
     .output NumDepress.csv 		-- Output to file named NumDepress.csv 
@@ -296,7 +296,7 @@ In this section we present an example of a field with categorical values encoded
                 s.sample_id = depress.sample_id AND
                 s.withdrawn = 0;
     .quit
-    ```
+```
 
 ## Example 3: Phenotypes from Health Records Linkage
 
@@ -304,7 +304,7 @@ In this section we present an example of a field with categorical values encoded
 In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding 
 
 
-    ```sql
+```sql
     .header on
     .mode csv    
     -- Output to file named scz.csv 
@@ -326,7 +326,7 @@ In the 'Phenotypes from Health Records Linkage' section, we present an example o
     FROM    Participant s 
     WHERE   s.withdrawn= 0;     -- Exclude any samples who withdrawn their consent
     .quit
-    ```
+```
 
 !!! Note
     There are two wildcards used in conjunction with the `LIKE` operator −
