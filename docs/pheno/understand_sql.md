@@ -226,7 +226,6 @@ In the 'Basic usage' section, we present an example on how to extract the first 
 ``` sql
 .header on
 .mode csv
-<<<<<<< HEAD
 .output Height.csv              -- Output to file named Height.csv
 
 SELECT  s.sample_id AS FID,     -- select sample_id from table 's' and call it FID 
@@ -259,52 +258,16 @@ FROM    Participant s                            -- using table 'participant', n
 In this section we present an example on how to extract the first instance of a categorical field, and replace the coded values/categories with their actual meaning. 
 
 The example consists on extracting the question "*How many periods did you have in your life lasting two or more weeks where you felt like this?"* (f.20442.0.0). 
-=======
-.output Height.csv 	-- Output to file named Height.csv
-
-SELECT  s.sample_id AS FID, 	-- select sample_id from table 's' and call it FID 
-        s.sample_id AS IID, 	-- select sample_id from table 's' and call it IID
-        age.pheno AS Age, 		-- select pheno from table 'age' and call it Age
-        sex.pheno AS Sex, 		-- select pheno from table 'sex' and call it Sex
-        bmi.pheno AS BMI, 		-- select pheno from table 'bmi' and call it BMI
-        centre.pheno AS Centre 	-- select pheno from table 'centre' and call it Centre
-
-FROM    Participant s 		 	-- using table 'participant', now named as 's'
-        JOIN    f21001 bmi ON 
-                s.sample_id=bmi.sample_id   -- join the BMI table by sample ID
-                AND bmi.instance = 0        -- only getting the baseline phenotype
-        JOIN    f31 sex ON
-                s.sample_id=sex.sample_id   -- join the Sex table by sample ID
-                AND sex.instance = 0        -- only getting the baseline phenotype
-        JOIN    f21003 age ON 
-                s.sample_id=age.sample_id   -- join the Age table by sample ID
-                AND age.instance = 0        -- only getting the baseline phenotype
-        JOIN    f54 centre ON 
-                s.sample_id=centre.sample_id -- join the UKB assessment centre table by sample ID
-                AND centre.instance = 0      -- only getting the baseline phenotype
-         WHERE   s.withdrawn = 0;             -- Exclude any samples who withdrawn their consent
-.quit
-```
-
-## Example 2: Phenotypes with data-coding
-
-In this section we present an example of a field with categorical values encoded by UK Biobank. 
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
 
 ``` sql
 .header on
 .mode csv    
 .output NumDepress.csv 		-- Output to file named NumDepress.csv 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
 -- The following code creates a temporary table named `pheno_code` containing
 -- code.value and code.meaning for all the entries with 
 -- data_meta.field_id=20442:
 
-<<<<<<< HEAD
 CREATE  TEMP TABLE pheno_code
 AS
 SELECT	cm.value AS value,                      -- select value from table 'cm' and call it value
@@ -322,29 +285,10 @@ WHERE   dm.field_id=20442;                      -- select rows with field_id 204
 --	COALESCE returns the first non-null value in a list
 --         if pheno_code.meaning is null, Pheno = depress.pheno,
 --         else Pheno = pheno_code.meaning
-=======
-CREATE TEMP TABLE pheno_code
-AS
-SELECT	cm.value AS value,	    -- select value from table 'cm' and call it value
-        cm.meaning AS meaning	-- select meaning from table 'cm' and call it meaning
-FROM    code cm		            -- using table 'code', now named as cm
-JOIN    data_meta dm ON 
-        dm.coding=cm.code_id
-WHERE   dm.field_id=20442;      
-
--- The following code creates a dataset that joins
--- table participant (called s), and table f20442 where withdrawn=0 & instance=0
--- for each row in the new dataset:
---		FID=s.sample_id
---		IID=s.sample_id
---		if Meaning isn't null, use meaning as phenotype, 
---		else Pheno = f20442.pheno
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
 
 SELECT      s.sample_id AS FID,
             s.sample_id AS IID,
             COALESCE(
-<<<<<<< HEAD
                pheno_code.meaning, 
                depress.pheno) AS Pheno          
 FROM        f20442 depress
@@ -357,59 +301,25 @@ LEFT JOIN   pheno_code ON pheno_code.value=depress.pheno
 WHERE       depress.instance=0 AND
             s.sample_id=depress.sample_id AND
             s.withdrawn=0;
-=======
-                pheno_code.meaning, 
-                depress.pheno) AS Pheno -- use first non-null / empty item as phenotype
-FROM        f20442 depress
-JOIN        Participant s
-
--- Join pheno_code into depress, meaning will be an empty string if 
--- the phenotype is not presented as a value in pheno_code (LEFT JOIN)
-
-LEFT JOIN   pheno_code ON        
-            pheno_code.value=depress.pheno 
-WHERE       depress.instance=0 AND
-            s.sample_id = depress.sample_id AND
-            s.withdrawn = 0;
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
 .quit
 ```
+
+
 
 ## Example 3: Phenotypes from Health Records Linkage
 
 
 In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding 
 
-<<<<<<< HEAD
 ``` sql
 .header on
 .mode csv    
 .output scz.csv  -- Output to file named scz.csv 
-=======
 
-```sql
-.header on
-.mode csv    
--- Output to file named scz.csv 
-.output scz.csv 
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
- 
 SELECT  s.sample_id AS FID, 
         s.sample_id AS IID,
         (CASE WHEN s.sample_id IN
-<<<<<<< HEAD
-                   (
-                    SELECT  xx.sample_id
-                    FROM    f41270 as xx
-                    WHERE   pheno LIKE '"F20_"' AND -- select only those with diagnosis F20*
-                            instance=0 AND
-                            s.sample_id=xx.sample_id
-                   )
-         THEN 1             -- samples found in scz table are cases (1)
-         ELSE 0
-         END) AS Pheno
-=======
-            (
+           (
                 SELECT  xx.sample_id
                 FROM    f41270 as xx
                 WHERE   pheno LIKE '"F20_"' -- with this you dont need to creat a SCZ table
@@ -419,7 +329,7 @@ SELECT  s.sample_id AS FID,
             THEN 1          -- samples found in scz table are cases (1)
             ELSE 0
         END) AS Pheno
->>>>>>> d7d54bf69d22bf60784ada317e886aa40fc113c5
+
 FROM    Participant s 
 WHERE   s.withdrawn= 0;     -- Exclude any samples who withdrawn their consent
 .quit
