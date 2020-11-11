@@ -105,11 +105,11 @@ In this example, we will use R code to ascertain those individuals who were give
     library(magrittr)
 
     # Read hesin data
-    main_hesin_ICD10 = fread(file="/data/SBCS-KeersLab/ukbb_42423/data_download/hesin_data/ukb24518.hesin.tsv", h=T, sep="\t") %>% 
+    main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>% 
                              .[,c("eid", "diag_icd10")] %>% 
                              unique
 
-    hesin_diag_ICD10 = fread(file="/data/SBCS-KeersLab/ukbb_42423/data_download/hesin_data/ukb24518.hesin_diag10.tsv", h=T, sep="\t") %>% 
+    hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>% 
     .[,c("eid", "diag_icd10")] %>% 
     unique
 
@@ -117,7 +117,7 @@ In this example, we will use R code to ascertain those individuals who were give
     .[grepl(c("F200"), diag_icd10),"eid"] %>% 
     unique 
 
-    samples = fread(file="/data/SBCS-KeersLab/ukbb_42423/ukb42423_cal_chr1_v2_s488295.fam") %>% 
+    samples = fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
     .[,c("V1", "V2")] %>% # Select the first two columns
     setnames(., c("V1", "V2"), c("FID", "IID")) %>% # Rename columns
     .[,SCZ := 0] %>% # Add a SCZ column and initialize to 0 
