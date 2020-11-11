@@ -78,12 +78,14 @@ if(params.help){
     exit 1
 }
 // include the modules 
-include {   relatedness_filtering;
-            extract_first_degree } from './modules/greedy_related'
 include {   construct_sql; 
             decrypt_files; 
             encode_files;
-            generate_field_finder    } from './modules/ukb_process'
+            generate_field_finder;
+            outliers_aneuploidy_excessive_related;
+            extract_batch;
+            extract_pcs;
+            extract_biological_sex    } from './modules/phenotype_processing'
 include {   get_software_version;
             combine_meta;
             write_log    } from './modules/misc.nf'
@@ -96,7 +98,9 @@ include {   extract_sqc;
             prunning;
             calculate_stat_for_sex;
             filter_sex_mismatch;
-            finalize_data } from './modules/plink_qc.nf'
+            finalize_data;
+            relatedness_filtering;
+            extract_first_degree; } from './modules/quality_control.nf'
 
 // function to check if file exists
 def fileExists = { fn ->
@@ -188,23 +192,35 @@ workflow build_sql{
 workflow plink_qc{
     take: sql
     main:
-        // 1. Perform the first genotype missingness filtering
+        // 1. Extract ID of samples with excessive relatedness, excessive heterozygousity and missingness
+        //    or sex aneuploidy       
+        outliers_aneuploidy_excessive_related(sql, "${params.out}")           
+        // 2. Extract genotyping batch information from the sql
+        //    we don't extract centre as assessment centre changed depending on instance
+        extract_batch(sql, "${params.out}")
+        // 3. Extract all the PCs
+        extract_pcs(sql, "${params.out}")
+        // 4. Generate the covariate file
+        generate_covariates(extract_batch.out, extract_pcs.out, "${params.out}")
+        // 5. Extract self reported sex
+        extract_biological_sex(sql, "${params.out}")
+
+        // 6. Perform the first genotype missingness filtering
         first_pass_geno(    genotype, 
                             params.geno, 
                             params.out)
-        // 2. Do 4 mean clustering to extract EUR samples
-        extract_eur(    extract_sqc.out.covar, 
+        // 7. Do 4 mean clustering to extract EUR samples
+        extract_eur(    generate_covariates.out, 
                         params.kmean, 
                         params.seed, 
                         params.out)
-        // 3. Extract samples based on UK Biobank QC pipeline                    
-        extract_sqc(sql, "${params.out}")
-        // 4. Now remove all drop outs and samples that failed the UK Biobank QC
+       
+        // 8. Now remove all drop outs and samples that failed the UK Biobank QC
         remove_dropout_and_invalid( genotype, 
-                                    extract_sqc.out.het, 
+                                    outliers_aneuploidy_excessive_related.out.outliers, 
                                     withdrawn, 
                                     params.out)
-        // 5. Need to account for either using maf or mac filtering
+        // 9. Need to account for either using maf or mac filtering
         maf = params.maf
         if(!params.maf && !params.mac){
             // if both not provided, use default value
@@ -217,7 +233,7 @@ workflow plink_qc{
         if(params.mac){
             maf_mac=maf_mac+" --mac "+params.mac
         }
-        // 6. Run the second pass QC with --geno --maf/--mac --hwe and sample filtering
+        // 10. Run the second pass QC with --geno --maf/--mac --hwe and sample filtering
         basic_qc(   genotype, 
                     first_pass_geno.out.snp, 
                     extract_eur.out.eur, 
@@ -226,12 +242,12 @@ workflow plink_qc{
                     params.geno, 
                     maf_mac, 
                     params.out)
-        // 7. Generate the file indicating the long LD region
+        // 11. Generate the file indicating the long LD region
         generate_high_ld_region(    basic_qc.out.qc, 
                                     genotype, 
                                     params.build, 
                                     params.out)
-        // 8. Perform prunning
+        // 12. Perform prunning
         prunning(   genotype,
                     basic_qc.out.qc, 
                     generate_high_ld_region.out, 
@@ -241,40 +257,40 @@ workflow plink_qc{
                     params.maxSize,
                     params.seed,
                     params.out)
-        // 9. Perform sex check (on top of UKB pipeline just in case)
+        // 13. Perform sex check (on top of UKB pipeline just in case)
         calculate_stat_for_sex( genotype,
                                 basic_qc.out.qc,
                                 prunning.out,
                                 params.out)
-        // 10. Remove samples with mismatch genetic and reported sex                        
+        // 14. Remove samples with mismatch genetic and reported sex                        
         filter_sex_mismatch(    basic_qc.out.qc, 
                                 calculate_stat_for_sex.out,
-                                extract_sqc.out.sex,
+                                extract_biological_sex.out,
                                 params.sex,
                                 params.sexSD,
                                 params.maleF,
                                 params.femaleF,
                                 params.out)
-        // 11. Use Greedy related to remove related samples            
+        // 15. Use Greedy related to remove related samples            
         relatedness_filtering(  greedy, 
                                 rel,
                                 filter_sex_mismatch.out.valid,
                                 params.thres,
                                 params.seed,
                                 params.out)
-        // 12. Also extract first degree samples on the side                        
+        // 16. Also extract first degree samples on the side                        
         extract_first_degree(   filter_sex_mismatch.out.valid,
                                 rel,
                                 relatedness_filtering.out.removed,
                                 params.out )
-        // 13. Generate the finalized SNP and fam file
+        // 17. Generate the finalized SNP and fam file
         finalize_data(  genotype,
                         basic_qc.out.qc, 
                         filter_sex_mismatch.out.mismatch,
                         relatedness_filtering.out.removed, 
                         params.out)
-        // 14. We want to gather the filtering statistic
-        qc_information = extract_sqc.out.meta \
+        // 18. We want to gather the filtering statistic
+        qc_information = outliers_aneuploidy_excessive_related.out.meta \
             | combine(first_pass_geno.out.meta) \
             | combine(remove_dropout_and_invalid.out.meta) \
             | combine(basic_qc.out.meta) \
