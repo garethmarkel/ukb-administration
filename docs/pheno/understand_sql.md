@@ -255,15 +255,27 @@ FROM    Participant s                            -- using table 'participant', n
 
 ## Example 2: Phenotypes with data-coding
 
-In this section we present an example on how to extract the first instance of a categorical field, and replace the coded values/categories with their actual meaning. 
+In this section we present an example on how to extract the first instance of a categorical field, and replace the coded values/categories with their actual meaning. The example consists on extracting the question "*How many periods did you have in your life lasting two or more weeks where you felt like this?"* (f.20442.0.0). 
 
-The example consists on extracting the question "*How many periods did you have in your life lasting two or more weeks where you felt like this?"* (f.20442.0.0). 
+An illustration of what the code does and the tables that are used and created is included in Figure 2.
+
+
+<center>
+![alt tex](./../img/sql_example2.png) 
+
+**Figure 2.** Diagram of example 2. The code can be divided in two steps, STEP 1, where a temporary table called 'pheno_code' is created, and STEP 2, where Participant and f.20442 tables are joined and values are replaced by their meaning. Please see code below for details. 
+
+
+</center>
+
 
 ``` sql
 .header on
 .mode csv    
 .output NumDepress.csv 		-- Output to file named NumDepress.csv 
 
+-- ### STEP 1 ### --
+--------------------
 -- The following code creates a temporary table named `pheno_code` containing
 -- code.value and code.meaning for all the entries with 
 -- data_meta.field_id=20442:
@@ -277,6 +289,8 @@ JOIN    data_meta dm ON dm.code_id=cm.code_id   -- join dm and cm tables by code
 WHERE   dm.field_id=20442;                      -- select rows with field_id 20442
 
 
+-- ### STEP 2 ### --
+---------------------
 -- The following code creates a dataset that joins
 -- table participant (called s), and table f20442 where withdrawn=0 
 -- For each row in the new dataset:
