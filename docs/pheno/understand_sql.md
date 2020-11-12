@@ -19,7 +19,7 @@ To use the SQL database we must first understand the basic structure of a [relat
 
 In our UK Biobank SQL database, each phenotype is contained in one table with name `fxxxx` (where `xxxx` is the field ID of the phenotype). The `fxxxx` tables are all linked to a 'participant' table through the sample_id field, which contains information about participant withdrawal (Figure below, panel A). 
 
-As discussed in the [previous section](./data_manipulation.md), a large proportion of the data fields within the UK Biobank repository are categorical and use data-coding to map the actual data and the values used to represent it within the database. To include the data-coding matching in the SQL scripts for phenotype extraction, the data-coding tables need to be considered in the SQL script. The structure of these tables are represented in Figure 1, panel B.
+As discussed in the [previous section](./data_manipulation.md), a large proportion of the data fields within the UK Biobank repository are categorical and use data-coding to map the actual data and the values used to represent it within the database. To include the data-coding matching in the SQL scripts for phenotype extraction, the data-coding tables need to be considered in the SQL script. The structure of these tables are illustrated in Figure 1, panel B.
 
 <center>
 ![alt tex](./../img/sql.png)
