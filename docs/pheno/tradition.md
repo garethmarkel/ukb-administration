@@ -100,27 +100,27 @@ In the 'Phenotypes from Health Records Linkage' section, we present an example o
 
 In this example, we will use R code to ascertain those individuals who were give a diagnosis of schizophrenia disorders ([F20 Category](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) in the ICD-10).
 
-    ```
-    library(data.table)
-    library(magrittr)
+``` R
+library(data.table)
+library(magrittr)
 
-    # Read hesin data
-    main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>% 
+# Read hesin data
+main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>% 
                              .[,c("eid", "diag_icd10")] %>% 
                              unique
 
-    hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>% 
-    .[,c("eid", "diag_icd10")] %>% 
-    unique
+hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>% 
+.[,c("eid", "diag_icd10")] %>% 
+unique
 
-    ICD10 <- rbind(main_hesin_ICD10, hesin_diag_ICD10) %>% 
-    .[grepl(c("F200"), diag_icd10),"eid"] %>% 
-    unique 
+ICD10 <- rbind(main_hesin_ICD10, hesin_diag_ICD10) %>% 
+.[grepl(c("F200"), diag_icd10),"eid"] %>% 
+unique 
 
-    samples = fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
-    .[,c("V1", "V2")] %>% # Select the first two columns
-    setnames(., c("V1", "V2"), c("FID", "IID")) %>% # Rename columns
-    .[,SCZ := 0] %>% # Add a SCZ column and initialize to 0 
-    .[IID %in% ICD10$eid, SCZ := 1] # For anyone found to be in the ICD10 object, give them SCZ status of 1
-    ```
+samples = fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
+.[,c("V1", "V2")] %>%                                            # Select the first two columns
+setnames(., c("V1", "V2"), c("FID", "IID")) %>%                  # Rename columns
+.[,SCZ := 0] %>%                                                 # Add a SCZ column and initialize to 0 
+.[IID %in% ICD10$eid, SCZ := 1]                                  # For anyone found to be in the ICD10 object, give them SCZ status of 1
+```
 
