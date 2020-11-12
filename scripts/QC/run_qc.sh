@@ -3,7 +3,7 @@
 #BSUB -J UKB
 #BSUB -R "span[hosts=1]"
 #BSUB -q premium               # target queue for job execution
-#BSUB -W 10:00                # wall clock limit for job
+#BSUB -W 24:00                # wall clock limit for job
 #BSUB -P acc_psychgen             # project to charge time
 #BSUB -o ukb.o
 #BSUB -eo ukb.e
@@ -30,4 +30,5 @@ nextflow run \
     --sql ${root}/software/bin/ukb_sql \
     --drop ${withdrawn} \
     --rel ${related} \
-    --out ukb${id}
+    --out ukb${id} \
+    -resume
