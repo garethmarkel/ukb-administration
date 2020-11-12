@@ -12,7 +12,7 @@ id=18177
 root=/sc/arion/projects/data-ark/ukb/
 application=${root}/application/ukb${id}
 withdrawn=${application}/withdrawn/w18177_20181016.csv
-related=${application}/genotyped/ukb18177_rel_s488251.dat
+related=${application}/genotyped/ukb18177_rel_s488250.dat
 module load java
 nextflow run \
     ${root}/scripts/QC/prepare_ukb.nf \
