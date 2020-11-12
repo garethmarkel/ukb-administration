@@ -14,6 +14,7 @@ nav:
         - pheno/tradition.md
         - pheno/understand_sql.md
     - Genetic analyses:
+        - gwas/qc.md
         - gwas/genotyped_data.md
         - gwas/imputed_data.md
     - For Administrators:
