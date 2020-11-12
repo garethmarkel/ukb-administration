@@ -69,9 +69,9 @@ process basic_qc{
         awk '{print "4. "\$1" snp(s) removed due to missing genotype data (--geno ${geno})"}' > ${out}-basic.meta
     grep removed ${out}-basic-qc.log |\
         grep hwe |\
-        awk '{print "5. "\$1" snp(s) removed due Hardy-Weinberg exact test (--hwe ${hwe})"}' >> ${out}-basic.meta
+        awk '{print "5. "\$2" snp(s) removed due Hardy-Weinberg exact test (--hwe ${hwe})"}' >> ${out}-basic.meta
     grep removed ${out}-basic-qc.log |\
-        grep hwe |\
+        grep minor |\
         awk '{print "6. "\$1" snp(s) removed due to minor allele threshold(s) (${mac})"}' >> ${out}-basic.meta
     """
 }
@@ -329,19 +329,19 @@ process filter_sex_mismatch{
     filter.info <- NULL
     if("${mode}"=="sd"){
         filter.info <-  "(${sdm} ${mode} from mean)"
-        sex.bound <- sex[,.(m=mean(F), s=sd(F)), by="Submitted.Gender"]
+        sex.bound <- sex[,.(m=mean(F), s=sd(F)), by="Sex"]
         sex[,invalid := FALSE]
-        bound <- sex.bound[Submitted.Gender=="M"]
-        sex[   Submitted.Gender=="M" &
+        bound <- sex.bound[Sex=="M"]
+        sex[   Sex=="M" &
             ( F < bound[,m] -bound[,s]*${sdm} ), invalid:=TRUE]
-        bound <- sex.bound[Submitted.Gender=="F"]
-        sex[   Submitted.Gender=="F" &
+        bound <- sex.bound[Sex=="F"]
+        sex[   Sex=="F" &
             (F > bound[,m] + bound[,s]*${sdm}), invalid:=TRUE]
     }else{
         filter.info <- "(Male fstat >${male}; Female fstat < ${female} )"
         sex[,invalid:=FALSE]
-        sex[Submitted.Gender=="M" & F < ${male}, invalid:=TRUE ]
-        sex[Submitted.Gender=="F" & F < ${female}, invalid:=TRUE ]
+        sex[Sex=="M" & F < ${male}, invalid:=TRUE ]
+        sex[Sex=="F" & F < ${female}, invalid:=TRUE ]
     }
     
     invalid <- sex[invalid==TRUE]
@@ -355,7 +355,8 @@ process filter_sex_mismatch{
 
 
 process finalize_data{
-    publishDir "genotyped", mode: 'copy', overwrite: true
+    publishDir "genotyped", mode: 'copy', overwrite: true, pattern: "*snplist"
+    publishDir "genotyped", mode: 'copy', overwrite: true, pattern: "*qc.fam"
     cpus 12
     module 'plink/1.90b6.7'
     memory '1G'
@@ -387,8 +388,9 @@ process finalize_data{
         --make-just-fam \
         --write-snplist \
         --out ${out}-qc
-    sample=`wc -l ${out}-qc.fam`
-    snp=`wc -l ${out}-qc.snplist`
+    rm ${qc_fam}
+    sample=`wc -l ${out}-qc.fam | cut -f 1 -d  " "`
+    snp=`wc -l ${out}-qc.snplist | cut -f 1 -d  " "`
     echo "11. \${sample} sample(s) remaining" > ${out}-final.meta
     echo "12. \${snp} snp(s) remaining" >> ${out}-final.meta
     """
@@ -424,7 +426,7 @@ process relatedness_filtering{
         -o ${out}-invalid.samples \
         -t ${thres} \
         -s ${seed}
-    num=`wc -l ${out}-invalid.samples`
+    num=`wc -l ${out}-invalid.samples| cut -f 1 -d  " "`
     echo "8. \${num} sample(s) removed due to relatedness (Kinship > ${thres})" > ${out}-rel.meta
     """
 }
