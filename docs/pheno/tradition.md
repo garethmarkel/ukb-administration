@@ -86,12 +86,12 @@ The first steps are similar to the basic usage example:
 
     To replace the values with special meaning using R:
 
-    ```
-    data = read.table(file="ndep_episodes.txt", h=T)
+``` R 
+data = read.table(file="ndep_episodes.txt", h=T)
 
-    data$f.20442.0.0 = ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes", 
+data$f.20442.0.0 = ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes", 
 							ifelse(f.20442.0.0 == -818, "Prefer_not_to_answer", f.20442.0.0)
-    ```
+```
 
 
 ## Example 3: Phenotypes from Health Records Linkage 
