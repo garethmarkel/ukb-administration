@@ -346,7 +346,7 @@ process filter_sex_mismatch{
     
     invalid <- sex[invalid==TRUE]
     fileConn <- file("${out}-sex.meta")
-    writeLines(paste0("7. ",nrow(invalid),"sample(s) with mismatch sex information ",filter.info), fileConn)
+    writeLines(paste0("7. ",nrow(invalid)," sample(s) with mismatch sex information ",filter.info), fileConn)
     close(fileConn)
     fwrite(invalid, "${out}.sex-mismatch", sep="\\t")
     fwrite(sex[invalid==FALSE], "${out}.sex-valid", sep="\\t")
