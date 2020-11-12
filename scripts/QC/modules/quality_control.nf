@@ -1,30 +1,4 @@
-process first_pass_geno{
-    cpus 12
-    module 'plink/1.90b6.7'
-    executor 'lsf'
-    memory '1G'
-    input:
-        tuple   path(bed),
-                path(bim),
-                path(fam)
-        val(geno)
-        val(out)
-    output:
-        path "${out}-geno${geno}.snplist", emit: snp
-        path "${out}-geno.meta", emit: meta
-    script:
 
-    """
-    plink   --bed ${bed} \
-            --bim ${bim} \
-            --fam ${fam} \
-            --geno ${geno} \
-            --write-snplist \
-            --out ${out}-geno${geno}
-    grep removed ${out}-geno${geno}.log |\
-        awk '{print "1. First pass geno filter (--geno ${geno}) removed: "\$1" snp(s)"}' > ${out}-geno.meta
-    """
-}
 
 process remove_dropout_and_invalid{
     module 'R'
@@ -52,7 +26,7 @@ process remove_dropout_and_invalid{
     rbind(invalid, fam) %>%
         fwrite(., "${out}-remove", sep="\\t")
     fileConn <- file("${out}-dropout.meta")
-    writeLines(paste0("3. ",nrow(dropout),"sample(s) withdrawn their consent"), fileConn)
+    writeLines(paste0("2. ",nrow(dropout),"sample(s) withdrawn their consent"), fileConn)
     close(fileConn)
     """
 }
@@ -66,7 +40,6 @@ process basic_qc{
         tuple   path(bed),
                 path(bim),
                 path(fam)
-        path(snplist)
         path(eur)
         path(remove)
         val(hwe)
@@ -93,18 +66,18 @@ process basic_qc{
             --remove ${remove} 
     grep removed ${out}-basic-qc.log |\
         grep geno |\
-        awk '{print "5. "\$1" snp(s) removed due to missing genotype data (--geno ${geno})"}' > ${out}-basic.meta
+        awk '{print "4. "\$1" snp(s) removed due to missing genotype data (--geno ${geno})"}' > ${out}-basic.meta
     grep removed ${out}-basic-qc.log |\
         grep hwe |\
-        awk '{print "6. "\$1" snp(s) removed due Hardy-Weinberg exact test (--hwe ${hwe})"}' >> ${out}-basic.meta
+        awk '{print "5. "\$1" snp(s) removed due Hardy-Weinberg exact test (--hwe ${hwe})"}' >> ${out}-basic.meta
     grep removed ${out}-basic-qc.log |\
         grep hwe |\
-        awk '{print "7. "\$1" snp(s) removed due to minor allele threshold(s) (${mac})"}' >> ${out}-basic.meta
+        awk '{print "6. "\$1" snp(s) removed due to minor allele threshold(s) (${mac})"}' >> ${out}-basic.meta
     """
 }
 
 process extract_eur{
-    publishDir "genotype", mode: 'copy', overwrite: true, pattern: '*EUR'
+    publishDir "genotyped", mode: 'copy', overwrite: true, pattern: '*EUR'
     publishDir "plots", mode: 'copy', overwrite: true, pattern: '*png'
     module 'R'
     executor 'lsf'
@@ -143,7 +116,7 @@ process extract_eur{
     fwrite(cov[clusters==max.cluster,c("FID", "IID")], "${out}-${kmean}mean-EUR", quote=F, na="NA", sep="\\t")
 
     fileConn <- file("${out}-eur.meta")
-    writeLines(paste0("4. ",nrow(eur)," european sample(s) identified using ${kmean}-mean clustering"), fileConn)
+    writeLines(paste0("3. ",nrow(eur)," european sample(s) identified using ${kmean}-mean clustering"), fileConn)
     close(fileConn)
     """
 }
@@ -373,7 +346,7 @@ process filter_sex_mismatch{
     
     invalid <- sex[invalid==TRUE]
     fileConn <- file("${out}-sex.meta")
-    writeLines(paste0("8. ",nrow(invalid),"sample(s) with mismatch sex information ",filter.info), fileConn)
+    writeLines(paste0("7. ",nrow(invalid),"sample(s) with mismatch sex information ",filter.info), fileConn)
     close(fileConn)
     fwrite(invalid, "${out}.sex-mismatch", sep="\\t")
     fwrite(sex[invalid==FALSE], "${out}.sex-valid", sep="\\t")
@@ -382,7 +355,7 @@ process filter_sex_mismatch{
 
 
 process finalize_data{
-    publishDir "genotype", mode: 'copy', overwrite: true
+    publishDir "genotyped", mode: 'copy', overwrite: true
     cpus 12
     module 'plink/1.90b6.7'
     memory '1G'
@@ -416,8 +389,8 @@ process finalize_data{
         --out ${out}-qc
     sample=`wc -l ${out}-qc.fam`
     snp=`wc -l ${out}-qc.snplist`
-    echo "12. \${sample} sample(s) remaining" > ${out}-final.meta
-    echo "13. \${snp} snp(s) remaining" >> ${out}-final.meta
+    echo "11. \${sample} sample(s) remaining" > ${out}-final.meta
+    echo "12. \${snp} snp(s) remaining" >> ${out}-final.meta
     """
 
 
@@ -452,13 +425,13 @@ process relatedness_filtering{
         -t ${thres} \
         -s ${seed}
     num=`wc -l ${out}-invalid.samples`
-    echo "9. \${num} sample(s) removed due to relatedness (Kinship > ${thres})" > ${out}-rel.meta
+    echo "8. \${num} sample(s) removed due to relatedness (Kinship > ${thres})" > ${out}-rel.meta
     """
 }
 
 process extract_first_degree{
-    publishDir "genotype", mode: 'copy', overwrite: true, pattern: "*parents"
-    publishDir "genotype", mode: 'copy', overwrite: true, pattern: "*sibs"
+    publishDir "genotyped", mode: 'copy', overwrite: true, pattern: "*parents"
+    publishDir "genotyped", mode: 'copy', overwrite: true, pattern: "*sibs"
     publishDir "plots", mode: 'copy', overwrite: true, pattern: "*png"
     cpus 1
     memory '10G'
@@ -498,8 +471,8 @@ process extract_first_degree{
     related[IBS0<0.001, group:="Parents"]
 
     fileConn <- file("${out}-family.meta")
-    input <- c(paste0("10. ",nrow(related[group=="Parents"])," parent(s) were extracted into ${out}.parents"), 
-        paste0("11. ",nrow(related[group!="Parents"])," sibling(s) were extracted into ${out}.sibs"))
+    input <- c(paste0("9. ",nrow(related[group=="Parents"])," parent(s) were extracted into ${out}.parents"), 
+        paste0("10. ",nrow(related[group!="Parents"])," sibling(s) were extracted into ${out}.sibs"))
     writeLines(input, fileConn)
     close(fileConn)
     p <- ggplot(related, aes(x=Kinship, y=IBS0, color=group))+\
