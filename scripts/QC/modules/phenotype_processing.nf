@@ -260,7 +260,7 @@ process extract_pcs{
     sqlite3 ${sql} < sql
     """
 }
-process outliers_aneuploidy{
+process outliers_aneuploidy_related{
     publishDir "phenotype", mode: 'copy', overwrite: true, pattern: "*outliers"
     label 'normal'
     input:
@@ -288,6 +288,11 @@ process outliers_aneuploidy{
         FROM    f22027 outlier 
         WHERE   outlier.pheno = 1 AND
                 outlier.instance = 0
+        UNION 
+        SELECT sample_id
+        FROM    f22021 related
+        WHERE   related.pheno = 10 AND
+                related.instance = 0
     )as subquery;
 
     SELECT  s.sample_id AS FID,

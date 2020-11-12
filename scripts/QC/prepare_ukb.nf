@@ -82,7 +82,7 @@ include {   construct_sql;
             decrypt_files; 
             encode_files;
             generate_field_finder;
-            outliers_aneuploidy;
+            outliers_aneuploidy_related;
             extract_batch;
             extract_pcs;
             extract_biological_sex;
@@ -194,7 +194,7 @@ workflow plink_qc{
     main:
         // 1. Extract ID of samples with excessive relatedness, excessive heterozygousity and missingness
         //    or sex aneuploidy       
-        outliers_aneuploidy(sql, "${params.out}")
+        outliers_aneuploidy_related(sql, "${params.out}")
         // 2. Extract genotyping batch information from the sql
         //    we don't extract centre as assessment centre changed depending on instance
         extract_batch(sql, "${params.out}")
@@ -212,7 +212,7 @@ workflow plink_qc{
        
         // 7. Now remove all drop outs and samples that failed the UK Biobank QC
         remove_dropout_and_invalid( genotype, 
-                                    outliers_aneuploidy.out.outliers, 
+                                    outliers_aneuploidy_related.out.outliers, 
                                     withdrawn, 
                                     params.out)
         // 8. Need to account for either using maf or mac filtering
@@ -284,7 +284,7 @@ workflow plink_qc{
                         relatedness_filtering.out.removed, 
                         params.out)
         // 17. We want to gather the filtering statistic
-        qc_information = outliers_aneuploidy.out.meta \
+        qc_information = outliers_aneuploidy_related.out.meta \
             | combine(remove_dropout_and_invalid.out.meta) \
             | combine(basic_qc.out.meta) \
             | combine(extract_eur.out.meta) \
