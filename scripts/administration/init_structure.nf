@@ -174,7 +174,8 @@ process combine_genotype{
     plink \
         --merge-list merge_list \
         --make-bed \
-        --out ukb
+        --out ukb \
+        --indiv-sort file \$fam
     """
 }
 
