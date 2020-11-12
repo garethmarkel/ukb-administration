@@ -5,7 +5,8 @@
 process construct_sql{
     publishDir "phenotype" , mode: 'copy', overwrite: true
     module 'cmake'
-    time '12h'
+    time '24h'
+    queue 'premium' 
     cpus '1'
     memory '20G'
     executor 'lsf'
@@ -139,8 +140,8 @@ process extract_batch{
     // We don't extract centre as the centre can change depending on the instance
     label 'normal'
     input:
-        path(sql)
-        path(out)
+        path(db)
+        val(out)
     output:
         path("${out}.batch")
     script:
@@ -155,18 +156,17 @@ process extract_batch{
             cm.meaning AS meaning 
     FROM    code cm               
     JOIN    data_meta dm ON 
-            dm.coding=cm.code_id
+            dm.code_id=cm.code_id
     WHERE   dm.field_id=22000;    
-    
     SELECT      s.sample_id AS FID,
                 s.sample_id AS IID,
                 COALESCE(
                     batch_code.meaning, 
-                    batch.pheno) AS Batch,
+                    batch.pheno) AS Batch
     FROM        f22000 batch
     JOIN        Participant s
     LEFT JOIN   batch_code ON        
-                batch_code.value=batch.pheno 
+                batch_code.value = batch.pheno
     WHERE       batch.instance=0 AND
                 s.sample_id = batch.sample_id AND
                 s.withdrawn = 0;
@@ -183,8 +183,9 @@ process generate_covariates{
     input:
         path(batch)
         path(pca)
+        val(out)
     output:
-        path("${out}.covariates")
+        path("${out}.covar")
     script:
     """
     #!/usr/bin/env Rscript
@@ -194,9 +195,10 @@ process generate_covariates{
     batch <- fread("${batch}")
     pca <- dcast(pcs, FID+IID~Num, value.var="PCs")
     setnames(pca, as.character(c(1:40)), c(paste0("PC",1:40)))
-    merge(batch, pca) %>%
+    merge(batch, pca, by = c("FID", "IID")) %>%
         na.omit %>%
-        fwrite(., "${out}.covariates", sep="\\t")
+        .[, Batch := gsub("\\"", "", Batch)] %>%
+        fwrite(., "${out}.covar", sep="\\t")
     """
 }
 
@@ -206,7 +208,7 @@ process extract_biological_sex{
     label 'normal'
     input:
         path(sql)
-        path(out)
+        val(out)
     output:
         path("${out}.bioSex")
     script:
@@ -226,7 +228,7 @@ process extract_biological_sex{
     WHERE       s.withdrawn = 0;
     .quit
         " > sql;
-    sqlite3 ${db} < sql
+    sqlite3 ${sql} < sql
     """
 }
 process extract_pcs{
@@ -234,7 +236,7 @@ process extract_pcs{
     label 'normal'
     input:
         path(sql)
-        path(out)
+        val(out)
     output:
         path("${out}.pcs")
     script:
@@ -255,15 +257,15 @@ process extract_pcs{
     WHERE       s.withdrawn = 0;
     .quit
         " > sql;
-    sqlite3 ${db} < sql
+    sqlite3 ${sql} < sql
     """
 }
-process outliers_aneuploidy_excessive_related{
-    publishDir "phenotype", mode: 'copy', overwrite: true
+process outliers_aneuploidy{
+    publishDir "phenotype", mode: 'copy', overwrite: true, pattern: "*outliers"
     label 'normal'
     input:
-        path(sql)
-        path(out)
+        path(db)
+        val(out)
     output:
         path "${out}.outliers", emit: outliers
         path "${out}-het.meta", emit: meta
@@ -279,18 +281,13 @@ process outliers_aneuploidy_excessive_related{
     FROM(
         SELECT  sample_id
         FROM    f22019 aneuploidy 
-        WHERE   aneuploidy.pheno = "1" AND
+        WHERE   aneuploidy.pheno = 1 AND
                 aneuploidy.instance = 0
         UNION 
         SELECT  sample_id
         FROM    f22027 outlier 
-        WHERE   outlier.pheno = "1" AND
+        WHERE   outlier.pheno = 1 AND
                 outlier.instance = 0
-                UNION 
-        SELECT  sample_id
-        FROM    f682 related 
-        WHERE   related.pheno = "1" AND
-                related.instance = 0
     )as subquery;
 
     SELECT  s.sample_id AS FID,
@@ -302,7 +299,8 @@ process outliers_aneuploidy_excessive_related{
     .quit
         " > sql;
     sqlite3 ${db} < sql
-    num=`wc -l ${out}.outliers`
-    echo "2. \${num} -1 sample(s) with excessive het, missing or relatives, or have aneuploidy sex according to uk biobank" > ${out}-het.meta
+    num=`wc -l ${out}.outliers | cut -f 1 -d  " "`
+    res=\$((num-1))
+    echo "1. \${res} sample(s) with excessive het or missingness, or have aneuploidy sex according to uk biobank" > ${out}-het.meta
     """
 }
