@@ -5,14 +5,14 @@ process get_software_version{
         val(out)
         path("*")
     output:
-        path("${out}.log")
+        path("${out}-software.log")
     script:
     """
     for i in `ls`; 
     do
         ./\$i -v >> ${out}.tmp 2>&1
     done
-    awk '{print "@"\$0}' ${out}.tmp > ${out}.log
+    awk '{print "@"\$0}' ${out}.tmp > ${out}-software.log
     """
 }
 
