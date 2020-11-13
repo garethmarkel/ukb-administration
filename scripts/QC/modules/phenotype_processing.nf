@@ -306,6 +306,6 @@ process outliers_aneuploidy_related{
     sqlite3 ${db} < sql
     num=`wc -l ${out}.outliers | cut -f 1 -d  " "`
     res=\$((num-1))
-    echo "1. \${res} sample(s) with excessive het or missingness, or have aneuploidy sex according to uk biobank" > ${out}-het.meta
+    echo "1. \${res} sample(s) with excessive het, relatedness or missingness, or have aneuploidy sex according to uk biobank" > ${out}-het.meta
     """
 }

@@ -209,12 +209,12 @@ workflow plink_qc{
                         params.kmean, 
                         params.seed, 
                         params.out)
-       
         // 7. Now remove all drop outs and samples that failed the UK Biobank QC
         remove_dropout_and_invalid( genotype, 
                                     outliers_aneuploidy_related.out.outliers, 
                                     withdrawn, 
                                     params.out)
+        
         // 8. Need to account for either using maf or mac filtering
         maf = params.maf
         if(!params.maf && !params.mac){
