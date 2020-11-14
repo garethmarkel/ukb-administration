@@ -11,7 +11,7 @@
 id=18177
 root=/sc/arion/projects/data-ark/ukb/
 application=${root}/application/ukb${id}
-withdrawn=${application}/withdrawn/w18177_20181016.csv
+withdrawn=${application}/withdrawn/w18177_20200820.csv
 related=${application}/genotyped/ukb18177_rel_s488250.dat
 module load java
 nextflow run \
