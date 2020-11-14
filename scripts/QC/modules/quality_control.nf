@@ -404,6 +404,7 @@ process relatedness_filtering{
     executor 'lsf'
     memory '10G'
     time '1h'
+    module 'cmake'
     input: 
         path(greedy)
         path(related)
