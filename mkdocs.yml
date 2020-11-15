@@ -13,8 +13,8 @@ nav:
         - pheno/data_manipulation.md
         - pheno/tradition.md
         - pheno/understand_sql.md
+        - pheno/qc.md
     - Genetic analyses:
-        - gwas/qc.md
         - gwas/genotyped_data.md
         - gwas/imputed_data.md
     - For Administrators:
