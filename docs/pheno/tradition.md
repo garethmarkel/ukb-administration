@@ -96,26 +96,38 @@ data$f.20442.0.0 = ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes",
 
 ## Example 3: Phenotypes from Health Records Linkage 
 
-In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding and HESIN tables.
+In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding and 1. summary level data from the main UKB dataset and 2. record-level data and the HESIN tables.
 
-In this example, we will use R code to ascertain those individuals who were give a diagnosis of schizophrenia disorders ([F20 Category](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) in the ICD-10).
+We will use R code to ascertain those individuals who were give a diagnosis of schizophrenia disorders ([F20 Category](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) in the ICD-10).
+
+### 1. Extraction using summary-level data 
+
+``` R
+data = read.table(file="path to main UKB dataset")        # Read in the file
+
+SCZ = apply(data[,grep("f.41270.0", colnames(data))], 1, function(row) "F200" %in% row)
+
+data$SCZ[c(SCZ)] = 1
+```
+
+### 2. Extraction using record-level data and the HESIN tables
 
 ``` R
 library(data.table)
 library(magrittr)
 
 # Read hesin data
-main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>% 
-                             .[,c("eid", "diag_icd10")] %>% 
-                             unique
+main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>%            # Read in the file 
+                             .[,c("eid", "diag_icd10")] %>%                        # Extract the eid and diag columns
+                             unique                                                # Remove repeated diagnosis
 
-hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>% 
+hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>%     
 .[,c("eid", "diag_icd10")] %>% 
 unique
 
-ICD10 <- rbind(main_hesin_ICD10, hesin_diag_ICD10) %>% 
-.[grepl(c("F200"), diag_icd10),"eid"] %>% 
-unique 
+ICD10 <- rbind(main_hesin_ICD10, hesin_diag_ICD10) %>%           # Combine the two data tables
+.[grepl(c("F200"), diag_icd10),"eid"] %>%                        # Extract the EID for anyone with diag_icd10 = F200* 
+unique                                                           # Remove duplicated eids
 
 samples = fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
 .[,c("V1", "V2")] %>%                                            # Select the first two columns

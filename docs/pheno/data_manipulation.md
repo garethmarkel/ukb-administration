@@ -171,19 +171,19 @@ Apart from their use in interpreting the values of a data-field, a data-coding a
 
 UK Biobank follows up participant's health through linkage to medical records. Upon joining UK Biobank, participants sign a consent form to allow UK Biobank to access their medical and other health-related records for research purposes. Additionally, UK Biobank has routinely linked to national death and cancer registries and to national hospital data electronic record systems for all its participants since 2010.
 
-
-
-
 ### Hospital inpatient episodes
 
 Inpatient hospital data for the UK Biobank cohort contains information on when a particular diagnosis or procedure was recorded in the hospital data. This information was obtained through linkage to external data providers. 
 Inpatients are defined as persons who are admitted to hospital and occupy a hospital bed. Diagnoses are coded according to the World Health Organization’s International Classification of Diseases and Related Health Problems (Both [ICD-10](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) and [ICD-9](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41271) codes are available). All operations and procedures are coded according to the Office of Population, Censuses and Surveys [(OPCS)](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41272). Click [here](https://biobank.ndph.ox.ac.uk/ukb/ukb/docs/HospitalEpisodeStatistics.pdf) for more details on the UK Biobank Hospital inpatient data.
 
-**Due to the format and complexity of the record-level data, data on Hospital inpatient episodes is not provided as part of the main UK Biobank dataset but as separate data tables**. 
-It is also important to note that the hospital inpatient data is available to researchers in two formats: summary and record-level data. Detailed explanations about data collection and the two data formats available can be found [here](https://biobank.ndph.ox.ac.uk/ukb/label.cgi?id=2000).
+It is important to note that the hospital inpatient data is available to researchers in two formats: summary and record-level data. Detailed explanations about data collection and the two data formats available can be found [here](https://biobank.ndph.ox.ac.uk/ukb/label.cgi?id=2000).
 
-#### Record-level inpatient data
-Record level inpatient data is divided into seven interrelated database tables. The core table is "hesin", which connects to the subsidiary tables via a "record_id" field.
+#### Summary-level hospital inpatient data
+
+UK Biobank has created summary fields that provide information about diagnoses and operations/procedures and their first known occurrence dates. This information may be sufficient for many researchers’ needs. Summary data on Hospital Inpatient episodes is provided as part of the main UK Biobank dataset (i.e. field [41270](https://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=41270) for ICD-10 diagnoses). More information about summary-level hospital inpatient data can be found [here](https://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=2000).
+
+#### Record-level hospital inpatient data
+This is a rawer form of the hospital inpatient data, which is divided into seven interrelated database tables. The core table is "hesin", which connects to the subsidiary tables via a "record_id" field.
 
 <center>
 ![HES_tables](../img/HES_tables.png)
@@ -205,10 +205,6 @@ Below there is an example of how a *hesin* table looks like. For a hesin table, 
 |     5123456    |     4223415      |                   |     M8414         |                   |     2005-10-05    |     2005-10-05    |     2005-10-05    |     W231     |
 
 <p>&nbsp;</p>
-
-#### Summary-level hospital inpatient data
-
-UK Biobank has also created summary fields that provide the first date of any given diagnostic or operation code, which may be sufficient for many researchers’ needs. More information about summary-level hospital inpatient data can be found [here](https://biobank.ctsu.ox.ac.uk/crystal/label.cgi?id=2000).
 
 ### Primary care (To do)
 
