@@ -87,9 +87,9 @@ The first steps are similar to the basic usage example:
     To replace the values with special meaning using R:
 
 ``` R 
-data = read.table(file="ndep_episodes.txt", h=T)
+data <- read.table(file="ndep_episodes.txt", h=T)
 
-data$f.20442.0.0 = ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes", 
+data$f.20442.0.0 <- ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes", 
 							ifelse(f.20442.0.0 == -818, "Prefer_not_to_answer", f.20442.0.0)
 ```
 
@@ -101,14 +101,27 @@ In the 'Phenotypes from Health Records Linkage' section, we present an example o
 We will use R code to ascertain those individuals who were give a diagnosis of schizophrenia disorders ([F20 Category](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) in the ICD-10).
 
 ### 1. Extraction using summary-level data 
+1. First, extract the ICD10 code from the phenotype file
 
-``` R
-data = read.table(file="path to main UKB dataset")        # Read in the file
+    ```bash
+    grep 41270  ukb44504.field_finder  | \
+        awk 'BEGIN {printf "awk \x27{print \$1"} {printf "\"\\t\"\$"$1} END {print "}\x27  ukb44504.tab > icd10.pheno"} '  | \
+        bash
+    ```
+    
+    !!! Note
 
-SCZ = apply(data[,grep("f.41270.0", colnames(data))], 1, function(row) "F200" %in% row)
+        This script only works when we know which file the ICD10 fields are located at
 
-data$SCZ[c(SCZ)] = 1
-```
+2. Assign phenotype code with R
+
+    ``` R
+    data <- read.table(file="icd10.pheno", header=T)        # Read in the file
+    data$SCZ <- 
+    SCZ <- apply(data[,grep("f.41270.0", colnames(data))], 1, function(row) "F200" %in% row)
+    dat$SCZ <- apply(dat[,-1], 1, function(x){as.numeric(sum(grepl("F20.", x)) > 1)})
+    res <- data.frame(FID = dat$f.eid, IID = dat$f.eid, SCZ = dat$SCZ)
+    ```
 
 ### 2. Extraction using record-level data and the HESIN tables
 
@@ -117,22 +130,22 @@ library(data.table)
 library(magrittr)
 
 # Read hesin data
-main_hesin_ICD10 = fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>%            # Read in the file 
-                             .[,c("eid", "diag_icd10")] %>%                        # Extract the eid and diag columns
-                             unique                                                # Remove repeated diagnosis
+main_hesin_ICD10 <- fread(file="ukbXXXXXX.hesin.tsv", h=T, sep="\t") %>%            # Read in the file 
+                             .[,c("eid", "diag_icd10")] %>%                         # Extract the eid and diag columns
+                             unique                                                 # Remove repeated diagnosis
 
-hesin_diag_ICD10 = fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>%     
-.[,c("eid", "diag_icd10")] %>% 
-unique
+hesin_diag_ICD10 <- fread(file="ukbXXXXXX.hesin_diag10.tsv", h=T, sep="\t") %>%     
+    .[,c("eid", "diag_icd10")] %>% 
+    unique
 
 ICD10 <- rbind(main_hesin_ICD10, hesin_diag_ICD10) %>%           # Combine the two data tables
-.[grepl(c("F200"), diag_icd10),"eid"] %>%                        # Extract the EID for anyone with diag_icd10 = F200* 
-unique                                                           # Remove duplicated eids
+    .[grepl(c("F200"), diag_icd10),"eid"] %>%                    # Extract the EID for anyone with diag_icd10 = F200* 
+    unique                                                       # Remove duplicated eids
 
-samples = fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
-.[,c("V1", "V2")] %>%                                            # Select the first two columns
-setnames(., c("V1", "V2"), c("FID", "IID")) %>%                  # Rename columns
-.[,SCZ := 0] %>%                                                 # Add a SCZ column and initialize to 0 
-.[IID %in% ICD10$eid, SCZ := 1]                                  # For anyone found to be in the ICD10 object, give them SCZ status of 1
+samples <- fread(file="ukbXXXXXX_cal_chr1_v2_s488295.fam") %>% 
+    .[,c("V1", "V2")] %>%                                        # Select the first two columns
+    setnames(., c("V1", "V2"), c("FID", "IID")) %>%              # Rename columns
+    .[,SCZ := 0] %>%                                             # Add a SCZ column and initialize to 0 
+    .[IID %in% ICD10$eid, SCZ := 1]                              # For anyone found to be in the ICD10 object, give them SCZ status of 1
 ```
 
