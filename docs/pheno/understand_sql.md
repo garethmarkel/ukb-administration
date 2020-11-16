@@ -53,7 +53,7 @@ fxxxx (where xxxx is the field ID of the phenotype)
     <td>sample_id</td>
     <td>ID of UKB Samples</td>
     <td>int</td>
-    <td>primary key in this table</td>
+    <td>foreign (Participant:sample_id)</td>
 </tr>
 <tr>
     <td>pheno</td>
@@ -213,15 +213,15 @@ where `command.sql` is the sql command file containing the following header:
 
     - Command SELECT --> indicates the columns that we select
 
-    - Command WHERE --> indicates the rows that we select 
+    - Command WHERE --> indicates the row filtering criteria
 
 
-Below we provide users with the same tree examples that we used in the [Phenotype extraction - Plain text](./tradition.md) section, but here we extract the phenotypes using the SQL database:
+Below we provide users with the same three examples that we used in the [Phenotype extraction - Plain text](./tradition.md) section, but here we extract the phenotypes using the SQL database:
 
 
 ## Example 1: Basic usage
 
-In the 'Basic usage' section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
+In the [Basic usage](tradition.md/#example-1-basic-usage) section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
 
 ``` sql
 .header on
@@ -323,7 +323,7 @@ WHERE       depress.instance=0 AND
 ## Example 3: Phenotypes from Health Records Linkage
 
 
-In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding 
+In the [Phenotypes from Health Records Linkage](tradition.md/#example-3-phenotypes-from-health-records-linkage) section, we present an example on how to extract information from Health Records, using the ICD-10 coding 
 
 ``` sql
 .header on
@@ -334,11 +334,11 @@ SELECT  s.sample_id AS FID,
         s.sample_id AS IID,
         (CASE WHEN s.sample_id IN
            (
-                SELECT  xx.sample_id
-                FROM    f41270 as xx
+                SELECT  icd10.sample_id
+                FROM    f41270 as icd10
                 WHERE   pheno LIKE '"F20_"' -- with this you dont need to creat a SCZ table
                         AND instance=0
-                        AND s.sample_id=xx.sample_id
+                        AND s.sample_id=icd10.sample_id
             )
             THEN 1          -- samples found in scz table are cases (1)
             ELSE 0

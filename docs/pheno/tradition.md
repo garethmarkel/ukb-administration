@@ -13,7 +13,7 @@ In this section, we provide a step by step tutorial of **1.** how to extract a p
 
 ## Example 1: Basic usage
 
-In the 'Basic usage' section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
+In the [Basic usage](understasnd_sql/#example-1-basic-usage) section, we present an example on how to extract the first instance of the phenotype 'Height' (f.50.0.0) from UK Biobank.
 
 1. Go into `phenotype/raw/`. Inside that folder, you will see two types of files: ukbXXXXX.tab and ukbXXXXX.field_finder.
 
@@ -96,7 +96,7 @@ data$f.20442.0.0 <- ifelse(f.20442.0.0 == -999, "Too_many/runnning_episodes",
 
 ## Example 3: Phenotypes from Health Records Linkage 
 
-In the 'Phenotypes from Health Records Linkage' section, we present an example on how to extract information from Health Records, using the ICD-10 coding and 1. summary level data from the main UKB dataset and 2. record-level data and the HESIN tables.
+In the [Phenotypes from Health Records Linkage](understand_sql.md/#example-3-phenotypes-from-health-records-linkage) section, we present an example on how to extract information from Health Records, using the ICD-10 coding and 1. summary level data from the main UKB dataset and 2. record-level data and the HESIN tables.
 
 We will use R code to ascertain those individuals who were give a diagnosis of schizophrenia disorders ([F20 Category](https://biobank.ctsu.ox.ac.uk/crystal/field.cgi?id=41270) in the ICD-10).
 
