@@ -94,7 +94,7 @@ For example, if there is a person who recorded 47 items for treatment medication
 
 <center>
 
-| f.eid   |&nbsp;f.20003.0.<span style="color:red">1</span> &nbsp; | &nbsp; f.20003.0.<span style="color:red">2</span> &nbsp; | &nbsp; f. 20003.0.<span style="color:red">3</span> &nbsp; | &nbsp; … |&nbsp; f. 20003.0.<span style="color:red">47</span> &nbsp; |
+| f.eid   |&nbsp;f.20003.0.<span style="color:green">1</span> &nbsp; | &nbsp; f.20003.0.<span style="color:green">2</span> &nbsp; | &nbsp; f. 20003.0.<span style="color:green">3</span> &nbsp; | &nbsp; … |&nbsp; f. 20003.0.<span style="color:green">47</span> &nbsp; |
 |---------|-------------|-------------|--------------|----|---------------|
 | 5967229 | NA          | NA          | NA           | … | NA            |
 | 4674807 | 178         | 1754        | NA           | … | NA            |
