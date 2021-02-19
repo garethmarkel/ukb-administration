@@ -222,19 +222,13 @@ if [ "${has_exome}" == "yes" ]; then
     do
         ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
     done
-    # Now work on qVCF
-    cd ${dir}/exome/qVCF
-    rm -rf * # Remove everything just in case
-    for f in ${root}/.exome/qVCF/*vcf.gz; do
-        name="$(basename -- ${f})"
-        name="${name/UKBexomeOQFE/ukb${id}}"
-        ln -s ${f} ${name} 2> /dev/null
-    done
 else
     cd ${dir}
     rm -rf exome/PLINK
-    rm -rf exome/qVCF
 fi
+
+
+
 ####################################################
 #                                                  #
 #             Add Phenotype folder                 #
