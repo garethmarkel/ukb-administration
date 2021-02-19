@@ -130,9 +130,9 @@ workflow download_exome{
         // population level: PLINK + pVCF
         // individual level: VCF + CRAM
         // download PLINK format exome files
-	obtain_exome_plink(chr, gfetch, key)
-	// download qVCF format exome files
-	obtain_exome_qvcf(chr, gfetch, key)
+        // cannot download master copy of qVCF 
+        // because each qVCF file will contain the sample ID
+	    obtain_exome_plink(chr, gfetch, key)
         // finally, download the bim files
         obtain_exome_bim()
 }
@@ -154,20 +154,6 @@ process obtain_exome_plink{
     """
     ./${gfetch} 23155 -c${chr} -a${key}
     mv ukb23155_c${chr}_*.bed UKBexomeOQFE_chr${chr}.bed
-    """
-}
-process obtain_exome_qvcf{
-    publishDir ".exome/qVCF", mode: 'move'
-    input:
-        each chr
-        path(gfetch)
-        path(key)
-    output:
-        path("UKBexomeOQFE_chr${chr}.vcf.gz")
-    script:
-    """
-    ./${gfetch} 23156 -c${chr} -a${key}
-    mv ukb23156_c${chr}*.vcf.gz UKBexomeOQFE_chr${chr}.vcf.gz
     """
 }
 process combine_genotype{
