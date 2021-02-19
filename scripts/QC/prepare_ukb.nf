@@ -142,6 +142,8 @@ workflow{
     build_sql(extract_ukb_pheno.out.pheno)
     // 4. Perform the QC filtering
     plink_qc(build_sql.out)
+    // 5. Try to download qVCF, will fail if not have access
+    download_exome_with_id()
     // 5. Generate the log file
     generate_log(   check_version.out.version_info, 
                     plink_qc.out.qc_info)
