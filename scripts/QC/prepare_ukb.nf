@@ -48,6 +48,7 @@ if(params.help){
     System.out.println("    --rel       Path to relatedness file")
     System.out.println("    --sql       Path to ukb_sql executable")
     System.out.println("    --unpack    Path to ukbunpack executable")
+    System.out.println("    --gfetch    Path to gfetch executable")
     System.out.println("Filtering parameters:")
     System.out.println("    --geno      Genotype missingness. Default: ${params.geno}")
     System.out.println("    --kmean     Number of kmean for pca clustering. Default: ${params.kmean}")
@@ -89,6 +90,7 @@ include {   construct_sql;
             generate_covariates    } from './modules/phenotype_processing'
 include {   get_software_version;
             combine_meta;
+            obtain_exome_qvcf;
             write_log    } from './modules/misc.nf'
 include {   extract_eur;
             remove_dropout_and_invalid;
@@ -113,12 +115,16 @@ code_showcase=Channel.fromPath("${params.code}")
 data_showcase=Channel.fromPath("${params.data}")
 drug=Channel.fromPath("${params.drug}")
 encoding=Channel.fromPath("${params.encoding}")
+gfetch = Channel.fromPath("${params.gfetch}")
 genotype = Channel
             .fromFilePairs("${params.bfile}.{bed,bim,fam}",size:3, flat : true){ file -> file.baseName }  
             .ifEmpty { error "No matching plink files" }        
             .map { a -> [fileExists(a[1]), fileExists(a[2]), fileExists(a[3])] } 
 gp=Channel.fromPath("${params.gp}")
 greedy=Channel.fromPath("${params.greed}")
+keys = Channel.fromPath("${params.key}/*") \
+    | flatten \
+    | map{ file -> tuple(file.getBaseName(), file)} 
 rel = Channel.fromPath("${params.rel}")            
 ukbconv = Channel.fromPath("${params.conv}")
 ukbsql=Channel.fromPath("${params.sql}")
@@ -137,11 +143,17 @@ workflow{
     // 4. Perform the QC filtering
     plink_qc(build_sql.out)
     // 5. Generate the log file
-
     generate_log(   check_version.out.version_info, 
                     plink_qc.out.qc_info)
 }
 
+workflow download_exome_with_id{
+    chr = Channel.of(1..22, "X", "Y")
+    key = keys \
+        | first \
+        | map{ a -> [ a[1]]}
+    obtain_exome_qvcf(chr, "${params.bfile}", gfetch, key)
+}
 workflow check_version{
     main:
         software = greedy \
@@ -156,9 +168,6 @@ workflow extract_ukb_pheno{
         encrypt = Channel.fromPath("${params.encrypt}/*")
             .flatten()
             .map{ file -> tuple(file.getBaseName(), file)}
-        keys = Channel.fromPath("${params.key}/*") 
-            .flatten()
-            .map{ file -> tuple(file.getBaseName(), file)} 
         keys \
             | join(encrypt, by: [0]) \
             | combine(ukbunpack) \
