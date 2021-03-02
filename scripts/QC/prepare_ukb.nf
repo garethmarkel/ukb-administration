@@ -154,8 +154,14 @@ workflow{
 }
 
 workflow download_exome_with_id{
+    key = keys  \
+        | first \
+        | map { a -> [ a[1]]}
     get_pVCF_block() \
         | pVCF_block_info \
+        | splitCsv(header: true) \
+        | map{ a -> [   a.chr,
+                        a.block]} \
         | combine(gfetch) \
         | combine(key) \
         | download_exome_pvcf

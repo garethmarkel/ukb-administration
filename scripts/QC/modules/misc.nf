@@ -118,6 +118,7 @@ process pVCF_block_info{
         path("vcf_blocks.csv")
     script:
     """
+    #!/usr/bin/env Rscript
     library(data.table)
     library(magrittr)
     fread("${block}") %>%
@@ -131,7 +132,7 @@ process download_exome_pvcf{
     publishDir "exome/pVCF", mode: 'move'
     executor "local"
     module 'tabix'
-    maxFork '10'
+    maxForks '10'
     input:
         tuple   val(chr),
                 val(block),
@@ -142,7 +143,7 @@ process download_exome_pvcf{
                 path("*.tbi") optional true
     script:
     """
-    ./${gfetch} 23156 -c${chr} -b${block} -a${key}
-    tabix -fp vcf *.vcf.gz
+    (./${gfetch} 23156 -c${chr} -b${block} -a${key} && tabix -fp vcf *.vcf.gz) || echo "No download"
+    
     """
 }

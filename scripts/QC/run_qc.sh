@@ -11,7 +11,7 @@
 id=18177
 root=/sc/arion/projects/data-ark/ukb/
 application=${root}/application/ukb${id}
-withdrawn=${application}/withdrawn/w18177_20200820.csv
+withdrawn=${application}/withdrawn/w18177_20210201.csv
 related=${application}/genotyped/ukb18177_rel_s488250.dat
 module load java
 nextflow run \
@@ -27,6 +27,7 @@ nextflow run \
     --greed ${root}/software/bin/GreedyRelated \
     --key ${application}/phenotype/raw/keys/ \
     --unpack ${root}/software/bin/ukbunpack \
+    --gfetch ${root}/software/bin/gfetch \
     --sql ${root}/software/bin/ukb_sql \
     --drop ${withdrawn} \
     --rel ${related} \
