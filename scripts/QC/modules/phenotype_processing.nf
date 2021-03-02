@@ -37,7 +37,7 @@ process construct_sql{
     if [[ "${drug}" == "null" ]]; then
         drug=""
     fi
-    if [[ "${withdrawn}" =="null" ]]; then
+    if [[ "${withdrawn}" == "null" ]]; then
         withdrawn=""
     fi
     ./${ukb_process} \
