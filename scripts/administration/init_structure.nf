@@ -129,8 +129,10 @@ workflow download_exome{
         // there are 4 types of exome sequencing data, 
         // population level: PLINK + pVCF
         // individual level: VCF + CRAM
-        // for now, we only download PLINK format data (as pVCF isn't available as of yet)
-        obtain_exome_plink(chr, gfetch, key)
+        // download PLINK format exome files
+        // cannot download master copy of qVCF 
+        // because each qVCF file will contain the sample ID
+	    obtain_exome_plink(chr, gfetch, key)
         // finally, download the bim files
         obtain_exome_bim()
 }
@@ -154,7 +156,6 @@ process obtain_exome_plink{
     mv ukb23155_c${chr}_*.bed UKBexomeOQFE_chr${chr}.bed
     """
 }
-
 process combine_genotype{
     publishDir ".genotype/genotyped/", mode: 'move'
     module "plink"

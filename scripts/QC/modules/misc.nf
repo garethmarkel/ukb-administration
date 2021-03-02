@@ -98,3 +98,19 @@ echo "
     """
 
 }
+
+process obtain_exome_qvcf{
+    publishDir "exome/qVCF", mode: 'move'
+    input:
+        each chr
+        val(prefix)
+        path(gfetch)
+        path(key)
+    output:
+        path "ukb${id}_chr${chr}.vcf.gz", optional true
+    script:
+    """
+    ./${gfetch} 23156 -c${chr} -a${key}
+    mv ukb23156_c${chr}*.vcf.gz ${prefix}_chr${chr}.vcf.gz
+    """
+}

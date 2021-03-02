@@ -3,8 +3,6 @@
 
 The UK Biobank is a very large population-based prospective study that includes detailed health-related and genetic data on about 500,000 individuals and is available to the research community. Men and women aged 40-69 years were recruited during 2006-2010 across 22 recruitment centers in the United Kingdom (Figure 1). Participants provided general consent for all types of health research by both academic and commercial researchers and follow-up through health-related records.
 
-The UK Biobank is funded by the Medical Research Council, Wellcome Trust, British Heart Foundation, Diabetes UK, Department of Health, Cancer Research UK, Welsh Government, Scottish Government, and Northwest Regional Development Agency. UK Biobank is supported by the National Health Service (NHS).
-
 <center>
 <img src="img/ukb_centres.png" alt="ukb_centres" width="300" /> 
 

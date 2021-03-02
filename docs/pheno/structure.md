@@ -1,1 +1,0 @@
-# Understand UK Biobank folder structure
