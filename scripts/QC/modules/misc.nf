@@ -99,18 +99,50 @@ echo "
 
 }
 
-process obtain_exome_qvcf{
-    publishDir "exome/qVCF", mode: 'move'
-    input:
-        each chr
-        val(prefix)
-        path(gfetch)
-        path(key)
+process get_pVCF_block{
+    publishDir "exome/pVCF", mode: 'symlink'
+    executor 'local'
     output:
-        path "ukb${id}_chr${chr}.vcf.gz", optional true
+        path("pvcf_blocks.txt")
     script:
     """
-    ./${gfetch} 23156 -c${chr} -a${key}
-    mv ukb23156_c${chr}*.vcf.gz ${prefix}_chr${chr}.vcf.gz
+    wget  -nd  biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/pvcf_blocks.txt
+    """
+}
+process pVCF_block_info{
+    executor 'lsf'
+    module 'R/4.0.3'
+    input:
+        path(block)
+    output:
+        path("vcf_blocks.csv")
+    script:
+    """
+    library(data.table)
+    library(magrittr)
+    fread("${block}") %>%
+        .[, c("V2", "V3")] %>%
+        setnames(., c("V2", "V3"), c("chr", "block")) %>%
+        fwrite(., "vcf_blocks.csv")
+    """
+}
+
+process download_exome_pvcf{
+    publishDir "exome/pVCF", mode: 'move'
+    executor "local"
+    module 'tabix'
+    maxFork '10'
+    input:
+        tuple   val(chr),
+                val(block),
+                path(gfetch),
+                path(key)
+    output:
+        tuple   path("*.vcf.gz"),
+                path("*.tbi") optional true
+    script:
+    """
+    ./${gfetch} 23156 -c${chr} -b${block} -a${key}
+    tabix -fp vcf *.vcf.gz
     """
 }

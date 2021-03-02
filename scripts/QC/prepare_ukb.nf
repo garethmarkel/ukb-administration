@@ -93,6 +93,9 @@ include {   construct_sql;
             generate_covariates    } from './modules/phenotype_processing'
 include {   get_software_version;
             combine_meta;
+            get_pVCF_block;
+            pVCF_block_info;
+            download_exome_pvcf;
             write_log    } from './modules/misc.nf'
 include {   extract_eur;
             remove_dropout_and_invalid;
@@ -152,11 +155,10 @@ workflow{
 
 workflow download_exome_with_id{
     get_pVCF_block() \
-        | pVCF_block_info
-    chr = Channel.of(1..22, "X", "Y")
-    key = keys \
-        | first \
-        | map{ a -> [ a[1]]}
+        | pVCF_block_info \
+        | combine(gfetch) \
+        | combine(key) \
+        | download_exome_pvcf
     //obtain_exome_pvcf(chr, "${params.bfile}", gfetch, key)
 }
 workflow check_version{
