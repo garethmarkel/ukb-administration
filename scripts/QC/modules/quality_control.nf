@@ -7,7 +7,7 @@ process remove_dropout_and_invalid{
                 path(bim),
                 path(fam)
         path(invalid)
-        path(dropout)
+        val(dropout)
         val(out)
     output:
         path "${out}-remove", emit: removed
@@ -20,13 +20,17 @@ process remove_dropout_and_invalid{
     fam <- fread("${fam}") %>%
         setnames(., c("V1", "V2"),c("FID", "IID")) %>%
         .[,c("FID", "IID")]
-    invalid <- fread("${invalid}")        
-    dropout <- fread("${dropout}", header=F)
-    fam <- fam[IID%in% dropout[,V1]]
+    invalid <- fread("${invalid}")   
+    num.drop <- 0
+    if("${dropout}" != "null){     
+        dropout <- fread("${dropout}", header=F)
+        fam <- fam[IID%in% dropout[,V1]]
+        num.drop <- nrow(dropout)
+    }
     rbind(invalid, fam) %>%
         fwrite(., "${out}-remove", sep="\\t")
     fileConn <- file("${out}-dropout.meta")
-    writeLines(paste0("2. ",nrow(dropout),"sample(s) withdrawn their consent"), fileConn)
+    writeLines(paste0("2. ",num.drop,"sample(s) withdrawn their consent"), fileConn)
     close(fileConn)
     """
 }

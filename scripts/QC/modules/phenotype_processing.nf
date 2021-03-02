@@ -14,9 +14,9 @@ process construct_sql{
         path(ukb_process)
         path(code_showcase)
         path(data_showcase)
-        path(withdrawn) 
-        path(gp) 
-        path(drug)
+        val(withdrawn) 
+        val(gp) 
+        val(drug)
         val(out)
         path(pheno)
     output:
@@ -28,17 +28,27 @@ process construct_sql{
     # Larger number in file name usually represent later version
     pheno_list=`ls ${pheno} | sort -Vr | awk '{printf \$0" "}END{print ""}'`
     phenotype=`join_by , \${pheno_list}`
+    drug="-u ${drug}"
+    gp="-g ${gp}"
+    withdrawn="-w ${withdrawn}"
+    if [[ "${gp}" == "null" ]]; then
+        gp=""
+    fi
+    if [[ "${drug}" == "null" ]]; then
+        drug=""
+    fi
+    if [[ "${withdrawn}" =="null" ]]; then
+        withdrawn=""
+    fi
     ./${ukb_process} \
         -d ${data_showcase} \
         -c ${code_showcase} \
         -p \${phenotype} \
         --out ${out}.db \
-        -g ${gp} \
-        -u ${drug} \
         -D \
         -m 10737418240  \
         -r \
-        -w ${withdrawn}
+        \$drug \$withdrawn \$gp
     """
 }
 
