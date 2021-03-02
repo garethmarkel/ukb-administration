@@ -108,23 +108,24 @@ dir=${root}/application/${prefix}
 #                                                  #
 ####################################################
 mkdir -p ${dir}/genotyped
-cd ${dir}/genotyped
-rm -rf * # Remove everything just in case
-ln -s ${key} .  2> /dev/null
-has_genotype="no"
-{ # try to download fam file. Can only download if we have permission
-    ${ukbgene} cal -c1 -m -a${keyName}  &&
-    has_genotype="yes"
-}
-rm ${keyName}
-if [ "${has_genotype}" == "yes" ]; then
-    ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bed
-    ln -s ${root}/.genotype/genotyped/ukb.bim ukb${id}.bim
-    mv *.fam ukb${id}.fam
-    ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt . 2> /dev/null
-else
-    cd ${dir}
-    rm -rf genotyped
+if [ -d "${dir}/genotyped" ]; then
+    cd ${dir}/genotyped && rm -rf * # Remove everything just in case
+    ln -s ${key} .  2> /dev/null
+    has_genotype="no"
+    { # try to download fam file. Can only download if we have permission
+        ${ukbgene} cal -c1 -m -a${keyName}  &&
+        has_genotype="yes"
+    }
+    rm ${keyName}
+    if [ "${has_genotype}" == "yes" ]; then
+        ln -s ${root}/.genotype/genotyped/ukb.bed ukb${id}.bed
+        ln -s ${root}/.genotype/genotyped/ukb.bim ukb${id}.bim
+        mv *.fam ukb${id}.fam
+        ln -s ${root}/.genotype/genotyped/ukb_snp_qc.txt . 2> /dev/null
+    else
+        cd ${dir}
+        rm -rf genotyped
+    fi
 fi
 ####################################################
 #                                                  #
@@ -148,21 +149,22 @@ link_files(){
 #                                                  #
 ####################################################
 has_imputed="no"
-mkdir -p ${dir}/Imputed
-cd ${dir}/imputed
-rm -rf * # Remove everything just in case
-ln -s ${key} . 2> /dev/null
-{  # try to download sample file. Can only download if we have permission
-    ${ukbgene} imp -c1 -m -a${keyName}  &&
-    has_imputed="yes"
-}
-rm ${keyName}
-if [ "${has_imputed}" == "yes" ]; then
-    link_files ${root}/.genotype/imputed/ bgen bgi imp 
-    ln -s ${root}/.genotype/imputed/*mfi* . 2> /dev/null
-else
-    cd ${dir}
-    rm -rf imputed
+mkdir -p ${dir}/imputed
+if [ -d "${dir}/imputed" ]; then
+    cd ${dir}/imputed && rm -rf * # Remove everything just in case
+    ln -s ${key} . 2> /dev/null
+    {  # try to download sample file. Can only download if we have permission
+        ${ukbgene} imp -c1 -m -a${keyName}  &&
+        has_imputed="yes"
+    }
+    rm ${keyName}
+    if [ "${has_imputed}" == "yes" ]; then
+        link_files ${root}/.genotype/imputed/ bgen bgi imp 
+        ln -s ${root}/.genotype/imputed/*mfi* . 2> /dev/null
+    else
+        cd ${dir}
+        rm -rf ${dir}/imputed
+    fi
 fi
 ####################################################
 #                                                  #
@@ -172,22 +174,24 @@ fi
 has_haplotype="no"
 if [ "${has_imputed}" == "no" ]; then
     mkdir -p ${dir}/imputed
-    cd ${dir}/imputed
-    rm -rf * # Remove everything just in case
-fi
-ln -s ${key} . 2> /dev/null
-{  # try to download sample file. Can only download if we have permission
-    ${ukbgene} hap -c1 -m -a${keyName}  &&
-    has_haplotype="yes"
-}
-rm ${keyName}
-if [ "${has_haplotype}" == "yes" ]; then
-    link_files ${root}/.genotype/imputed/ bgen bgi hap
-elif [ "${has_imputed}" != "yes" ]; then
-    cd ${dir}
-        rm -rf imputed
+    rm -rf ${dir}/imputed/* # Remove everything just in case
 fi
 
+if [ -d "${dir}/imputed" ]; then
+    cd ${dir}/imputed/
+    ln -s ${key} . 2> /dev/null
+    {  # try to download sample file. Can only download if we have permission
+        ${ukbgene} hap -c1 -m -a${keyName}  &&
+        has_haplotype="yes"
+    }
+    rm ${keyName}
+    if [ "${has_haplotype}" == "yes" ]; then
+        link_files ${root}/.genotype/imputed/ bgen bgi hap
+    elif [ "${has_imputed}" != "yes" ]; then
+        cd ${dir}
+        rm -rf ${dir}/imputed
+    fi
+fi
 ####################################################
 #                                                  #
 #         Obtain Exome Sequencing data             #
@@ -195,35 +199,36 @@ fi
 ####################################################
 has_exome="no"
 mkdir -p ${dir}/exome/PLINK
-cd ${dir}/exome/PLINK
-rm -rf * # Remove everything just in case
-ln -s ${key} . 2> /dev/null
-{
-    ${gfetch} 23155 -c1 -m -a${keyName} &&
-    has_exome="yes"
-}
+if [ -d "${dir}/exome/PLINK" ]; then
+    cd ${dir}/exome/PLINK && rm -rf * # Remove everything just in case
+    ln -s ${key} . 2> /dev/null
+    {
+        ${gfetch} 23155 -c1 -m -a${keyName} &&
+        has_exome="yes"
+    }
 
-if [ "${has_exome}" == "yes" ]; then
-    for f in ${root}/.exome/PLINK/UKBexomeOQFE{*bed,*bim};do
-        name="$(basename -- ${f})"
-        name="${name/UKBexomeOQFE/ukb${id}}"
-        ln -s ${f} ${name} 2> /dev/null
-    done
-    fam=`ls *.fam`
-    mv ${fam} ukb${id}_chr1.fam
-    fam="ukb${id}_chr1.fam"
-    for ((i=2; i<=22; i++));
-    do
-        ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
-    done
-    misc=( "X" "Y" )
-    for i in ${misc[@]};
-    do
-        ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
-    done
-else
-    cd ${dir}
-    rm -rf exome/PLINK
+    if [ "${has_exome}" == "yes" ]; then
+        for f in ${root}/.exome/PLINK/UKBexomeOQFE{*bed,*bim};do
+            name="$(basename -- ${f})"
+            name="${name/UKBexomeOQFE/ukb${id}}"
+            ln -s ${f} ${name} 2> /dev/null
+        done
+        fam=`ls *.fam`
+        mv ${fam} ukb${id}_chr1.fam
+        fam="ukb${id}_chr1.fam"
+        for ((i=2; i<=22; i++));
+        do
+            ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
+        done
+        misc=( "X" "Y" )
+        for i in ${misc[@]};
+        do
+            ln -s ${fam} ukb${id}_chr${i}.fam 2> /dev/null
+        done
+    else
+        cd ${dir}
+        rm -rf ${dir}/exome/PLINK
+    fi
 fi
 ####################################################
 #                                                  #
