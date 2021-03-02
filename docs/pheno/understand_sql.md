@@ -42,8 +42,8 @@ Participant
 </tr>
 <tr>
     <td>withdrawn</td>
-    <td>Number represent if sample withdrawn consent. 1 for yes, 0 for no</td>
-    <td>int</td>
+    <td>Date of which the samples withdrawn their consent (date of data-base update). 0 if sample has not withdrawn consent</td>
+    <td>text</td>
     <td></td>
 </tr>
 <th colspan="4">
