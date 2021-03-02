@@ -1,6 +1,9 @@
 nextflow.preview.dsl=2
 params.version=false
 params.help=false
+params.drop=null
+params.drug = null
+params.gp = null
 version='0.0.2'
 timestamp='2020-10-29'
 if(params.version) {
@@ -90,7 +93,6 @@ include {   construct_sql;
             generate_covariates    } from './modules/phenotype_processing'
 include {   get_software_version;
             combine_meta;
-            obtain_exome_qvcf;
             write_log    } from './modules/misc.nf'
 include {   extract_eur;
             remove_dropout_and_invalid;
@@ -113,14 +115,12 @@ def fileExists = { fn ->
 // load all common files 
 code_showcase=Channel.fromPath("${params.code}")
 data_showcase=Channel.fromPath("${params.data}")
-drug=Channel.fromPath("${params.drug}")
 encoding=Channel.fromPath("${params.encoding}")
 gfetch = Channel.fromPath("${params.gfetch}")
 genotype = Channel
             .fromFilePairs("${params.bfile}.{bed,bim,fam}",size:3, flat : true){ file -> file.baseName }  
             .ifEmpty { error "No matching plink files" }        
             .map { a -> [fileExists(a[1]), fileExists(a[2]), fileExists(a[3])] } 
-gp=Channel.fromPath("${params.gp}")
 greedy=Channel.fromPath("${params.greed}")
 keys = Channel.fromPath("${params.key}/*") \
     | flatten \
@@ -129,9 +129,10 @@ rel = Channel.fromPath("${params.rel}")
 ukbconv = Channel.fromPath("${params.conv}")
 ukbsql=Channel.fromPath("${params.sql}")
 ukbunpack = Channel.fromPath("${params.unpack}")
-withdrawn=Channel.fromPath("${params.drop}")
 
-
+withdrawn= params.drop ? Channel.of("${baseDir}/${params.drop}") : Channel.of("null")
+drug= params.drug ? Channel.fromPath("${baseDir}/${params.drug}") : Channel.of("null")
+gp= params.gp ? Channel.fromPath("${baseDir}/${params.gp}") : Channel.of("null")
 // main workflow
 workflow{
     // 1. check program version
@@ -150,11 +151,13 @@ workflow{
 }
 
 workflow download_exome_with_id{
+    get_pVCF_block() \
+        | pVCF_block_info
     chr = Channel.of(1..22, "X", "Y")
     key = keys \
         | first \
         | map{ a -> [ a[1]]}
-    obtain_exome_qvcf(chr, "${params.bfile}", gfetch, key)
+    //obtain_exome_pvcf(chr, "${params.bfile}", gfetch, key)
 }
 workflow check_version{
     main:
