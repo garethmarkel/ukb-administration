@@ -1,7 +1,7 @@
 
 
 process remove_dropout_and_invalid{
-    module 'R'
+    module 'R/4.0.3'
     input:
         tuple   path(bed),
                 path(bim),
@@ -22,13 +22,14 @@ process remove_dropout_and_invalid{
         .[,c("FID", "IID")]
     invalid <- fread("${invalid}")   
     num.drop <- 0
-    if("${dropout}" != "null){     
+    
+    if("${dropout}" != "null"){     
         dropout <- fread("${dropout}", header=F)
         fam <- fam[IID%in% dropout[,V1]]
         num.drop <- nrow(dropout)
+        invalid <- rbind(invalid, fam)
     }
-    rbind(invalid, fam) %>%
-        fwrite(., "${out}-remove", sep="\\t")
+    fwrite(invalid, "${out}-remove", sep="\\t")
     fileConn <- file("${out}-dropout.meta")
     writeLines(paste0("2. ",num.drop,"sample(s) withdrawn their consent"), fileConn)
     close(fileConn)
@@ -83,7 +84,7 @@ process basic_qc{
 process extract_eur{
     publishDir "genotyped", mode: 'copy', overwrite: true, pattern: '*EUR'
     publishDir "plots", mode: 'copy', overwrite: true, pattern: '*png'
-    module 'R'
+    module 'R/4.0.3'
     executor 'lsf'
     input:
         path(covar)
@@ -305,7 +306,7 @@ process filter_sex_mismatch{
     cpus 1
     executor 'lsf'
     memory '1G'
-    module 'R'
+    module 'R/4.0.3'
     input:
         tuple   path(qc_fam), 
                 path(qc_snp)
@@ -442,7 +443,7 @@ process extract_first_degree{
     publishDir "plots", mode: 'copy', overwrite: true, pattern: "*png"
     cpus 1
     memory '10G'
-    module 'R'
+    module 'R/4.0.3'
     input:
         path(samples) 
         path(related)

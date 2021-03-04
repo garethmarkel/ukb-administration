@@ -6,7 +6,7 @@ process construct_sql{
     publishDir "phenotype" , mode: 'copy', overwrite: true
     module 'cmake'
     time '24h'
-    queue 'premium' 
+    queue 'express' 
     cpus '1'
     memory '20G'
     executor 'lsf'
@@ -188,7 +188,7 @@ process extract_batch{
 
 process generate_covariates{
     publishDir "phenotype", mode: 'copy', overwrite: true
-    module 'R'
+    module 'R/4.0.3'
     label 'normal'
     input:
         path(batch)
