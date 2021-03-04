@@ -115,6 +115,18 @@ def fileExists = { fn ->
     else
        error("\n\n-----------------\nFile $fn does not exist\n\n---\n")
 }
+def get_path = { fn -> 
+    if(fn){
+        if(fn.startsWith("/") || fn.startsWith("~")){
+            return Channel.of("${fn}");
+        }else{
+            return Channel.of("${baseDir}/${fn}");
+        }
+    }else{
+        return Channel.of("null");
+    }
+
+}
 // load all common files 
 code_showcase=Channel.fromPath("${params.code}")
 data_showcase=Channel.fromPath("${params.data}")
@@ -132,10 +144,9 @@ rel = Channel.fromPath("${params.rel}")
 ukbconv = Channel.fromPath("${params.conv}")
 ukbsql=Channel.fromPath("${params.sql}")
 ukbunpack = Channel.fromPath("${params.unpack}")
-
-withdrawn= params.drop ? Channel.of("${baseDir}/${params.drop}") : Channel.of("null")
-drug= params.drug ? Channel.fromPath("${baseDir}/${params.drug}") : Channel.of("null")
-gp= params.gp ? Channel.fromPath("${baseDir}/${params.gp}") : Channel.of("null")
+withdrawn = get_path(params.drop)
+drug = get_path(params.drug)
+gp = get_path(params.gp)
 // main workflow
 workflow{
     // 1. check program version
