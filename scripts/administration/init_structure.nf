@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 params.version=false
 params.help=false
 version='0.0.1'
@@ -28,12 +28,12 @@ workflow{
     download_software()
     // 2. Download required reference files
     download_references()
-    // 3. Download Genotype files 
+    // 3. Download Genotype files
     download_genotypes(download_software.out)
     // 4. Download Imputation files
     download_imputed(download_software.out)
     // 5. Download Exome Sequencing files
-    download_exome(download_software.out)
+    // download_exome(download_software.out)
 }
 
 workflow download_software{
@@ -47,7 +47,7 @@ workflow download_software{
         ["ukblink","https://biobank.ctsu.ox.ac.uk/crystal/util/ukblink"],
         ["gfetch","https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch"],
         ["ukbgene","https://biobank.ndph.ox.ac.uk/showcase/util/ukbgene"]
-    ) 
+    )
     ukb \
         | download_executables
     // Download greedy related, which is required for the QC script
@@ -59,7 +59,7 @@ workflow download_software{
 }
 
 workflow download_references{
-    // 1. Download the reference file. 
+    // 1. Download the reference file.
     //    Data_Showcase contain detail information of all available phenotype on UKB
     //    Codings contain the coding code for each phenotype
     //    encoding.ukb is required for the extraction of UKB phenotypes
@@ -85,7 +85,7 @@ workflow download_genotypes{
         // download the SNP QC files
         obtain_snp_qc()
         // combine the per chromosome files into a single file
-        // need the key and ukbgene to get the fam file 
+        // need the key and ukbgene to get the fam file
         combine_genotype(
             ukbgene,
             key,
@@ -116,46 +116,46 @@ workflow download_imputed{
             | combine(Channel.of("bgi","mfi")) \
             | filter{!(it[0] == "hap" && it[1] == "mfi")} \
             | obtain_imp_extra
-            
+
 }
-workflow download_exome{
-    take: software
-    main:
-        // Exome sequencing data only contain X and Y but not XY and MT
-        // for users who want to analyze those chromosome, they might need to 
-        // download the individual level data manually
-        chr = Channel.of(1..22, "X", "Y")
-        gfetch=software.filter{it.baseName == "gfetch"}
-        // there are 4 types of exome sequencing data, 
-        // population level: PLINK + pVCF
-        // individual level: VCF + CRAM
-        // download PLINK format exome files
-        // cannot download master copy of qVCF 
-        // because each qVCF file will contain the sample ID
-	    obtain_exome_plink(chr, gfetch, key)
-        // finally, download the bim files
-        obtain_exome_bim()
-}
+// workflow download_exome{
+//     take: software
+//     main:
+//         // Exome sequencing data only contain X and Y but not XY and MT
+//         // for users who want to analyze those chromosome, they might need to
+//         // download the individual level data manually
+//         chr = Channel.of(1..22, "X", "Y")
+//         gfetch=software.filter{it.baseName == "gfetch"}
+//         // there are 4 types of exome sequencing data,
+//         // population level: PLINK + pVCF
+//         // individual level: VCF + CRAM
+//         // download PLINK format exome files
+//         // cannot download master copy of qVCF
+//         // because each qVCF file will contain the sample ID
+//	       obtain_exome_plink(chr, gfetch, key)
+//         // finally, download the bim files
+//         obtain_exome_bim()
+// }
 
 /*
  * This section contains the actual code for each processes
  *
  */
 
-process obtain_exome_plink{
-    publishDir ".exome/PLINK", mode: 'move'
-    input:
-        each chr
-        path(gfetch)
-        path(key)
-    output:
-        path("UKBexomeOQFE_chr${chr}.bed")
-    script:
-    """
-    ./${gfetch} 23155 -c${chr} -a${key}
-    mv ukb23155_c${chr}_*.bed UKBexomeOQFE_chr${chr}.bed
-    """
-}
+// process obtain_exome_plink{
+//     publishDir ".exome/PLINK", mode: 'move'
+//     input:
+//         each chr
+//         path(gfetch)
+//         path(key)
+//     output:
+//         path("UKBexomeOQFE_chr${chr}.bed")
+//     script:
+//     """
+//     ./${gfetch} 23155 -c${chr} -a${key}
+//     mv ukb23155_c${chr}_*.bed UKBexomeOQFE_chr${chr}.bed
+//     """
+// }
 process combine_genotype{
     publishDir ".genotype/genotyped/", mode: 'move'
     module "plink"
@@ -180,18 +180,18 @@ process combine_genotype{
     """
 }
 
-process obtain_exome_bim{
-    publishDir ".exome/PLINK", mode: 'move'
-    output:
-        path("*")
-    script:
-    """
-    curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
-    unzip UKBexomeOQFEbim.zip
-    # rename the files to ensure consistency
-    rm UKBexomeOQFEbim.zip
-    """
-}
+// process obtain_exome_bim{
+//     publishDir ".exome/PLINK", mode: 'move'
+//     output:
+//         path("*")
+//     script:
+//     """
+//     curl -o UKBexomeOQFEbim.zip https://biobank.ctsu.ox.ac.uk/crystal/crystal/auxdata/UKBexomeOQFEbim.zip
+//     unzip UKBexomeOQFEbim.zip
+//     # rename the files to ensure consistency
+//     rm UKBexomeOQFEbim.zip
+//     """
+// }
 
 process obtain_bim_files{
     output:
@@ -229,7 +229,7 @@ process obtain_genotype_data{
     """
 }
 
-process obtain_imp_extra{    
+process obtain_imp_extra{
     publishDir ".genotype/imputed", mode: 'move'
     input:
         tuple   val(type),
