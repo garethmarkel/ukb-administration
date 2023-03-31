@@ -30,10 +30,10 @@ echo "*****************************************************"
 for i in {1..22} "X" "Y" "XY" "MT"; do echo $i; done | parallel '/groups/GENOECON/ukb/software/gfetch 22828 -c{} -a.ukbkey'
 
 wget  -nd  biobank.ctsu.ox.ac.uk/ukb/ukb/auxdata/ukb_imp_bgi.tgz
-tar -xvfz ukb_imp_bgi.tgz
+tar -zxvf ukb_imp_bgi.tgz
 
 wget  -nd  biobank.ctsu.ox.ac.uk/ukb/ukb/auxdata/ukb_imp_mfi.tgz
-tar -xvfz ukb_imp_mfi.tgz
+tar -zxvf ukb_imp_mfi.tgz
 
 echo "*****************************************************"
 echo "******** IMPUTATION SAMPLE                  *********"
@@ -49,7 +49,7 @@ echo "*****************************************************"
 for i in {1..22} "X" "Y" "XY" "MT"; do echo $i; done | parallel '/groups/GENOECON/ukb/software/gfetch 22438 -c{} -a.ukbkey'
 
 wget  -nd  biobank.ctsu.ox.ac.uk/ukb/ukb/auxdata/ukb_hap_bgi.tgz
-tar -xvfz ukb_hap_bgi.tgz
+tar -zxvf ukb_hap_bgi.tgz
 
 echo "*****************************************************"
 echo "******** INTENSITIES                    *********"
