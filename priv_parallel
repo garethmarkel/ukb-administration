@@ -1,0 +1,27 @@
+#%Module 1.0
+#
+# Sets up variables for my local install of parallel, for use with the
+# 'environment-modules' package.
+#
+proc ModulesHelp { } {
+    puts stderr "\tAdds local install of parallel to your environment variables,"
+}
+
+module-whatis "adds local install of parallel  to your environment variables"
+
+# You can specify additional modules (if any) to be loaded before loading your
+# custom module like shown below.
+# Note: for python we don't need any additional module to be loaded beforehand.
+#if ![is-loaded <some-required-module-name>] {
+#       module load <some-required-module-name>
+#}
+
+# Add in required module(s) needed as prerequisite.
+# We don't need any prerequisite module for using GCL
+#prereq <module_name>
+
+# Add the path to the GCL binaries
+prepend-path PATH /home/$USER/packages/parallel/bin/
+
+## Add the path to the GCL libraries
+prepend-path LD_LIBRARY_PATH /home/$USER/packages/parallel/lib/

@@ -21,7 +21,7 @@ for i in {1..22} "X" "Y" "XY" "MT"; do echo $i; done | parallel '/groups/GENOECO
 
 wget  -nd  biobank.ctsu.ox.ac.uk/ukb/ukb/auxdata/ukb_snp_qc.txt
 
-/groups/GENOECON/ukb/software/gfetch rel
+/groups/GENOECON/ukb/software/gfetch rel -a.ukbkey
 
 echo "*****************************************************"
 echo "********GENOTYPE IMPUTATION (.bgen)*********"
