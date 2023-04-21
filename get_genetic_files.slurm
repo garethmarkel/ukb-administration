@@ -12,4 +12,4 @@
 
 module load use.own
 module load parallel
-sh /groups/GENOECON/ukb/par_gen.sh
+sh /groups/GENOECON/ukb/download_genetic_files.sh

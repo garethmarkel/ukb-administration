@@ -16,4 +16,11 @@ chmod 755 ukblink
 curl -o gfetch https://biobank.ctsu.ox.ac.uk/crystal/util/gfetch
 chmod 755 gfetch
 
+wget https://s3.amazonaws.com/plink2-assets/plink2_linux_amd_avx2_20230417.zip
+chmod 755 plink2
+
+wget https://www.kingrelatedness.com/Linux-king.tar.gz
+tar -xzvf Linux-king.tar.gz
+rm Linux-king.tar.gz
+
 cd ..
