@@ -10,8 +10,8 @@ wget  -nd  biobank.ndph.ox.ac.uk/ukb/ukb/utilx/encoding.dat
 
 #unpack the dataset--i think this could be dropped in parqeut maybe? we'll see.
 #also, the .tab file this produces might not be optimal
-nohup /groups/GENOECON/ukb/software/ukbconv $1.enc_ukb r -eencoding.dat &
-nohup /groups/GENOECON/ukb/software/ukbconv $1.enc_ukb docs &
+/groups/GENOECON/ukb/software/ukbconv $1.enc_ukb r -eencoding.dat
+/groups/GENOECON/ukb/software/ukbconv $1.enc_ukb docs 
 
 
 declare -a arr=(

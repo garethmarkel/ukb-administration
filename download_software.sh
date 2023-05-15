@@ -23,4 +23,26 @@ wget https://www.kingrelatedness.com/Linux-king.tar.gz
 tar -xzvf Linux-king.tar.gz
 rm Linux-king.tar.gz
 
+# wget http://code.enkre.net/bgen/tarball/release/bgen.tgz
+# tar zxvf bgen.tgz
+
+#ml load python/3.8.6-ff
+
+# ./waf configure
+# ./waf
+# # test it
+# ./build/test/unit/test_bgen
+# ./build/apps/bgenix -g example/example.16bits.bgen -list
+
+# Merlin doesn't work rn because c++ wnarrowing error
+# wget https://csg.sph.umich.edu/abecasis/merlin/download/merlin-1.1.2.tar.gz
+# tar -xzvf merlin-1.1.2.tar.gz
+# cd merlin-1.1.2
+# mkdir merlin
+# ./configure prefix=/groups/GENOECON/ukb/software/merlin
+
+
+
+
+
 cd ..
