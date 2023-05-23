@@ -128,3 +128,40 @@ Downloaded as part of the github import script. Located in `ukb/software/king`.
 
 ### MERLIN
 Currently having some trouble building it, so we don't have it. The error I'm running into has to do with differences in C++; for later reference, the search term for the error is "wnarrowing error c++".
+
+### GCTA
+
+```Bash
+wget https://yanglab.westlake.edu.cn/software/gcta/bin/gcta-1.94.1-linux-kernel-3-x86_64.zip
+unzip gcta-1.94.1-linux-kernel-3-x86_64.zip
+mv gcta-1.94.1-linux-kernel-3-x86_64 gcta_dir
+rm gcta-1.94.1-linux-kernel-3-x86_64.zip
+```
+
+## Tips and Tricks
+
+### Public Githubs
+There's not a lot of great documentation on how to use the UK Biobank with most genetic tools (at least, relative to the million stackoverflows you can consult for anything else). One thing you can do, though, is plug tool specific search terms into the Github search bar in double quotes, and it'll search for exact matches. For example, if you wanted an example of code calculating the GRM for the full UKB sample, you could search "make-grm" "uk" "biobank" and it would find code files containing all 3 of those exact terms (the first is a flag used in GCTA).
+
+### Job Arrays
+
+Sometimes (for example when computing the GRM for the UKB) it's convenient to submit an array of jobs. This will create a bunch of jobs with ids like `1234567_1` where the number after the underscore is the array id, and the number before is like the job id. To check the status of the array, you can run this command with the long number.
+
+```Bash
+sacct -n -X -j 885881 -o state%20 | sort | uniq -c
+```
+
+### phaseIBD
+
+```Bash
+git clone https://github.com/23andMe/phasedibd.git
+
+make
+python setup.py install --user
+#pip install pandas==1.5.3
+python tests/unit_tests.py
+```
+
+### Bash
+
+Note, `sh <command>` runs differently on the RStudio server terminal than your ssh terminal. This is because it points to dash in the singularity container Rstudio runs in. On your normal ssh terminal, it points to bash, and some commands will run differently. A good debugging step (if you're running stuff from the RStudio terminal) is to try running `bash <script>` instead of `sh <script>`.
