@@ -15,4 +15,4 @@ ml load hosts/hopper
 ml load gnu10/10.3.0-ya
 ml load r/4.1.2-dx
 
-Rscript test.R
+Rscript
